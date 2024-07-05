@@ -1,0 +1,917 @@
+﻿@using IndustrialContoroler.ViewModel
+@using Microsoft.EntityFrameworkCore
+@model Facility;
+
+@inject IndustrialContorolerDatabaseContext db;
+@inject IHttpContextAccessor _sessions
+@inject UserManager<AppUsers> _userManager
+    @{
+
+    var noti = db.Notis.Where(x => x.IsDeleted.Equals(false)).OrderByDescending(x => x.Date).ToList();
+    ViewData["Roles"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Roles.Where(x => x.Name != @Helper.SysAdminsitrator && x.Name != @Helper.SuperAdmin  && x.Name != @Helper.TechnicalSpecialist), "Name", "Name");
+    ViewData["RolesEm"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Roles.Where(x => x.Name != @Helper.SysAdminsitrator && x.Name != @Helper.SuperAdmin && x.Name != @Helper.ReEmployee), "Name", "Name");
+    var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+    var userid = user.Id;
+}
+@{
+    int counter = 1;
+    var FaId = 0;
+    var FacilityData = db.Facilities.Where(fa => fa.IsDeleted == false).ToList();
+}
+
+
+
+@if (TempData.ContainsKey("success"))
+{
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+@if (User.IsInRole(Helper.SuperAdmin)||User.IsInRole(Helper.Progreammer))
+{
+    <div class="card-body">
+        <ul style="font-family: 'Cairo', sans-serif; font-size:18px;" class="nav nav-tabs nav-tabs-bordered" id="SuperAdminList">
+
+            <li class="nav-item" style="font-family: 'Cairo', sans-serif; font-size:18px;">
+                <button class="nav-link" id="newForms" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-star me-1"></i>إستمارات جديدة</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="acceptForms" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-check-circle me-2"></i>إستمارات تم قبولها</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="rejectForms" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-x-circle me-2"></i>إستمارات تم رفضها</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="FormsWaitEdit" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-edit me-2"></i>إستمارات قيد التعديل</button>
+            </li>
+
+        </ul>
+
+        <div id="newFormsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover ">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                 <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تفعيل الأستلام </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 2)
+                                    {
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td>@counter</td>
+                                            <td>@item.FaNumber </td>
+                                            <td>@item.FaName </td>
+                                            <td>@item.FaOwnerName</td>
+                                            <td>@item.FaManagerName</td>
+                                            <td>@item.FaMobileNumber</td>
+                                             <td>
+                                                @if (!item.IsRead)
+                                                {
+                                                    <form method="post" action="@Url.Action("MarkAsRead", "FieldVisitForms", new { id = item.FaId })">
+                                                        <button type="submit">  تفعيل الأستلام  </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-center badge bg-label-success me-1"> تم الأستلام </span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+
+                                                        <a asp-action="AcceptVisitForm" asp-controller="FieldVisitForms" asp-route-id="@item.FaId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                            <i class="bx bx-check me-1"></i> قبول
+                                                        </a>
+
+                                                           <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;"
+                                           asp-action="RejectVisitForm" asp-route-Id="@item.FaId">
+                                                            <i class="bx bx-x me-1"></i> رفض
+                                                        </a>
+
+                                                      
+                                              <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;"
+                                           asp-action="EditFromByTechnicalSpecialist" asp-route-Id="@item.FaId">
+                                                            <i class="bx bx-edit me-1"></i> تعديل
+                                                                </a>
+                                                      
+
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="acceptFormDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 3)
+                                    {
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td >@counter</td>
+                                            <td >@item.FaNumber </td>
+                                            <td >@item.FaName </td>
+                                            <td >@item.FaOwnerName</td>
+                                            <td >@item.FaManagerName</td>
+                                            <td >@item.FaMobileNumber</td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="rejectFormsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 4)
+                                    {
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td >@counter</td>
+                                            <td >@item.FaNumber </td>
+                                            <td >@item.FaName </td>
+                                            <td >@item.FaOwnerName</td>
+                                            <td >@item.FaManagerName</td>
+                                            <td >@item.FaMobileNumber</td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="Notification" asp-action="ShowReasonReject"><i class="fas fa-eye"></i> سبب الرفض</a>
+
+                                                    </div>
+                                                    @*<div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="Notification" asp-action="ShowReasonReject"><i class="fas fa-eye"></i> سبب الرفض</a>
+                                                        </div>*@
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="FormWaitEditDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 5)
+                                    {
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td >@counter</td>
+                                            <td >@item.FaNumber </td>
+                                            <td >@item.FaName </td>
+                                            <td >@item.FaOwnerName</td>
+                                            <td >@item.FaManagerName</td>
+                                            <td >@item.FaMobileNumber</td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+}
+else if (User.IsInRole(Helper.ReEmployee))
+{
+    <div class="card-body">
+        <ul class="nav nav-tabs nav-tabs-bordered" id="SuperAdminList">
+
+            <li class="nav-item">
+                <button class="nav-link" id="acceptForms" style="font-family: 'Cairo', sans-serif; font-size:18px; color:blue;"><i class="bx bx-check-circle me-2"></i>إستمارات تم قبولها</button>
+            </li>
+
+        </ul>
+
+
+        <div id="acceptFormsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 3)
+                                    {
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td>@counter</td>
+                                            <td>@item.FaNumber </td>
+                                            <td>@item.FaName </td>
+                                            <td>@item.FaOwnerName</td>
+                                            <td>@item.FaManagerName</td>
+                                            <td>@item.FaMobileNumber</td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (User.IsInRole(Helper.TechnicalSpecialist))
+{
+    <div class="card-body">
+        <ul class="nav nav-tabs nav-tabs-bordered" id="SuperAdminList">
+
+            <li class="nav-item" style="font-family: 'Cairo', sans-serif; font-size:18px;">
+                <button class="nav-link" id="newForms" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-star me-2"></i>إستمارات غير محالة</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="acceptForms" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-check-circle me-2"></i>إستمارات تمت إحالتها</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="rejectForms" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-edit me-2"></i>إستمارات بأنتظار التعديل</button>
+            </li>
+
+        </ul>
+
+        <div id="newFormsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة البيانات</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 1)
+                                    {
+                                        var DataState = db.VisitsTraffics.Where(x => x.FaId.Equals(item.FaId) && x.IsDeleted.Equals(false)).Select(x => x.FaDataState).FirstOrDefault();
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td>@counter</td>
+                                            <td>@item.FaNumber </td>
+                                            <td>@item.FaName </td>
+                                            <td>@item.FaOwnerName</td>
+                                            <td>@item.FaManagerName</td>
+                                            <td>@item.FaMobileNumber</td>
+                                            @if(DataState == "0")
+                                            {
+                                            <td style="color:darkred;">غير مكتملة</td>
+                                            }
+                                            else
+                                            {
+                                            <td  style="color:green;">مكتملة</td>
+                                            }
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+
+
+                                                        <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#MainEdit-@item.FaId">
+                                                            <i class="bx bx-edit-alt me-1"></i> تعديل
+                                                        </a>
+
+                                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#DeleteModel" onclick="Delete('@item.FaId')">
+                                                            <i class="bx bx-trash me-1"></i> @ResourceWeb.lbbtnDelete
+                                                        </button>
+
+                                                        @if(DataState == "0")
+                                                        {
+                                                        <a asp-action="ReferralVisitFormToGeneralManager" asp-controller="FieldVisitForms" asp-route-id="@item.FaId" hidden
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                            <i class="bx bx-send me-1"></i> احالة
+                                                        </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-action="ReferralVisitFormToGeneralManager" asp-controller="FieldVisitForms" asp-route-id="@item.FaId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                            <i class="bx bx-send me-1"></i> احالة
+                                                        </a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <div class="modal fade" id="MainEdit-@item.FaId" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                                <div class="modal-content p-3 p-md-5">
+                                                    <div class="modal-body">
+                                                        <h5 class="card-header">المنشأة رقم  @item.FaNumber</h5>
+                                                        <div class="card-body">
+                                                            <small class="text-light fw-semibold fs-5">أختر البيانات التي تريد التعديل عليها :</small>
+                                                            <div class="demo-inline-spacing">
+                                                                <a asp-action="EditMainData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الرئيسية</a>
+                                                                <a asp-action="SecondryActData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الانشطة الثانوية</a>
+                                                                <a asp-action="ReasonData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">أسباب أختيار الموقع</a>
+                                                                <a asp-action="BuildingsData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">المباني</a>
+                                                                <a asp-action="WorkerData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">العمالة</a>
+                                                                <a asp-action="MachineData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الآلات</a>
+                                                                <a asp-action="RowMaterialsData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">المواد الخام</a>
+                                                                <a asp-action="HelpMaterialsData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">المواد المساعدة</a>
+                                                                <a asp-action="TransportationData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">وسائل النقل</a>
+                                                                <a asp-action="agentsPointData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الوكلاء ونقاط البيع</a>
+                                                                <a asp-action="proCapacityData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الطاقة الانتاجية</a>
+                                                                <a asp-action="EditSafetySecurity" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">وسائل الأمن والسلامة</a>
+                                                                <a asp-action="RelevantDocData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">وثائق الجهات ذات الصلة</a>
+                                                                <a asp-action="EditcastData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">بيانات المدلي</a>
+                                                                <a asp-action="EditvisitsTraffic" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">بيانات أخرى</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="acceptFormDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 2 || item.FaReference == 3 || item.FaReference == 4)
+                                    {
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td>@counter</td>
+                                            <td>@item.FaNumber </td>
+                                            <td>@item.FaName </td>
+                                            <td>@item.FaOwnerName</td>
+                                            <td>@item.FaManagerName</td>
+                                            <td>@item.FaMobileNumber</td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="rejectFormsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead class="border-top">
+                            <tr role="row">
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">No</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مالك المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مدير المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الهاتف</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تفعيل الأستلام </th>
+
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @if (FacilityData is not null)
+                            {
+                                @foreach (var item in FacilityData)
+                                {
+                                    if (item.FaReference == 5)
+                                    {
+                                        FaId = item.FaId;
+                                        <tr>
+                                            <td>@counter</td>
+                                            <td>@item.FaNumber </td>
+                                            <td>@item.FaName </td>
+                                            <td>@item.FaOwnerName</td>
+                                            <td>@item.FaManagerName</td>
+                                            <td>@item.FaMobileNumber</td>
+                                            <td>
+                                                @if (!item.IsRead)
+                                                {
+                                                    <form method="post" action="@Url.Action("MarkAsRead", "FieldVisitForms", new { id = item.FaId })">
+                                                        <button type="submit">  تفعيل الأستلام  </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-center badge bg-label-success me-1"> تم الأستلام </span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="FieldVisitForms" asp-action="TechReoprt"><i class="fas fa-eye"></i> عرض</a>
+                                                        <a class="dropdown-item" asp-route-Id="@item.FaId" asp-controller="Notification" asp-action="NotForEdit"><i class="fas fa-eye"></i> ملاحضة التعديل</a>
+
+
+                                                        <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#MainEdit-@item.FaId">
+                                                            <i class="bx bx-edit-alt me-1"></i> تعديل
+                                                        </a>
+
+                                                        @* <a href="" class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.FaId">
+                                                            <i class="bx bx-trash me-1"></i> حذف
+                                                            </a>*@
+                                                        <button class="dropdown-item" data-bs-toggle="modal" onclick="Delete('@item.FaId')">
+                                                            <i class="bx bx-trash me-1"></i> @ResourceWeb.lbbtnDelete
+                                                        </button>
+                                                        <a asp-action="ReferralVisitFormToGeneralManager" asp-controller="FieldVisitForms" asp-route-id="@item.FaId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                            <i class="bx bx-send me-1"></i> احالة
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                        <div class="modal fade" id="MainEdit-@item.FaId" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                                <div class="modal-content p-3 p-md-5">
+                                                    <div class="modal-body">
+                                                        <h5 class="card-header">المنشأة رقم  @item.FaNumber</h5>
+                                                        <div class="card-body">
+                                                            <small class="text-light fw-semibold fs-5">أختر البيانات التي تريد التعديل عليها :</small>
+                                                            <div class="demo-inline-spacing">
+                                                                <a asp-action="EditMainData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الرئيسية</a>
+                                                                <a asp-action="SecondryActData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الانشطة الثانوية</a>
+                                                                <a asp-action="ReasonData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">أسباب أختيار الموقع</a>
+                                                                <a asp-action="BuildingsData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">المباني</a>
+                                                                <a asp-action="WorkerData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">العمالة</a>
+                                                                <a asp-action="MachineData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الآلات</a>
+                                                                <a asp-action="RowMaterialsData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">المواد الخام</a>
+                                                                <a asp-action="HelpMaterialsData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">المواد المساعدة</a>
+                                                                <a asp-action="TransportationData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">وسائل النقل</a>
+                                                                <a asp-action="agentsPointData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الوكلاء ونقاط البيع</a>
+                                                                <a asp-action="proCapacityData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">الطاقة الانتاجية</a>
+                                                                <a asp-action="EditSafetySecurity" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">وسائل الأمن والسلامة</a>
+                                                                <a asp-action="RelevantDocData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">وثائق الجهات ذات الصلة</a>
+                                                                <a asp-action="EditcastData" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">بيانات المدلي</a>
+                                                                <a asp-action="EditvisitsTraffic" asp-controller="FieldVisitForms" asp-route-Id="@item.FaId" class="btn btn-outline-secondary">بيانات أخرى</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            @{counter =1;}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+                                     
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    $("#acceptFormDiv").hide();
+    $("#rejectFormsDiv").hide();
+    $("#FormWaitEditDiv").hide();
+    document.getElementById("newForms").style.color = "Blue";
+
+
+    if ($('html').hasClass('dark-style')) {
+
+    $("#newForms").click(function() {
+        $("#newFormsDiv").show();
+        $("#acceptFormDiv").hide();
+        $("#rejectFormsDiv").hide();
+        $("#FormWaitEditDiv").hide();
+
+        document.getElementById("newForms").style.color = "Blue";
+        document.getElementById("acceptForms").style.color = "white";
+        document.getElementById("rejectForms").style.color = "white";
+        document.getElementById("FormsWaitEdit").style.color = "white";
+    });
+
+
+    $("#acceptForms").click(function() {
+        $("#newFormsDiv").hide();
+        $("#acceptFormDiv").show();
+        $("#rejectFormsDiv").hide();
+        $("#FormWaitEditDiv").hide();
+
+        document.getElementById("newForms").style.color = "white";
+        document.getElementById("acceptForms").style.color = "Blue";
+        document.getElementById("rejectForms").style.color = "white";
+        document.getElementById("FormsWaitEdit").style.color = "white";
+    });
+
+
+    $("#rejectForms").click(function() {
+        $("#newFormsDiv").hide();
+        $("#acceptFormDiv").hide();
+        $("#rejectFormsDiv").show();
+        $("#FormWaitEditDiv").hide();
+
+        document.getElementById("newForms").style.color = "white";
+        document.getElementById("acceptForms").style.color = "white";
+        document.getElementById("rejectForms").style.color = "Blue";
+        document.getElementById("FormsWaitEdit").style.color = "white";
+    });
+
+
+    $("#FormsWaitEdit").click(function() {
+        $("#newFormsDiv").hide();
+        $("#acceptFormDiv").hide();
+        $("#rejectFormsDiv").hide();
+        $("#FormWaitEditDiv").show();
+
+        document.getElementById("newForms").style.color = "white";
+        document.getElementById("acceptForms").style.color = "white";
+        document.getElementById("rejectForms").style.color = "white";
+        document.getElementById("FormsWaitEdit").style.color = "Blue";
+    });
+
+
+    }
+    else{
+        $("#newForms").click(function () {
+            $("#newFormsDiv").show();
+            $("#acceptFormDiv").hide();
+            $("#rejectFormsDiv").hide();
+            $("#FormWaitEditDiv").hide();
+
+            document.getElementById("newForms").style.color = "Blue";
+            document.getElementById("acceptForms").style.color = "#516377";
+            document.getElementById("rejectForms").style.color = "#516377";
+            document.getElementById("FormsWaitEdit").style.color = "#516377";
+        });
+
+
+        $("#acceptForms").click(function () {
+            $("#newFormsDiv").hide();
+            $("#acceptFormDiv").show();
+            $("#rejectFormsDiv").hide();
+            $("#FormWaitEditDiv").hide();
+
+            document.getElementById("newForms").style.color = "#516377";
+            document.getElementById("acceptForms").style.color = "Blue";
+            document.getElementById("rejectForms").style.color = "#516377";
+            document.getElementById("FormsWaitEdit").style.color = "#516377";
+        });
+
+
+        $("#rejectForms").click(function () {
+            $("#newFormsDiv").hide();
+            $("#acceptFormDiv").hide();
+            $("#rejectFormsDiv").show();
+            $("#FormWaitEditDiv").hide();
+
+            document.getElementById("newForms").style.color = "#516377";
+            document.getElementById("acceptForms").style.color = "#516377";
+            document.getElementById("rejectForms").style.color = "Blue";
+            document.getElementById("FormsWaitEdit").style.color = "#516377";
+        });
+
+
+        $("#FormsWaitEdit").click(function () {
+            $("#newFormsDiv").hide();
+            $("#acceptFormDiv").hide();
+            $("#rejectFormsDiv").hide();
+            $("#FormWaitEditDiv").show();
+
+            document.getElementById("newForms").style.color = "#516377";
+            document.getElementById("acceptForms").style.color = "#516377";
+            document.getElementById("rejectForms").style.color = "#516377";
+            document.getElementById("FormsWaitEdit").style.color = "Blue";
+        });
+
+    }
+
+
+
+</script>
+@section scripts {
+
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+        {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+            text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+            confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'success'
+    });
+</script>
+
+        }
+        else
+        {
+<script>
+
+    Swal.fire({
+           title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+           text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+           confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'error'
+    });
+</script>
+        }
+        _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+        }
+
+
+<script>
+      function getUsersInTech() {
+        var roleId = $('#RoleId').val();
+        $.ajax({
+            type: 'GET',
+            url: '/Notification/GetUsersInRole',
+            data: { roleName: roleId },
+            success: function (data) {
+                var users = data.map(function (user) {
+                    return '<option value="' + user.id + '">' + user.fullName + '</option>';
+                }).join('');
+                $('#userSelect').html('<option value="">-- اختار المستخدم --</option>' + users);
+            },
+             error: function () {
+                alert("حدث خطأ أثناء استرجاع المستخدمين.");
+            }
+        });
+    }
+</script>
+
+<script>
+      function getUsers() {
+        var roleId = $('#RoleId').val();
+        $.ajax({
+            type: 'GET',
+            url: '/Notification/GetUsersInRole',
+            data: { roleName: roleId },
+            success: function (data) {
+                var users = data.map(function (user) {
+                    return '<option value="' + user.id + '">' + user.fullName + '</option>';
+                }).join('');
+                $('#userSelectReject').html('<option value="">-- اختار المستخدم --</option>' + users);
+            },
+             error: function () {
+                alert("حدث خطأ أثناء استرجاع المستخدمين.");
+            }
+        });
+    }
+</script>
+<script>
+     function Delete(id) {
+        Swal.fire({
+            title: lbTitleMsgDelete,
+            text: lbTextMsgDelete,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: lbconfirmButtonText,
+            cancelButtonText: lbcancelButtonText
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/FieldVisitForms/Delete?Id=${id}`;
+                Swal.fire(
+                    lbTitleDeletedOk,
+                    lbMsgDeletedOkRole,
+                    lbSuccess
+                )
+            }
+        })
+    }
+
+</script>
+
+<script>
+
+    let lbTitleEdit = '@Html.Raw(ResourceWeb.lbTitleEdit)';
+    let lbEdit = '@Html.Raw(ResourceWeb.lbEdit)';
+    let lbAddNewRole = '@Html.Raw(ResourceWeb.lbAddNewRole)';
+    let lbbtnSave = '@Html.Raw(ResourceWeb.lbbtnSave)';
+
+    let lbTitleMsgDelete = '@Html.Raw(ResourceWeb.lbTitleMsgDelete)';
+    let lbTextMsgDelete = '@Html.Raw(ResourceWeb.lbTextMsgDelete)';
+    let lbconfirmButtonText = '@Html.Raw(ResourceWeb.lbconfirmButtonText)';
+    let lbcancelButtonText = '@Html.Raw(ResourceWeb.lbcancelButtonText)';
+
+    let lbTitleDeletedOk = '@Html.Raw(ResourceWeb.lbTitleDeletedOk)';
+    let lbMsgDeletedOkfiled = '@Html.Raw(ResourceWeb.lbMsgDeletedOkfiled)';
+    let lbSuccess = '@Html.Raw(Helper.Success)';
+
+</script>
+
+}

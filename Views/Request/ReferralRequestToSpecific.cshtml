@@ -1,0 +1,230 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@inject IHttpContextAccessor _sessions
+@inject IndustrialContorolerDatabaseContext _context
+
+@model Request;
+@{
+    var ReId = ViewData["ReId"];
+    ViewData["Roles"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Roles.Where(x => x.Name != @Helper.SysAdminsitrator && x.Name != @Helper.SuperAdmin && x.Name != @Helper.ReEmployee && x.Name != @Helper.Progreammer ), "Name", "Name");
+
+}
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+ <div class="container-xxl flex-grow-1 container-p-y">
+             <h5 style="background-color: rgb(82, 134, 203); color: azure;" class="card-header"> احالة الطلب رقم  @ReId</h5>
+
+              <div class="row invoice-add">
+                <!-- Invoice Add-->
+                <div class="col-12 col-lg-9 mb-4 mb-lg-0">
+                  <div class="card invoice-preview-card">
+                    <div class="card-body">
+                    <div class="row p-0 p-sm-3">
+
+                        <div class="col-md-6 mb-4 mb-md-0">
+                          <div class="svg-illustration gap-2 d-flex mb-4">
+                            <span class="app-brand-text h3 fw-bold mb-0">إشعار</span>
+                          </div>
+
+                         
+                        </div>
+
+                       
+                    </div>
+
+                      <hr class="mx-n4 my-2" />
+
+                      <div class="row p-0 p-sm-3">
+                <form asp-action="ReferralRequestToSpecific" asp-controller="Request" id="notification-form" method="post">
+                      <div class="col-md-6">
+                      <div class="mb-3">
+                        <label  asp-for="RoleId" class="form-label fs-5">احالة </label>
+                        <select class="form-select fs-5"  asp-for="RoleId"  onchange="getUsers()" >
+                             @foreach (var role in ViewData["Roles"] as SelectList)
+                          {
+                               <option>اختار الصلاحية</option>
+                        <option value="@role.Value">@role.Text</option>
+                          }
+                        </select>
+                        <span class="alert-danger" asp-validation-for="RoleId"></span>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label  asp-for="UserId" class="form-label fs-5">اسم المختص  </label>
+                        <select class="form-select fs-5"  asp-for="UserId" id="userSelect"  > </select>
+                         <span class="alert-danger" asp-validation-for="UserId"></span> 
+                      </div>
+                      <!--hide the filed from her -->
+                     <div class="col-md-4">
+                        <label asp-for="ReType" class="form-label fs-5" hidden>نوع الطلب</label>
+                        <select asp-for="ReType" class="form-control" title=" نوع الطلب" hidden>
+                            <option value="إنشاء سجل صناعي"> إنشاء سجل صناعي</option>
+                            <option value="تجديد سجل صناعي"> تجديد سجل صناعي</option>
+                            <option value="تعديل سجل صناعي"> تعديل سجل صناعي</option>
+                        </select>
+                        <span asp-validation-for="ReType" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReDate" class="form-label fs-5" hidden> تاريخ الطلب</label>
+                        <input asp-for="ReDate" class="form-control" placeholder=" تاريخ الطلب " hidden>
+                        <span asp-validation-for="ReDate" class="text-danger" hidden></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReFormNo" class="form-label fs-5" hidden>رقم استمارة الطلب</label>
+                        <input asp-for="ReFormNo" placeholder="رقم استمارة الطلب " class="form-control" hidden>
+                        <span asp-validation-for="ReFormNo" class="text-danger" hidden></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReSuemNo" class="form-label fs-5" hidden>رقم  السند</label>
+                        <input asp-for="ReSuemNo" class="form-control" placeholder="رقم  السند " hidden>
+                        <span asp-validation-for="ReSuemNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReApplicant" class="form-label fs-5" hidden>اسم مقدم الطلب</label>
+                        <input asp-for="ReApplicant" class="form-control" placeholder="اسم مقدم الطلب" hidden>
+                        <span asp-validation-for="ReApplicant" class="text-danger" ></span>
+                    </div>
+
+                   
+
+
+                    <input asp-for="ReId" hidden />
+                    <input asp-for="ReRequestState" hidden />
+                 </div>
+                    
+                 
+                   
+                    
+                       
+
+                    </form>
+                      </div>
+
+                      <div class="row py-sm-3"> </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Invoice Add-->
+
+                <!-- Invoice Actions -->
+                <div class="invoice-actions col-12 col-lg-3">
+                  <div class="card mb-4">
+                    <div class="card-body">
+                      <button
+                        class="btn btn-primary d-grid w-100 mb-3"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#sendInvoiceOffcanvas"
+                       type="button" id="Save-button"
+
+                      >
+                      <span>  <i class="bx bx-paper-plane bx-xs me-3"></i>إحالة </span>
+                        
+                       
+                      </button>
+                     
+                       <a href="" class="btn btn-label-secondary d-grid w-100 mb-3">الغاء</a>
+                   <a asp-action="ReferralRequestToSpecific" asp-controller="Request" class="btn btn-secondary d-grid w-100 mt-3">
+                        <span class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-arrow-back bx-xs me-3"></i>رجوع</span>
+                            </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Invoice Actions -->
+              </div>
+            
+
+@section scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+        {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+            text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+            confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'success'
+    });
+</script>
+
+        }
+        else
+        {
+<script>
+
+    Swal.fire({
+           title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+           text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+           confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'error'
+    });
+</script>
+        }
+        _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+        }
+
+<script src="~/Modules/notificatiom.js"></script>
+
+
+<script>
+      function getUsers() {
+        var roleId = $('#RoleId').val();
+        $.ajax({
+            type: 'GET',
+            url: '/Notification/GetUsersInRole',
+            data: { roleName: roleId },
+            success: function (data) {
+                var users = data.map(function (user) {
+                    return '<option value="' + user.id + '">' + user.fullName + '</option>';
+                }).join('');
+                $('#userSelect').html('<option value="">-- اختار المستخدم --</option>' + users);
+            },
+             error: function () {
+                alert("حدث خطأ أثناء استرجاع المستخدمين.");
+            }
+        });
+    }
+</script>
+
+<script>
+
+    $(function(){
+
+        $('#Save-button').click(function(){
+            $('#notification-form').submit();
+        });
+           });
+
+
+</script>
+
+<script>
+
+    let lbTitleEdit = '@Html.Raw(ResourceWeb.lbTitleEdit)';
+    let lbEdit = '@Html.Raw(ResourceWeb.lbEdit)';
+    let lbAddNewRole = '@Html.Raw(ResourceWeb.lbAddNewRole)';
+    let lbbtnSave = '@Html.Raw(ResourceWeb.lbbtnSave)';
+
+    let lbTitleMsgDelete = '@Html.Raw(ResourceWeb.lbTitleMsgDelete)';
+    let lbTextMsgDelete = '@Html.Raw(ResourceWeb.lbTextMsgDelete)';
+    let lbconfirmButtonText = '@Html.Raw(ResourceWeb.lbconfirmButtonText)';
+    let lbcancelButtonText = '@Html.Raw(ResourceWeb.lbcancelButtonText)';
+
+    let lbTitleDeletedOk = '@Html.Raw(ResourceWeb.lbTitleDeletedOk)';
+    let lbMsgDeletedOkRole = '@Html.Raw(ResourceWeb.lbMsgDeletedOkRole)';
+    let lbSuccess = '@Html.Raw(Helper.Success)';
+
+</script>
+
+}

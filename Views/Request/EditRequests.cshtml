@@ -1,0 +1,81 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model Request;
+@{
+    var ReId = ViewData["ReId"];
+}
+
+
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+<div class="col-xxl " data-select2-id="30" id="statistic_2">
+    <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+        <h5 style="background-color: rgb(82, 134, 203); color: azure;" class="card-header">تعديل الطلب رقم @ReId</h5>
+
+        <form method="post" class=" mb-4 mt-3 ms-3 me-3">
+            <div class="d-flex justify-content-between">
+
+                <div style="font-family: 'Cairo', sans-serif; font-size:16px;" class="row g-3">
+
+
+                    <div class="col-md-4">
+                        <label asp-for="ReType" class="form-label fs-5">نوع الطلب</label>
+                        <select asp-for="ReType" class="form-control" title=" نوع الطلب">
+                            <option value="إنشاء سجل صناعي"> إنشاء سجل صناعي</option>
+                            <option value="تجديد سجل صناعي"> تجديد سجل صناعي</option>
+                            <option value="تعديل سجل صناعي"> تعديل سجل صناعي</option>
+                        </select>
+                        <span asp-validation-for="ReType" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReDate" class="form-label fs-5"> تاريخ الطلب</label>
+                        <input asp-for="ReDate" class="form-control" placeholder=" تاريخ الطلب ">
+                        <span asp-validation-for="ReDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReFormNo" class="form-label fs-5">رقم استمارة الطلب</label>
+                        <input asp-for="ReFormNo" placeholder="رقم استمارة الطلب " class="form-control">
+                        <span asp-validation-for="ReFormNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReSuemNo" class="form-label fs-5">رقم  السند</label>
+                        <input asp-for="ReSuemNo" class="form-control" placeholder="رقم  السند ">
+                        <span asp-validation-for="ReSuemNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ReApplicant" class="form-label fs-5">اسم مقدم الطلب</label>
+                        <input asp-for="ReApplicant" class="form-control" placeholder="اسم مقدم الطلب">
+                        <span asp-validation-for="ReApplicant" class="text-danger"></span>
+                    </div>
+
+                     <div class="col-md-4 mt-3 ms-2">
+                         <label></label>
+                          <label><a asp-action="EditAttachment" asp-controller="Request" asp-route-Id="@ViewData["ReId"]" class="form-label fs-5">انقر لتعديل مرفقات الطلب</a></label>
+                    </div>
+
+
+                    <input asp-for="ReId" hidden />
+                    <input asp-for="ReRequestState" hidden />
+                 </div>
+                  </div>
+
+                  <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col justify-content-center mt-3">
+                      <a href="@Url.Action("Index","Request")" type="button" class="btn btn-label-secondary">إلغاء</a>
+                        <button type="submit" class="btn btn-primary me-1 me-sm-2"
+                                asp-action="EditRequests" asp-controller="Request">
+                            تعديل
+                        </button>
+                    </div>
+           
+        </form>
+    </div>
+</div>

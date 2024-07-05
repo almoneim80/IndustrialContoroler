@@ -1,0 +1,316 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = IndustrialContoroler
+build_property.RootNamespace = IndustrialContoroler
+build_property.ProjectDir = E:\FinalProject\IndustrialContoroler\IndustrialContoroler\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = E:\FinalProject\IndustrialContoroler\IndustrialContoroler
+build_property._RazorSourceGeneratorDebug = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Account/ProFile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxQcm9GaWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Charts/char1.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcnRzXGNoYXIxLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Charts/char2.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcnRzXGNoYXIyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Charts/char3.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhcnRzXGNoYXIzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/AgentsSellingPointsData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcQWdlbnRzU2VsbGluZ1BvaW50c0RhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/AnotherData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcQW5vdGhlckRhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/BuildingsData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcQnVpbGRpbmdzRGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/CastDataData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcQ2FzdERhdGFEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/FacilityMainData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcRmFjaWxpdHlNYWluRGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/HelpMaterialData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcSGVscE1hdGVyaWFsRGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/MachinesData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcTWFjaGluZXNEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/ProductionCapacityData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcUHJvZHVjdGlvbkNhcGFjaXR5RGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/relevantDocData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlccmVsZXZhbnREb2NEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/RowMaterialData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcUm93TWF0ZXJpYWxEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/SeftySecurityData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcU2VmdHlTZWN1cml0eURhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/TransportationData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcVHJhbnNwb3J0YXRpb25EYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/CreateFacility/WorkersData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlRmFjaWxpdHlcV29ya2Vyc0RhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/agentsPointData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXGFnZW50c1BvaW50RGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/BuildingsData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEJ1aWxkaW5nc0RhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditagentsPoint.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRhZ2VudHNQb2ludC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditBuilding.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRCdWlsZGluZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditcastData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRjYXN0RGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditFromByTechnicalSpecialist.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRGcm9tQnlUZWNobmljYWxTcGVjaWFsaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditHelpMaterials.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRIZWxwTWF0ZXJpYWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditMachine.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRNYWNoaW5lLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditMainData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRNYWluRGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditRelevantDoc.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRSZWxldmFudERvYy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditRowMaterials.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRSb3dNYXRlcmlhbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditSafetySecurity.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRTYWZldHlTZWN1cml0eS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditvisitsTraffic.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXR2aXNpdHNUcmFmZmljLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/EditWorker.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEVkaXRXb3JrZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/HelpMaterialsData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEhlbHBNYXRlcmlhbHNEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/MachineData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXE1hY2hpbmVEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/proCapacityData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXHByb0NhcGFjaXR5RGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/ReasonData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFJlYXNvbkRhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/RejectVisitForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFJlamVjdFZpc2l0Rm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/RelevantDocData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFJlbGV2YW50RG9jRGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/RowMaterialsData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFJvd01hdGVyaWFsc0RhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/SecondryActData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFNlY29uZHJ5QWN0RGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/TechReoprt.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFRlY2hSZW9wcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/TransportationData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFRyYW5zcG9ydGF0aW9uRGF0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/FieldVisitForms/WorkerData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmllbGRWaXNpdEZvcm1zXFdvcmtlckRhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Maps/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFwc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Notification/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Notification/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uXERldGFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Notification/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Notification/NotForEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uXE5vdEZvckVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Notification/ShowReasonReject.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uXFNob3dSZWFzb25SZWplY3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Permissions/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVybWlzc2lvbnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Reports/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/AddAttachment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxBZGRBdHRhY2htZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/EditAttachment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxFZGl0QXR0YWNobWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/EditRequests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxFZGl0UmVxdWVzdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/ReferralRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxSZWZlcnJhbFJlcXVlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/ReferralRequestToSpecific.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxSZWZlcnJhbFJlcXVlc3RUb1NwZWNpZmljLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/ShowAttachment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxTaG93QXR0YWNobWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Request/ShowRequests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVxdWVzdFxTaG93UmVxdWVzdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Roles/Role.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcUm9sZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Search/FreeSearch.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhcmNoXEZyZWVTZWFyY2guY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Search/SearchEco.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhcmNoXFNlYXJjaEVjby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Search/SearchInd.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhcmNoXFNlYXJjaEluZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Statistics/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhdGlzdGljc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/WorkFlowRequest/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV29ya0Zsb3dSZXF1ZXN0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = X1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = X1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/FinalProject/IndustrialContoroler/IndustrialContoroler/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-62toj02g90

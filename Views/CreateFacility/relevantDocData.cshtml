@@ -1,0 +1,150 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using IndustrialContoroler.Models.Repositories;
+@using IndustrialContoroler.Models.FacilityViewModels;
+@model RelevantDocVM;
+@inject IRepository<Temporary> relevantdoc;
+
+
+    @if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+@if (TempData.ContainsKey("success"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("ExFileNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["ExFileNull"]</div>
+}
+@if (TempData.ContainsKey("InsertNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["InsertNull"]</div>
+}
+
+
+@{
+    //get all buildings from Temporary table to show them in table.
+    var GetAllRelevantDoc = relevantdoc.GetAll().Where(RD => RD.TblDesc == "relevantdoc").ToList();
+    //for number of buildings in table.
+    int counter = 1;
+}
+
+<div class="card mb-4 ms-3 me-3">
+
+    <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 ">بيانات وثائق الجهات ذات الصلة </h3>
+    <form method="post" class="card-body" enctype="multipart/form-data">
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="row g-3">
+
+            <div class="col-md-4">
+                <label asp-for="RdDocName" class="form-label fs-5">اسم الوثيقة</label>
+                <input asp-for="RdDocName" class="form-control" placeholder="اسم الوثيقة" />
+                <span asp-validation-for="RdDocName" class="text-danger"></span>
+                @if (TempData.ContainsKey("RdDocNameError"))
+                {
+
+                    <span class="text-danger">@TempData["RdDocNameError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="RdStakeholderName" class="form-label fs-5">اسم الجهة</label>
+                <input asp-for="RdStakeholderName" class="form-control" placeholder="اسم الجهة" />
+                <span asp-validation-for="RdStakeholderName" class="text-danger"></span>
+                @if (TempData.ContainsKey("RdStakeholderNameError"))
+                {
+
+                    <span class="text-danger">@TempData["RdStakeholderNameError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="ReFile" class="form-label fs-5">أضافة ملف الوثيقة</label>
+                <input asp-for="ReFile" class="form-control" type="file" id="formFileDisabled" />
+                <span asp-validation-for="ReFile" class="text-danger"></span>
+                @if (TempData.ContainsKey("ReFileError"))
+                {
+
+                    <span class="text-danger">@TempData["ReFileError"]</span>
+                }
+            </div>
+
+
+            <div class="row-md-6">
+                <label asp-for="ReDescription" class="form-label fs-5">الوصف</label>
+                <textarea asp-for="ReDescription" class="form-control" rows="1" placeholder="أكتب وصف الوثيقة او اي معلومات أخرى عنها."></textarea>
+            </div>
+
+
+
+
+            <input asp-for="FaId" value="1" hidden />
+
+            <div class="pt-4">
+                <div class="row justify-content-end">
+                    <div class="col-sm-7">
+                        <button type="submit" class="btn btn-primary me-1 me-sm-2" asp-action="relevantDocData" asp-controller="CreateFacility">
+                            أضافة
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="table-responsive text-nowrap mt-5 " style="width:100%;">
+                <table class="table" id="BuTable">
+                    <thead>
+                        <tr>
+                            <td>رقم الوثيقة</td>
+                            <td>اسم الوثيقة</td>
+                            <td>اسم الجهة</td>
+                            <td>الوصف</td>
+                            <td>ملف الوثيقة</td>
+                            <td>إجراءات</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (GetAllRelevantDoc is not null)
+                        {
+                            @foreach (var item in GetAllRelevantDoc)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>@item.Cel1</td>
+                                    <td>@item.Cel2</td>
+                                    <td>@item.Cel3</td>
+                                    <td>@item.Cel4</td>
+                                    <td>
+                                        <a asp-action="DeleterelevantDoc" asp-controller="CreateFacility" asp-route-Id="@item.Id"
+                                   class="btn btn-outline-danger p1-3 pr-3 py-1">
+                                            <i class="bx bx-trash ms-1 ms-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                counter = counter + 1;
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <hr class="mx-n4 my-4" />
+
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col justify-content-center">
+            <a href="@Url.Action("SeftySecurityData","CreateFacility")" type="button" class="btn btn-label-secondary">السابق</a>
+            <button asp-action="relevantDocNext" asp-controller="CreateFacility" type="submit" class="btn btn-primary me-1 me-sm-2">التالي</button>
+        </div>
+
+    </form>
+</div>
+
+
+

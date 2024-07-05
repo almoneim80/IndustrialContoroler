@@ -1,0 +1,1016 @@
+﻿@model List<Request>;
+@inject IHttpContextAccessor _sessions
+@inject IndustrialContorolerDatabaseContext db;
+@inject UserManager<AppUsers> _userManager;
+
+@{
+    var cuurentUser = await _userManager.FindByNameAsync(User.Identity?.Name);
+    var ReferralRequestToSpecialist = db.Requests.Where(x => x.IsDeleted.Equals(false) && x.UserId == cuurentUser.Id && x.ReRequestState.Equals(2)).ToList();
+    var ReferralRequestReject = db.Requests.Where(x => x.IsDeleted.Equals(false) && x.ReRequestState.Equals(2)).ToList();
+    var ReferralRequestaccept = db.Requests.Where(x => x.IsDeleted.Equals(false) && x.ReRequestState.Equals(2)).ToList();
+    var ReferralRequestInAdmin = db.Requests.Where(x => x.IsDeleted.Equals(false) && x.ReRequestState.Equals(2)).ToList();
+    //========================================================
+    var RequestWaitingCheck = db.Requests.Where(x => x.IsDeleted.Equals(false) && (x.ReRequestState.Equals(2) || x.ReRequestState.Equals(1))).ToList();
+    var AllRequestData = db.Requests.Where(x => x.IsDeleted.Equals(false)).ToList();
+    var ReuquestNew = db.Requests.Where(x => x.IsDeleted.Equals(false) && x.IsRead.Equals(false));
+    ViewData["Roles"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Roles.Where(x => x.Name != @Helper.SysAdminsitrator && x.Name != @Helper.SuperAdmin && x.Name != @Helper.TechnicalSpecialist), "Name", "Name");
+    var counter = 1;
+}
+
+
+@if (TempData.ContainsKey("success"))
+{
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+@if (User.IsInRole(Helper.ReEmployee))
+{
+    <div class="card-body">
+        <ul style="font-family: 'Cairo', sans-serif; font-size:18px;" class="nav nav-tabs nav-tabs-bordered">
+
+            <li class="nav-item">
+                <button class="nav-link" id="newRequests"><i class="bx bx-star me-1"></i>طلبات جديدة</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="RequestsRWaiting"><i class="bx bx-dotshorizontal-rounded me-2"></i>طلبات  قيد المراجعة</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="rejectRequests"><i class="bx bx-x-circle me-2"></i>طلبات تم رفضها</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="acceptRequests"><i class="bx bx-check-circle me-2"></i>طلبات تم قبولها</button>
+            </li>
+
+        </ul>
+
+        <div id="newRequestsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <a style="font-family: 'Almarai', sans-serif; font-size:14px;" class="btn btn-primary gradient-buttons h-px-35 my-3 mx-3  col-md-2" role="button"
+                   asp-action="Create" asp-controller="Request">
+                        <i class="fas fa-plus" style=" font-size: small;"></i> إضافة طلب
+                    </a>
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة مرفقات الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @foreach (var item in AllRequestData)
+                            {
+                                if (item.ReRequestState == 0)
+                                {
+                                    var attchments = db.Attachments.Where(x => x.ReId.Equals(item.ReId) && x.IsDeleted.Equals(false)).ToList();
+                                    <tr>
+                                        <td><span class="text-center"> @counter </span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+                                         @if (item.ReType == "إنشاء سجل صناعي")
+                                            {
+                                                @if (attchments.Count >= 2)
+                                                {
+                                                <td><span class="badge bg-label-success me-1">مكتملة</span></td>
+                                                <td> <span class="badge bg-label-warning me-1">بأنتظار الأحالة الى الرقابة الصناعية</span> </td>
+                                                }
+                                                else
+                                                {
+                                                <td><span class="badge bg-label-danger me-1">غير مكتملة</span></td>
+                                                <td><span class="badge bg-label-danger me-1">بأنتظار إكمال المرفقات</span></td>
+                                                }
+                                            }
+                                            else if (item.ReType == "تجديد سجل صناعي")
+                                            {
+                                                @if (attchments.Count >= 5)
+                                                {
+                                                <td><span class="badge bg-label-success me-1">مكتملة</span></td>
+                                                <td> <span class="badge bg-label-warning me-1">بأنتظار الأحالة الى الرقابة الصناعية</span> </td>
+                                                }
+                                                else
+                                                {
+                                                <td><span class="badge bg-label-danger me-1">غير مكتملة</span></td>
+                                                <td><span class="badge bg-label-danger me-1">بأنتظار إكمال المرفقات</span></td>
+                                                }
+                                            }
+                                            else if (item.ReType == "تعديل سجل صناعي")
+                                            {
+                                                @if (attchments.Count >= 4)
+                                                {
+                                                <td><span class="badge bg-label-success me-1">مكتملة</span></td>
+                                                <td> <span class="badge bg-label-warning me-1">بأنتظار الأحالة الى الرقابة الصناعية</span> </td>
+                                                }
+                                                else
+                                                {
+                                                <td><span class="badge bg-label-danger me-1">غير مكتملة</span></td>
+                                                <td><span class="badge bg-label-danger me-1">بأنتظار إكمال المرفقات</span></td>
+                                                }
+                                            }
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                                    </a>
+
+                                                    <a asp-action="EditRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-edit me-1"></i> تعديل
+                                                    </a>
+
+
+                                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#DeleteModel" onclick="Delete('@item.ReId')">
+                                                        <i class="bx bx-trash me-1"></i> @ResourceWeb.lbbtnDelete
+                                                    </button>
+
+                                                    @if (item.ReType == "إنشاء سجل صناعي")
+                                                    {
+                                                        if (attchments.Count >= 2)
+                                                        {
+                                                            <a asp-action="ReferralRequest" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                                <i class="bx bx-send me-1"></i> احالة
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else if (item.ReType == "تجديد سجل صناعي")
+                                                    {
+                                                        if (attchments.Count >= 5)
+                                                        {
+                                                            <a asp-action="ReferralRequest" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                                <i class="bx bx-send me-1"></i> احالة
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else if (item.ReType == "تعديل سجل صناعي")
+                                                    {
+                                                        if (attchments.Count >= 4)
+                                                        {
+                                                            <a asp-action="ReferralRequest" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                                <i class="bx bx-send me-1"></i> احالة
+                                                            </a>
+                                                        }
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <span class="badge bg-label-danger ms-4">* لن تتمكن من إحالة الطلب في حالة كانت مرفقاته غير مكتملة</span>
+        </div>
+        
+
+        <div id="RequestsRWaitingDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @{
+                                counter = 1;
+                            }
+                            @foreach (var item in RequestWaitingCheck)
+                            {
+                                if (item.ReRequestState == 2)
+                                {
+                                    var FormNo = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).ToList();
+                                    if (FormNo.Count == 0)
+                                    {
+                                        <tr>
+                                            <td><span class="text-center"> @counter </span></td>
+                                            <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                            <td><span class="text-center"> @item.ReFormNo </span></td>
+                                            <td> @item.ReType  </td>
+                                            <td>@item.ReDate</td>
+                                            <td>@item.ReApplicant</td>
+                                            <td> <span class="badge bg-label-warning me-1">قيد التحقق</span> </td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                            <i class="bx bx-show-alt me-1"></i> عرض
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td><span class="text-center"> @counter</span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+                                        <td> <span class="badge bg-label-warning me-1">قيد التحقق</span> </td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="rejectRequestsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @foreach (var item in ReferralRequestReject)
+                            {
+                                var AcceptRequestData = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).Select(x => x.FaReference).FirstOrDefault();
+
+                                if (AcceptRequestData == 4)
+                                {
+                                    <tr>
+                                        <td><span class="text-center"> @counter </span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+
+                                        <td> <span class="badge bg-label-danger me-1">مرفوض</span> </td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+
+                                                    </a>
+                                                    <a class="dropdown-item" asp-route-Id="@item.Facility.FaId" asp-controller="Notification" asp-action="ShowReasonReject"><i class="fas fa-eye"></i> سبب الرفض</a>
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="acceptRequestsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @foreach (var item in ReferralRequestaccept)
+                            {
+                                var AcceptRequestData = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).Select(x => x.FaReference).FirstOrDefault();
+
+                                if (AcceptRequestData == 3)
+                                {
+                                    <tr>
+                                        <td><span class="text-center"> @counter </span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+
+                                        <td> <span class="badge bg-label-success me-1">مقبول</span> </td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (User.IsInRole(Helper.SuperAdmin) || User.IsInRole(Helper.Progreammer))
+{
+    <div class="card-body">
+        <ul style="font-family: 'Cairo', sans-serif; font-size:18px;" class="nav nav-tabs nav-tabs-bordered">
+
+
+            <li class="nav-item" style="font-family: 'Cairo', sans-serif; font-size:18px;">
+                <button class="nav-link" id="newRequests" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-star me-1"></i>طلبات جديدة</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="acceptRequests" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-check-circle me-2"></i>طلبات تم قبولها</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="rejectRequests" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-x-circle me-2"></i>طلبات تم رفضها</button>
+            </li>
+
+            <li class="nav-item">
+                <button class="nav-link" id="RequestsRWaiting" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-edit me-2"></i>طلبات بأنتظار تسجيل منشأة</button>
+            </li>
+
+        </ul>
+
+        <div id="newRequestsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تفعيل الأستلام </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+
+
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @foreach (var item in AllRequestData)
+                            {
+                                if (item.ReRequestState == 1)
+                                {
+                                    <tr>
+                                        <td><span class="text-center"> @counter </span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+                                        <td>
+                                            @if (!item.IsRead)
+                                            {
+
+                                                <form method="post" action="@Url.Action("MarkAsRead", "Request", new { id = item.ReId })">
+                                                    <a href="javascript:void(0)"
+                                       class="dropdown-notifications-all text-body"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       title=" تفعيل الأستلام ">
+                                                        <button type="submit" style="width:70px; height:30px;" class="btn btn-icon btn-outline-primary">
+                                                            <span class="bx fs-4 bx-envelope-open"></span>
+                                                        </button>
+                                                    </a>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-center badge bg-label-success me-1"> تم الأستلام </span>
+                                            }
+                                        </td>
+                                        <td> <span class="badge bg-label-warning me-1"> بأنتظار الاحالة للمختص </span> </td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                                    </a>
+
+
+                                                    <a asp-action="ReferralRequestToSpecific" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-send me-1"></i> احالة
+                                                    </a>
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="acceptRequestsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @{
+                                counter = 1;
+                            }
+                            @foreach (var item in ReferralRequestInAdmin)
+                            {
+
+                                var AcceptRequestData = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).Select(x => x.FaReference).FirstOrDefault();
+
+                                if (AcceptRequestData == 3)
+                                {
+                                    <tr>
+                                        <td><span class="text-center"> @counter </span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+                                        <td> <span class="badge bg-label-success me-1">مقبول</span> </td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="rejectRequestsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @foreach (var item in ReferralRequestReject)
+                            {
+
+                                var AcceptRequestData = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).Select(x => x.FaReference).FirstOrDefault();
+
+                                if (AcceptRequestData == 4)
+                                {
+                                    <tr>
+                                        <td><span class="text-center"> @counter </span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+                                        <td> <span class="badge bg-label-danger me-1">مرفوض</span> </td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                                counter = counter + 1;
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="RequestsRWaitingDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @{
+                                counter = 1;
+                            }
+                            @foreach (var item in AllRequestData)
+                            {
+                                if (item.ReRequestState == 2)
+                                {
+                                    var FormNo = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).ToList();
+                                    if (FormNo.Count == 0)
+                                    {
+                                        <tr>
+                                            <td><span class="text-center"> @counter </span></td>
+                                            <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                            <td><span class="text-center"> @item.ReFormNo </span></td>
+                                            <td> @item.ReType  </td>
+                                            <td>@item.ReDate</td>
+                                            <td>@item.ReApplicant</td>
+                                            <td> <span class="badge bg-label-warning me-1">بأنتظار تسجيل المنشأة</span> </td>
+                                            <td>
+                                                <div>
+                                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                            <i class="bx bx-show-alt me-1"></i> عرض
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        counter = counter + 1;
+                                    }
+                                }
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (User.IsInRole(Helper.TechnicalSpecialist))
+{
+    <div class="card-body">
+        <ul class="nav nav-tabs nav-tabs-bordered">
+
+            <li class="nav-item" style="font-family: 'Cairo', sans-serif; font-size:18px;">
+                <button class="nav-link" id="newRequests" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-star me-1"></i>طلبات جديدة</button>
+            </li>
+
+        </ul>
+
+        <div id="newRequestsDiv">
+            <div class="card m-3 mb-5 p-2">
+                <div class="table-responsive m">
+                    <table class="datatables-ajax table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند  </th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">رقم استمارة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم مقدم الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تفعيل الأستلام </th>
+
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حالة الطلب</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                            @{
+                                counter = 1;
+                            }
+                            @foreach (var item in ReferralRequestToSpecialist)
+                            {
+                                var FormNo = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).Select(x => x.ReFormNo).ToList();
+                                if (FormNo.Count == 0)
+                                {
+                                    <tr>
+                                        <td><span class="text-center"> @counter </span></td>
+                                        <td><span class="text-center"> @item.ReSuemNo </span></td>
+                                        <td><span class="text-center"> @item.ReFormNo </span></td>
+                                        <td> @item.ReType  </td>
+                                        <td>@item.ReDate</td>
+                                        <td>@item.ReApplicant</td>
+                                        <td>
+                                            @if (!item.IsRead)
+                                            {
+
+                                                <form method="post" action="@Url.Action("MarkAsRead", "Request", new { id = item.ReId })">
+                                                    <a href="javascript:void(0)"
+                                       class="dropdown-notifications-all text-body"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       title=" تفعيل الأستلام">
+
+                                                        <button type="submit" style="width:70px; height:30px;" class="btn btn-icon btn-outline-primary">
+                                                            <span class="bx fs-4 bx-envelope-open"></span>
+                                                        </button>
+                                                    </a>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-center badge bg-label-success me-1"> تم الأستلام </span>
+                                            }
+                                        </td>
+                                        <td> <span class="badge bg-label-warning me-1">بأنتظار تسجيل المنشأة</span> </td>
+                                        <td>
+                                            <div>
+                                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </button>
+
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" asp-action="ShowRequests" asp-controller="Request" asp-route-Id="@item.ReId"
+                                           role="button" aria-pressed="true" style="font-size: 14px;">
+                                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+                            }
+                            @{
+                                counter = 1;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    $("#acceptRequestsDiv").hide();
+    $("#rejectRequestsDiv").hide();
+    $("#RequestsRWaitingDiv").hide();
+
+    document.getElementById("newRequests").style.color = "Blue";
+
+    if ($('html').hasClass('dark-style')) {
+
+        $("#newRequests").click(function() {
+            $("#newRequestsDiv").show();
+            $("#acceptRequestsDiv").hide();
+            $("#rejectRequestsDiv").hide();
+            $("#RequestsRWaitingDiv").hide();
+
+            document.getElementById("newRequests").style.color = "Blue";
+            document.getElementById("acceptRequests").style.color = "white";
+            document.getElementById("rejectRequests").style.color = "white";
+            document.getElementById("RequestsRWaiting").style.color = "white";
+        });
+
+
+        $("#acceptRequests").click(function() {
+            $("#newRequestsDiv").hide();
+            $("#acceptRequestsDiv").show();
+            $("#rejectRequestsDiv").hide();
+            $("#RequestsRWaitingDiv").hide();
+
+            document.getElementById("newRequests").style.color = "white";
+            document.getElementById("acceptRequests").style.color = "Blue";
+            document.getElementById("rejectRequests").style.color = "white";
+            document.getElementById("RequestsRWaiting").style.color = "white";
+        });
+
+
+        $("#rejectRequests").click(function() {
+            $("#newRequestsDiv").hide();
+            $("#acceptRequestsDiv").hide();
+            $("#rejectRequestsDiv").show();
+            $("#RequestsRWaitingDiv").hide();
+
+            document.getElementById("newRequests").style.color = "white";
+            document.getElementById("acceptRequests").style.color = "white";
+            document.getElementById("rejectRequests").style.color = "Blue";
+            document.getElementById("RequestsRWaiting").style.color = "white";
+        });
+
+
+        $("#RequestsRWaiting").click(function() {
+            $("#newRequestsDiv").hide();
+            $("#acceptRequestsDiv").hide();
+            $("#rejectRequestsDiv").hide();
+            $("#RequestsRWaitingDiv").show();
+
+            document.getElementById("newRequests").style.color = "white";
+            document.getElementById("acceptRequests").style.color = "white";
+            document.getElementById("rejectRequests").style.color = "white";
+            document.getElementById("RequestsRWaiting").style.color = "Blue";
+        });
+
+    }
+    else {
+        $("#newRequests").click(function() {
+            $("#newRequestsDiv").show();
+            $("#acceptRequestsDiv").hide();
+            $("#rejectRequestsDiv").hide();
+            $("#RequestsRWaitingDiv").hide();
+
+            document.getElementById("newRequests").style.color = "Blue";
+            document.getElementById("acceptRequests").style.color = "#516377";
+            document.getElementById("rejectRequests").style.color = "#516377";
+            document.getElementById("RequestsRWaiting").style.color = "#516377";
+        });
+
+
+        $("#acceptRequests").click(function() {
+            $("#newRequestsDiv").hide();
+            $("#acceptRequestsDiv").show();
+            $("#rejectRequestsDiv").hide();
+            $("#RequestsRWaitingDiv").hide();
+
+            document.getElementById("newRequests").style.color = "#516377";
+            document.getElementById("acceptRequests").style.color = "Blue";
+            document.getElementById("rejectRequests").style.color = "#516377";
+            document.getElementById("RequestsRWaiting").style.color = "#516377";
+        });
+
+
+        $("#rejectRequests").click(function() {
+            $("#newRequestsDiv").hide();
+            $("#acceptRequestsDiv").hide();
+            $("#rejectRequestsDiv").show();
+            $("#RequestsRWaitingDiv").hide();
+
+            document.getElementById("newRequests").style.color = "#516377";
+            document.getElementById("acceptRequests").style.color = "#516377";
+            document.getElementById("rejectRequests").style.color = "Blue";
+            document.getElementById("RequestsRWaiting").style.color = "#516377";
+        });
+
+
+        $("#RequestsRWaiting").click(function() {
+            $("#newRequestsDiv").hide();
+            $("#acceptRequestsDiv").hide();
+            $("#rejectRequestsDiv").hide();
+            $("#RequestsRWaitingDiv").show();
+
+            document.getElementById("newRequests").style.color = "#516377";
+            document.getElementById("acceptRequests").style.color = "#516377";
+            document.getElementById("rejectRequests").style.color = "#516377";
+            document.getElementById("RequestsRWaiting").style.color = "Blue";
+        });
+
+    }
+</script>
+
+@section Scripts{
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+    {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+            <script>
+
+                Swal.fire({
+                    title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+                    text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+                    confirmButtonText: '@ResourceWeb.lbOk',
+                    icon: 'success'
+                });
+            </script>
+
+        }
+        else
+        {
+            <script>
+
+                Swal.fire({
+                    title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+                    text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+                    confirmButtonText: '@ResourceWeb.lbOk',
+                    icon: 'error'
+                });
+            </script>
+        }
+        _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+    }
+
+    <script>
+        function Delete(id) {
+            Swal.fire({
+                title: lbTitleMsgDelete,
+                text: lbTextMsgDelete,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: lbconfirmButtonText,
+                cancelButtonText: lbcancelButtonText
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/Request/DeleteRequest?Id=${id}`;
+                    Swal.fire(
+                        lbTitleDeletedOk,
+                        lbMsgDeletedOkRequest,
+                        lbSuccess
+                    )
+                }
+            })
+        }
+
+    </script>
+
+
+    <script>
+
+        let lbTitleEdit = '@Html.Raw(ResourceWeb.lbTitleEdit)';
+        let lbEdit = '@Html.Raw(ResourceWeb.lbEdit)';
+        let lbAddNewRole = '@Html.Raw(ResourceWeb.lbAddNewRole)';
+        let lbbtnSave = '@Html.Raw(ResourceWeb.lbbtnSave)';
+
+        let lbTitleMsgDelete = '@Html.Raw(ResourceWeb.lbbtnDelete)';
+        let lbTextMsgDelete = '@Html.Raw(ResourceWeb.lbTextMsgDelete)';
+        let lbconfirmButtonText = '@Html.Raw(ResourceWeb.lbconfirmButtonText)';
+        let lbcancelButtonText = '@Html.Raw(ResourceWeb.lbcancelButtonText)';
+
+        let lbTitleDeletedOk = '@Html.Raw(ResourceWeb.lbTitleDeletedOk)';
+        let lbMsgDeletedOkRequest = '@Html.Raw(ResourceWeb.lbMsgDeletedOkRequest)';
+        let lbSuccess = '@Html.Raw(Helper.Success)';
+        let PathImageuser = '@Html.Raw(Helper.PathImageuser)';
+    </script>
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+

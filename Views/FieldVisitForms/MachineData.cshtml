@@ -1,0 +1,216 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model Machine;
+@inject IRepository<Machine> machines;
+
+@{
+    //int FaNumber = 0;
+    int counter = 1;
+    int MaId = 0;
+    var FaId = ViewData["FaId"];
+    var MaData = machines.GetAllFaData(ma => ma.FaId.Equals(ViewData["FaId"]) && ma.IsDeleted == false).ToList();
+}
+
+
+<div class="table-responsive m*-2">
+
+    <a class="btn btn-primary gradient-buttons col-md-2 ms-3" data-bs-toggle="modal" data-bs-target="#modalCenter">
+        <i class="fas fa-plus mx-1 my-auto"></i> إضافة آلة
+    </a>
+
+
+    <form method="post">
+        <div class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle">بيانات الآلات</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+
+                                    <div class="col-md-4">
+                                        <label asp-for="MaName" class="form-label fs-5">اسم الآلة</label>
+                                        <input asp-for="MaName" class="form-control" placeholder="اسم الآلة" />
+                                        <span asp-validation-for="MaName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="MaNumber" class="form-label fs-5">العدد</label>
+                                        <input asp-for="MaNumber" class="form-control" placeholder="العدد" />
+                                        <span asp-validation-for="MaNumber" class="text-danger"></span>
+                                    </div>
+
+
+
+
+                                    <div class="col-md-4">
+                                        <label asp-for="MaCountryManufacture" class="form-label fs-5">بلد الصنع</label>
+                                        <input asp-for="MaCountryManufacture" class="form-control" placeholder="بلد الصنع" />
+                                        <span asp-validation-for="MaCountryManufacture" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="MaMeasruingUnit" class="form-label fs-5">وحدة القياس</label>
+                                        <input asp-for="MaMeasruingUnit" class="form-control" placeholder="وحدة القياس" />
+                                        <span asp-validation-for="MaMeasruingUnit" class="text-danger"></span>
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <label asp-for="MaAbility" class="form-label fs-5">القدرة الفعلية</label>
+                                        <input asp-for="MaAbility" class="form-control" placeholder="القدرة الفعلية" />
+                                        <span asp-validation-for="MaAbility" class="text-danger"></span>
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label asp-for="MaSource" class="form-label fs-5">المصدر</label>
+                                            <select asp-for="MaSource" class="select2 form-select form-select-lg fs-5">
+                                                <option value=Null disabled selected hidden>حدد مصدر الآلة</option>
+                                                <option value="مستورد">مستورد</option>
+                                                <option value="محلي">محلي</option>
+                                            </select>
+                                            <span asp-validation-for="MaSource" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="MaSourceAddress" class="form-label fs-5">عنوان المصدر</label>
+                                        <input asp-for="MaSourceAddress" class="form-control" placeholder="عنوان المصدر" />
+                                        <span asp-validation-for="MaSourceAddress" class="text-danger"></span>
+                                    </div>
+
+                                    <input asp-for="FaId" value="1" hidden />
+
+
+                                    <div class="col-md-8">
+                                        <label asp-for="MaUses" class="form-label fs-5">الاستخدامات</label>
+                                        <textarea asp-for="MaUses" class="form-control" placeholder="الاستخدامات" rows="1"></textarea>
+                                        <span asp-validation-for="MaUses" class="text-danger"></span>
+                                    </div>
+
+
+                                    <div class="row-md-6">
+                                        <label class="form-label fs-5">ملاحظات</label>
+                                        <textarea class="form-control" rows="1" placeholder="أكتب أي ملاحظات أخرى"></textarea>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="AddMachine" asp-controller="FieldVisitForms" class="btn btn-primary">أضافة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div class="card m-3 mb-5">
+        <div class="content-wrapper table-responsive " style="font-size: small; font-weight: 300;">
+
+            <table class="table datatables-ajax table dataTable no-footer table-bordered" id="oneexample">
+                <thead class="border-top">
+                    <tr role="row">
+                        <th class="sorting sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="رقم الآلة: activate to sort column descending" style="width: 200.8px;">رقم الآلة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="اسم الآلة: activate to sort column ascending" style="width: 400.1px;">اسم الآلة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="العدد: activate to sort column ascending" style="width: 400.1px;">العدد</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="الاستخدامات: activate to sort column ascending" style="width: 400.1px;">الاستخدامات</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" بلد الصنع: activate to sort column ascending" style="width: 400.1px;"> بلد الصنع</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="وحدة القياس  : activate to sort column ascending" style="width: 400.1px;">وحدة القياس</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="القدرة : activate to sort column ascending" style="width: 400.1px;">القدرة </th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" المصدر : activate to sort column ascending" style="width: 400.1px;">المصدر</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="عنوان المصدر : activate to sort column ascending" style="width: 400.1px;">عنوان المصدر</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" ملاحظات : activate to sort column ascending" style="width: 400.1px;">ملاحظات</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" الاجراءات: activate to sort column ascending" style="width: 400.1px;">الاجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-border-bottom-0">
+
+                    @if (MaData is not null)
+                    {
+
+                        @foreach (var item in MaData)
+                        {
+                            MaId = item.MaId;
+                            <tr>
+                                <td>@counter</td>
+                                <td class="fs-5">@item.MaName</td>
+                                <td class="fs-5">@item.MaNumber</td>
+                                <td class="fs-5">@item.MaUses</td>
+                                <td class="fs-5">@item.MaCountryManufacture</td>
+                                <td class="fs-5">@item.MaMeasruingUnit</td>
+                                <td class="fs-5">@item.MaAbility</td>
+                                <td class="fs-5">@item.MaSource</td>
+                                <td class="fs-5">@item.MaSourceAddress</td>
+                                <td class="fs-5">@item.MaNotes</td>
+                                <td>
+                                    <div>
+                                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                            <a class="dropdown-item" asp-route-Id="@item.MaId" asp-controller="FieldVisitForms" asp-action="EditMachine"><i class="bx bx-edit-alt me-1"></i> تعديل  </a>
+
+                                            <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.MaId">
+                                                <i class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.MaId"></i> حذف
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            counter = counter + 1;
+                            <div class="modal fade" id="confirmDeletion-@item.MaId" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                    <div class="modal-content p-3 p-md-5">
+                                        <div class="modal-body">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="text-center mb-4"><h3 class="mb-4">حذف الآلة</h3></div>
+                                            <h4 class="text-center"> هل أنت متأكد انك تريد الحذف ؟</h4>
+                                            <div id="enableOTPForm" class="row g-3 mt-5">
+                                                <div class="col-12" align="center">
+                                                    <button type="reset" class="col-4 btn btn-label-success mx-3" data-bs-dismiss="modal" aria-label="Close">لا</button>
+                                                    <a asp-action="DeleteMachine" asp-controller="FieldVisitForms" asp-route-id="@item.MaId" class="col-4 btn btn-danger me-1 me-sm-3 mx-5 ">نعم</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+

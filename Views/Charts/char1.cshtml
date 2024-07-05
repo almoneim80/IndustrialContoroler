@@ -1,0 +1,98 @@
+﻿
+
+<script src="~/js/canvasjs.min.js"></script>
+<script src="~/js~/js/jquery-1.11.1.min.js"></script>
+
+
+@* رسم بياني للمحافظات *@
+
+<script>
+    window.onload = function() {
+        var them;
+        var back
+        if ($('html').hasClass('dark-style')) {
+            them = "dark1";
+            back = "#283144"
+
+        }
+
+
+        var chart1 = new CanvasJS.Chart("chartGoverment", {
+            animationEnabled: true,
+
+            theme: them, // "light1", "light2", "dark1", "dark2"
+            backgroundColor: back,
+
+            title: {
+                text: ""
+            },
+            data: [{
+
+                type: "doughnut",
+                startAngle: 60,
+                indexLabelFontSize: 16,
+                indexLabel: " {label} - {y}",
+                toolTipContent: "<b> {label}: </b> {y}",
+                dataPoints: @Html.Raw(ViewBag.Index1)
+                        }]
+        });
+
+        showDefaultText(chart1, " لا توجد بيانات ");
+
+
+
+
+        chart1.render();
+
+
+
+    }
+
+
+
+
+    function showDefaultText(chart, text) {
+
+        var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
+
+        if (!chart.options.subtitles)
+            (chart.options.subtitles = []);
+
+        if (isEmpty)
+            chart.options.subtitles.push({
+                text: text,
+                verticalAlign: 'center',
+            });
+        else
+            (chart.options.subtitles = []);
+    }
+
+
+</script>
+
+
+
+
+<!-- Select3 -->
+<div class="col-12" data-select2-id="48">
+    <div class="card mb-4 ms-3 me-3" data-select2-id="47" id="selectdiv">
+     
+
+        <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 "><img class="me-3" src="~/img/report25.png" alt=""> نموذج بياني 1 </h3>
+
+
+        <div class="card-body" data-select2-id="103">
+            <div class="card-header d-flex justify-content-between align-items-center ">
+                <h5 style="font-family: 'Almarai', sans-serif; font-size:20px;" class="card-title mb-0 text-center">عدد المنشأت الصناعية حسب المحافظات</h5>
+            </div>
+            <div class="row" data-select2-id="102">
+                <!-- Basic -->
+                <div class="col" data-select2-id="46">
+                    @* رسم بياني للمحافظات *@
+
+                    <div class="p-2" id="chartGoverment" style="height: 420px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

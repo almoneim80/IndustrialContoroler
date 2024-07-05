@@ -1,0 +1,262 @@
+﻿@using IndustrialContoroler.Models.requestsViewModels;
+@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@inject IHttpContextAccessor _sessions
+@model AllRequestDataVM;
+@inject IRepository<AttachmentType> attatchmentsType;
+@inject IndustrialContorolerDatabaseContext context;
+
+@{
+    var GetAllAttType = attatchmentsType.GetAll();
+}
+
+
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+<div class="col-xxl " data-select2-id="30" id="statistic_1">
+    <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+        <h5 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;"  class="card-header">  إضافة طلب  </h5>
+        <form method="post" class="card-body" data-select2-id="28" enctype="multipart/form-data">
+            <hr class="mx-n4 my-1">
+
+
+            <div style="font-family: 'Cairo', sans-serif; font-size:16px;" class="row g-3">
+
+                <div class="col-md-4">
+                    <label asp-for="ReType" class="form-label fs-5">نوع الطلب</label>
+                    <select asp-for="ReType" class="select2 form-select form-select-lg fs-5">
+                        <option value=Null selected disabled hidden> حدد نوع الطلب</option>
+                        <option value="إنشاء سجل صناعي"> إنشاء سجل صناعي</option>
+                        <option value="تجديد سجل صناعي"> تجديد سجل صناعي</option>
+                        <option value="تعديل سجل صناعي"> تعديل سجل صناعي</option>
+                    </select>
+                    <span asp-validation-for="ReType" class="text-danger"></span>
+                    @if (TempData.ContainsKey("ReTypeError"))
+                    {
+
+                        <span class="text-danger">@TempData["ReTypeError"]</span>
+                    }
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ReDate" class="form-label fs-5"> تاريخ الطلب</label>
+                    <input asp-for="ReDate" class="form-control" placeholder=" تاريخ الطلب ">
+                    <span asp-validation-for="ReDate" class="text-danger"></span>
+                    @if (TempData.ContainsKey("ReDateError"))
+                    {
+
+                        <span class="text-danger">@TempData["ReDateError"]</span>
+                    }
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ReFormNo" class="form-label fs-5">رقم استمارة الطلب</label>
+                    <input asp-for="ReFormNo" placeholder="رقم استمارة الطلب " class="form-control">
+                    <span asp-validation-for="ReFormNo" class="text-danger"></span>
+                    @if (TempData.ContainsKey("ReFormNoError"))
+                    {
+
+                        <span class="text-danger">@TempData["ReFormNoError"]</span>
+                    }
+                    @if (TempData.ContainsKey("ExistRequestFormNo"))
+                    {
+
+                        <span class="text-danger">@TempData["ExistRequestFormNo"]</span>
+                    }
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ReSuemNo" class="form-label fs-5">رقم  السند</label>
+                    <input asp-for="ReSuemNo" class="form-control" placeholder="رقم  السند ">
+                    <span asp-validation-for="ReSuemNo" class="text-danger"></span>
+                    @if (TempData.ContainsKey("ReSuemNoError"))
+                    {
+
+                        <span class="text-danger">@TempData["ReSuemNoError"]</span>
+                    }
+                    @if (TempData.ContainsKey("ExistRequestSuemNo"))
+                    {
+
+                        <span class="text-danger">@TempData["ExistRequestSuemNo"]</span>
+                    }
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ReApplicant" class="form-label fs-5">اسم مقدم الطلب</label>
+                    <input asp-for="ReApplicant" class="form-control" placeholder="اسم مقدم الطلب">
+                    <span asp-validation-for="ReApplicant" class="text-danger"></span>
+                    @if (TempData.ContainsKey("ReApplicantError"))
+                    {
+
+                        <span class="text-danger">@TempData["ReApplicantError"]</span>
+                    }
+                </div>
+                <hr class="my-1 mt-4">
+
+
+                <table class="table" id="TableA">
+                    <thead>
+                        <tr class="col mb-3 mt-3">
+                            <label class="form-label fs-5 ms-1">مرفقات الطلب</label>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < Model.attachments.Count; i++)
+                        {
+                            <tr class="col mb-3">
+                                <td>
+                                    <div>
+                                        <label asp-for="@Model.attachments[i].AttId" class="form-label fs-5">نوع المرفق</label>
+                                        <select asp-for="@Model.attachments[i].AttId" class="form-control">
+                                            <option value=Null selected disabled hidden>حدد نوع المرفق</option>
+                                            @foreach (var item in GetAllAttType)
+                                            {
+                                                <option value="@item.AttId">@item.AttAttachmentName </option>
+                                            }
+                                        </select>
+                                        <span asp-validation-for="@Model.attachments[i].AttId" class="text-danger"></span>
+                                    </div>
+
+                                    <div>
+                                        <label asp-for="@Model.attachments[i].AtUrl" class="form-label fs-5">ملف المرفق</label>
+                                        <input asp-for="@Model.attachments[i].AtUrl" class="form-control" type="file">
+                                        <span asp-validation-for="@Model.attachments[i].AtUrl" class="text-danger"></span>
+                                    </div>
+
+                                    <input asp-for="@Model.attachments[i].Id" value="1" hidden>
+                                </td>
+                                <td>
+                                    <button id="btnaddA-@i" type="button" class="btn btn-label-primary visible" onclick="addsecondaryActs(this)"> <span class="tf-icons bx bx-plus"></span>&nbsp;</button>
+                                    <button id="btnremoveA-@i" type="button" class="btn btn-label-danger     invisible" onclick="DeletesecondaryActs(this)"><span class="tf-icons bx bx-trash-alt"></span>&nbsp;</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <input type="hidden" id="hdnLastIndxA" value="0" />
+            </div>
+            <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="pt-4">
+                <button asp-action="Create" asp-controller="Request" type="submit" class="btn btn-primary me-1 me-sm-3">حفظ</button>
+                <a asp-action="Index" asp-controller="Request" class="btn btn-label-secondary">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+    {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+            <script>
+
+                Swal.fire({
+                    title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+                    text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+                    confirmButtonText: '@ResourceWeb.lbOk',
+                    icon: 'success'
+                });
+            </script>
+
+        }
+        else
+        {
+            <script>
+
+                Swal.fire({
+                    title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+                    text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+                    confirmButtonText: '@ResourceWeb.lbOk',
+                    icon: 'error'
+                });
+            </script>
+        }
+        _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+    }
+        }
+
+
+    <script>
+
+
+        function DeleteReasons(btn) {
+            $(btn).closest('tr').remove();
+        }
+
+        function DeletesecondaryActs(btn) {
+            $(btn).closest('tr').remove();
+        }
+
+
+        function addReasons(btn) {
+            var table = document.getElementById('TableR');
+            var rows = table.getElementsByTagName('tr');
+            var rowOuterHtml = rows[rows.length - 1].outerHTML;
+
+            var lastrowIdx = document.getElementById("hdnLastIndxR").value;
+            var nextrowIdx = eval(lastrowIdx) + 1;
+
+            document.getElementById("hdnLastIndxR").value = nextrowIdx;
+
+            rowOuterHtml = rowOuterHtml.replaceAll('_' + lastrowIdx + '_', '_' + nextrowIdx + '_');
+            rowOuterHtml = rowOuterHtml.replaceAll('[' + lastrowIdx + ']', '[' + nextrowIdx + ']');
+            rowOuterHtml = rowOuterHtml.replaceAll('-' + lastrowIdx, '-' + nextrowIdx);
+
+
+            var newRow = table.insertRow();
+            newRow.innerHTML = rowOuterHtml;
+
+
+
+            var btnAddId = btn.id;
+            var btnDeleteId = btnAddId.replaceAll('btnaddR', 'btnremoveR');
+
+            var delbtn = document.getElementById(btnDeleteId);
+            delbtn.classList.add("visible");
+            delbtn.classList.remove("invisible");
+
+
+            var addbtn = document.getElementById(btnAddId);
+            addbtn.classList.remove("visible");
+            addbtn.classList.add("invisible");
+        }
+
+        function addsecondaryActs(btn) {
+            var table = document.getElementById('TableA');
+            var rows = table.getElementsByTagName('tr');
+            var rowOuterHtml = rows[rows.length - 1].outerHTML;
+
+            var lastrowIdx = document.getElementById("hdnLastIndxA").value;
+            var nextrowIdx = eval(lastrowIdx) + 1;
+
+            document.getElementById("hdnLastIndxA").value = nextrowIdx;
+
+            rowOuterHtml = rowOuterHtml.replaceAll('_' + lastrowIdx + '_', '_' + nextrowIdx + '_');
+            rowOuterHtml = rowOuterHtml.replaceAll('[' + lastrowIdx + ']', '[' + nextrowIdx + ']');
+            rowOuterHtml = rowOuterHtml.replaceAll('-' + lastrowIdx, '-' + nextrowIdx);
+
+
+            var newRow = table.insertRow();
+            newRow.innerHTML = rowOuterHtml;
+
+
+
+            var btnAddId = btn.id;
+            var btnDeleteId = btnAddId.replaceAll('btnaddA', 'btnremoveA');
+
+            var delbtn = document.getElementById(btnDeleteId);
+            delbtn.classList.add("visible");
+            delbtn.classList.remove("invisible");
+
+
+            var addbtn = document.getElementById(btnAddId);
+            addbtn.classList.remove("visible");
+            addbtn.classList.add("invisible");
+        }
+    </script>

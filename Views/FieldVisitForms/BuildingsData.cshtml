@@ -1,0 +1,218 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model Building;
+@inject IRepository<Building> buildings;
+
+@{
+    //int FaNumber = 0;
+    int counter = 1;
+    int BuId = 0;
+    var FaId = ViewData["FaId"];
+    var BuData = buildings.GetAllFaData(fa => fa.FaId.Equals(ViewData["FaId"]) && fa.IsDeleted == false).ToList();
+}
+
+@if (TempData.ContainsKey("success"))
+{
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+<div class="table-responsive m*-2">
+
+    <a class="btn btn-primary gradient-buttons col-md-2 ms-3" data-bs-toggle="modal" data-bs-target="#modalCenter">
+        <i class="fas fa-plus mx-1 my-auto"></i> إضافة مبنى
+    </a>
+
+
+    <form method="post">
+        <div class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle">بيانات المباني</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuOwnership" class="form-label fs-5">ملكية المبنى</label>
+                                        <select asp-for="BuOwnership" class="select2 form-select form-select-lg fs-5" id="BuOwnership">
+                                            <option value=Null disabled selected hidden>حدد ملكية المبنى</option>
+                                            <option value="خاص">خاص</option>
+                                            <option value="إيجار">إيجار</option>
+                                        </select>
+                                        <span asp-validation-for="BuOwnership" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuDescription" class="form-label fs-5">وصف المبنى</label>
+                                        <input asp-for="BuDescription" class="form-control" placeholder="وصف المبنى" id="BuDescription" />
+                                        <span asp-validation-for="BuDescription" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuLocation" class="form-label fs-5">موقع المبنى</label>
+                                        <input asp-for="BuLocation" class="form-control" placeholder="موقع المبنى" id="BuLocation" />
+                                        <span asp-validation-for="BuLocation" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuType" class="form-label fs-5">نوعية البناء</label>
+                                        <input asp-for="BuType" class="form-control" placeholder="نوعية البناء" id="BuType" />
+                                        <span asp-validation-for="BuType" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuLength" class="form-label fs-5">طول المبنى</label>
+                                        <input asp-for="BuLength" class="form-control" placeholder="طول المبنى بالمتر " id="BuLength" />
+                                        <span asp-validation-for="BuLength" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuWidth" class="form-label fs-5">عرض المبنى</label>
+                                        <input asp-for="BuWidth" class="form-control" placeholder="عرض المبنى بالمتر " id="BuWidth" />
+                                        <span asp-validation-for="BuWidth" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuHigh" class="form-label fs-5">ارتفاع المبنى</label>
+                                        <input asp-for="BuHigh" class="form-control" placeholder="ارتفاع المبنى بالمتر " id="BuHigh" />
+                                        <span asp-validation-for="BuHigh" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="BuArea" class="form-label fs-5">مساحة المبنى</label>
+                                        <input asp-for="BuArea" class="form-control" placeholder="مساحة المبنى" id="BuArea" />
+                                        <span asp-validation-for="BuArea" class="text-danger"></span>
+                                    </div>
+
+                                    <input asp-for="FaId" value="@FaId" class="form-control" hidden />
+
+
+                                    <div class="raw-md-4">
+                                        <label asp-for="BuNotes" class="form-label fs-5">ملاحظات</label>
+                                        <textarea asp-for="BuNotes" class="form-control" rows="3" placeholder="أكتب أي ملاحظات أخرى" id="BuNotes"></textarea>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="AddBuilding" asp-controller="FieldVisitForms" class="btn btn-primary">أضافة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div class="card m-3 mb-5">
+        <div class="content-wrapper table-responsive " style="font-size: small; font-weight: 300;">
+
+            <table class="table datatables-ajax table dataTable no-footer table-bordered" id="oneexample">
+                <thead class="border-top">
+                    <tr role="row">
+                        <th class="sorting sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="رقم المبنى: activate to sort column descending" style="width: 200.8px;">رقم المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="ملكية المبنى: activate to sort column ascending" style="width: 400.1px;">ملكية المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="وصف المبنى: activate to sort column ascending" style="width: 400.1px;">وصف المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="موقع المبنى: activate to sort column ascending" style="width: 400.1px;">موقع المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="نوعية البناء: activate to sort column ascending" style="width: 400.1px;">نوعية البناء</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="طول المبنى : activate to sort column ascending" style="width: 400.1px;">طول المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="عرض المبنى : activate to sort column ascending" style="width: 400.1px;">عرض المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="ارتفاع المبنى : activate to sort column ascending" style="width: 400.1px;">ارتفاع المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="مساحة المبنى : activate to sort column ascending" style="width: 400.1px;">مساحة المبنى</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" ملاحظات : activate to sort column ascending" style="width: 400.1px;">ملاحظات</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" الاجراءات: activate to sort column ascending" style="width: 400.1px;">الاجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-border-bottom-0">
+
+                    @if (BuData is not null)
+                    {
+
+                        @foreach (var item in BuData)
+                        {
+                            BuId = item.BuId;
+                            <tr>
+                                <td>@counter</td>
+                                <td class="fs-5">@item.BuOwnership</td>
+                                <td class="fs-5">@item.BuDescription</td>
+                                <td class="fs-5">@item.BuLocation</td>
+                                <td class="fs-5">@item.BuType</td>
+                                <td class="fs-5">@item.BuLength</td>
+                                <td class="fs-5">@item.BuWidth</td>
+                                <td class="fs-5">@item.BuHigh</td>
+                                <td class="fs-5">@item.BuArea</td>
+                                <td class="fs-5">@item.BuNotes</td>
+                                <td>
+                                    <div>
+                                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                            <a class="dropdown-item" asp-route-Id="@item.BuId" asp-controller="FieldVisitForms" asp-action="EditBuilding"><i class="bx bx-edit-alt me-1"></i> تعديل  </a>
+
+                                            <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.BuId">
+                                                <i class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.BuId"></i> حذف
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            counter = counter + 1;
+                            <div class="modal fade" id="confirmDeletion-@item.BuId" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                    <div class="modal-content p-3 p-md-5">
+                                        <div class="modal-body">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="text-center mb-4"><h3 class="mb-4">حذف المبنى</h3></div>
+                                            <h4 class="text-center"> هل أنت متأكد انك تريد الحذف ؟</h4>
+                                            <div id="enableOTPForm" class="row g-3 mt-5">
+                                                <div class="col-12" align="center">
+                                                    <button type="reset" class="col-4 btn btn-label-success mx-3" data-bs-dismiss="modal" aria-label="Close">لا</button>
+                                                    <a asp-action="DeleteBuilding" asp-controller="FieldVisitForms" asp-route-id="@item.BuId" class="col-4 btn btn-danger me-1 me-sm-3 mx-5 ">نعم</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+

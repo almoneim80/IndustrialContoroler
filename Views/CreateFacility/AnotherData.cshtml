@@ -1,0 +1,107 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@using IndustrialContoroler.IRepository.RequestRepository;
+@model VisitsTraffic;
+@inject IRepository<Temporary> _repository;
+@inject IRequestRepository<Request> ReFormNo;
+@inject IndustrialContorolerDatabaseContext _context
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+@if (TempData.ContainsKey("success"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("ExFileNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["ExFileNull"]</div>
+}
+@if (TempData.ContainsKey("InsertNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["InsertNull"]</div>
+}
+@{
+    var FormNo = ReFormNo.GetAll();
+    var GetFaFormNo = _context.Temporaries.Where(fa => fa.TblDesc == "facility").Select(x => x.Cel1).FirstOrDefault();
+
+    string VisitPurpose = null;
+    @foreach (var item in _context.Requests.Where(re => re.ReFormNo == int.Parse(GetFaFormNo) && re.IsDeleted == false).ToList())
+    {
+        VisitPurpose = item.ReType;
+    }
+}
+
+<div class="card mb-4 ms-3 me-3">
+
+    <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 "> بيانات أخرى </h3>
+
+    <form method="post" class="card-body" enctype="multipart/form-data">
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="row g-3">
+
+            <div class="col-md-3">
+                <label asp-for="VtVisitDate" class="form-label fs-5">تاريخ الزيارة</label>
+                <input asp-for="VtVisitDate" class="form-control" />
+                <span asp-validation-for="VtVisitDate" class="text-danger"></span>
+                @if (TempData.ContainsKey("VtVisitDateError"))
+                {
+
+                    <span class="text-danger">@TempData["VtVisitDateError"]</span>
+                }
+            </div>
+
+
+            <div class="col-md-3">
+                <label asp-for="ReFormNo" class="form-label fs-5">رقم إستمارة الطلب</label>
+                <input asp-for="ReFormNo" class="form-control" value="@GetFaFormNo" readonly />
+            </div>
+
+            <input asp-for="FaId" value="1" hidden />
+
+
+            <div class="col -mb-3">
+                <label asp-for="VtVisitPurpose" class="form-label fs-5">الغرض من الزيارة</label>
+                <input asp-for="VtVisitPurpose" class="form-control" value="@VisitPurpose" readonly />
+                <span asp-validation-for="VtVisitPurpose" class="text-danger"></span>
+                @if (TempData.ContainsKey("VtVisitPurposeError"))
+                {
+
+                    <span class="text-danger">@TempData["VtVisitPurposeError"]</span>
+                }
+            </div>
+
+
+            <div class="col-md-3">
+                <label asp-for="FaDataState" class="form-label fs-5">حالة بيانات المنشأة</label>
+                <select asp-for="FaDataState" class="select2 form-select form-select-lg fs-5">
+                    <option value=Null disabled selected hidden>حدد حالة بيانات المنشأة</option>
+                    <option value=1>مكتملة</option>
+                    <option value=0>غير مكتملة</option>
+                </select>
+                <span asp-validation-for="FaDataState" class="text-danger"></span>
+                @if (TempData.ContainsKey("FaDataStateError"))
+                {
+
+                    <span class="text-danger">@TempData["FaDataStateError"]</span>
+                }
+            </div>
+
+        </div>
+        <hr class="mx-n4 my-3" />
+
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col justify-content-center">
+            <a href="@Url.Action("CastDataData","CreateFacility")" type="button" class="btn btn-label-secondary">السابق</a>
+            <button type="submit" class="btn btn-primary me-1 me-sm-2">
+                إنهاء وحفظ
+            </button>
+        </div>
+
+    </form>
+</div>

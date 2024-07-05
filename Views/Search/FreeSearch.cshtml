@@ -1,0 +1,1899 @@
+﻿@using IndustrialContoroler.Models;
+@model VewStatistics;
+@inject IndustrialContorolerDatabaseContext db;
+@{
+    var reasons = db.SiteReasons.ToList();
+    var facilities = db.Facilities.ToList();
+    var ProCapacity = db.ProCapacities.ToList();
+}
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger fs-5">@TempData["Error"]</div>
+}
+
+
+
+<!-- Select3 -->
+<div class="col-12">
+
+    <div class="card mb-4 ms-3 me-3">
+        <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 "><img class="me-3" src="~/img/search25_1.png" alt=""> بحث حر </h3>
+
+
+
+        <hr class=" my-1">
+
+        <div class="content-wrapper">
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <!-- Basic -->
+                <div class="col p-3">
+                    <label>
+                        <b style="font-family: 'Cairo', sans-serif; font-size:20px;" class="mt-4"> بحث بحسب:</b>
+                    </label>
+                    <div class="position-relative">
+                        <div class="col-md-6 mb-4  p-2">
+                            <div style="font-family: 'Cairo', sans-serif; font-size:18px;" class="dropdown bootstrap-select w-100">
+
+                                <select id="select_statistic" class="selectpicker w-100 "
+                                        data-style="btn-default" tabindex="null" title="اختار نوع البحث ">
+                                    <option value="1">نشاط المنشأة</option>
+                                    <option value="2">نوع النشاط</option>
+                                    <option value="3">وضع المنشأة</option>
+                                    <option value="4">حجم المنشأة</option>
+                                    <option value="5">الكيان القانوني</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+
+                <!--  نشاط المنشاة ----1------------------>
+                <div class="col d-none" id="statistic_1">
+
+
+                    <form method="post">
+
+
+                        <input name="select_statistic_send" value="1" class="form-control" type="hidden">
+
+                        <div class="position-relative">
+                            <div class="col-md-6 mb-4  p-2">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="dropdown bootstrap-select w-100">
+                                    @if (facilities is not null)
+                                    {
+                                        List<string> total_Main_activity = new List<string>();
+
+                                        <select data-live-search="true" name="search" id="select_statistic" class="selectpicker w-100 "
+                                            data-style="btn-default" tabindex="null" title="اختر نشاط المنشأة">
+                                            @foreach (var item in facilities)
+                                            {
+                                                if (!total_Main_activity.Contains(item.FaMainActivity))
+                                                {
+                                                    total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                                    <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                                }
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+                        <div class="pt-4">
+                            <div class="row justify-content-end">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col-sm-7">
+                                    <button type="submit" id="statistic_find" onclick="handleForm()" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                                    <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </form>
+                </div>
+
+
+                <!--  نوع النشاط ----2------------------>
+                <div class="d-none col " id="statistic_2">
+
+
+                    <form method="post">
+
+
+                        <input name="select_statistic_send" value="2" class="form-control" type="hidden">
+
+                        <div class="position-relative">
+                            <div class="col-md-6 mb-4  p-2">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="dropdown bootstrap-select w-100">
+                                    @if (facilities is not null)
+                                    {
+                                        List<string> total = new List<string>();
+
+                                        <select data-live-search="true" name="search" id="select_statistic" class="selectpicker w-100 "
+                                            data-style="btn-default" tabindex="null" title="اختر نوع النشاط">
+                                            @foreach (var item in facilities)
+                                            {
+                                                if (!total.Contains(item.FaActivityType))
+                                                {
+                                                    total.Add(item.FaActivityType.ToString());
+
+                                                    <option value="@item.FaActivityType"> @item.FaActivityType.ToString() </option>
+                                                }
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+                        <div class="pt-4">
+                            <div class="row justify-content-end">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col-sm-7">
+                                    <button type="submit" id="statistic_find" onclick="handleForm()" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                                    <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </form>
+                </div>
+
+
+                <!--  وضع منشاة ----3------------------>
+                <div class="d-none col " id="statistic_3">
+
+
+                    <form method="post">
+
+
+                        <input name="select_statistic_send" value="3" class="form-control" type="hidden">
+
+                        <div class="position-relative">
+                            <div class="col-md-6 mb-4  p-2">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="dropdown bootstrap-select w-100">
+                                    @if (facilities is not null)
+                                    {
+                                        List<string> total = new List<string>();
+
+                                        <select data-live-search="true" name="search" id="select_statistic" class="selectpicker w-100 "
+                                            data-style="btn-default" tabindex="null" title="اختر وضع المنشأة">
+                                            @foreach (var item in facilities)
+                                            {
+                                                if (!total.Contains(item.FaMode))
+                                                {
+                                                    total.Add(item.FaMode.ToString());
+
+                                                    <option value="@item.FaMode"> @item.FaMode.ToString() </option>
+                                                }
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+                        <div class="pt-4">
+                            <div class="row justify-content-end">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col-sm-7">
+                                    <button type="submit" id="statistic_find" onclick="handleForm()" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                                    <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </form>
+                </div>
+
+
+
+                <!--  حجم منشاة ----4------------------>
+                <div class="d-none col " id="statistic_4">
+
+
+                    <form method="post">
+
+
+                        <input name="select_statistic_send" value="4" class="form-control" type="hidden">
+
+                        <div class="position-relative">
+                            <div class="col-md-6 mb-4  p-2">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="dropdown bootstrap-select w-100">
+                                    @if (facilities is not null)
+                                    {
+                                        List<string> total = new List<string>();
+
+                                        <select data-live-search="true" name="search" id="select_statistic" class="selectpicker w-100 "
+                                            data-style="btn-default" tabindex="null" title="اختر حجم المنشأة">
+                                            @foreach (var item in facilities)
+                                            {
+                                                if (!total.Contains(item.FaSize))
+                                                {
+                                                    total.Add(item.FaSize.ToString());
+
+                                                    <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                                }
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+                        <div class="pt-4">
+                            <div class="row justify-content-end">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col-sm-7">
+                                    <button type="submit" id="statistic_find" onclick="handleForm()" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                                    <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </form>
+                </div>
+
+
+
+                <!--  الكيان القانوني  ----5------------------>
+                <div class="d-none col " id="statistic_5">
+
+
+                    <form method="post">
+
+
+                        <input name="select_statistic_send" value="5" class="form-control" type="hidden">
+
+                        <div class="position-relative">
+                            <div class="col-md-6 mb-4  p-2">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="dropdown bootstrap-select w-100">
+                                    @if (facilities is not null)
+                                    {
+                                        List<string> total = new List<string>();
+
+                                        <select data-live-search="true" name="search" id="select_statistic" class="selectpicker w-100 "
+                                            data-style="btn-default" tabindex="null" title="الكيان القانوني  ">
+                                            @foreach (var item in facilities)
+                                            {
+                                                if (!total.Contains(item.FaLegalEntity))
+                                                {
+                                                    total.Add(item.FaLegalEntity.ToString());
+
+                                                    <option value="@item.FaLegalEntity"> @item.FaLegalEntity.ToString() </option>
+                                                }
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+                        <div class="pt-4">
+                            <div class="row justify-content-end">
+                                <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col-sm-7">
+                                    <button type="submit" id="statistic_find" onclick="handleForm()" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                                    <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    <!----------------5 توزيع المنشآت الصناعية بحسب النشاط ووضع المنشأة ---------------------->
+
+    <div class="col-xxl d-none" id="statistic_5">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  توزيع المنشآت الصناعية بحسب النشاط ووضع المنشأة </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+                <input name="select_statistic_send" value="5" class="form-control" type="hidden">
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- حقل نشاط المنشاة ----1------------------>
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+
+
+
+
+                <!-- حقل وضع المنشأة -2--------------------->
+                <input name="search_2" value="5" class="form-control" type="hidden">
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> وضع المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر وضع المنشأة" data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMode))
+                                    {
+                                        total_Main_activity.Add(item.FaMode.ToString());
+
+                                        <option value="@item.FaMode"> @item.FaMode.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------6 توزيع المنشآت الصناعية بحسب النشاط وراس المال المصرح ---------------------->
+
+    <div class="col-xxl d-none" id="statistic_6">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  توزيع المنشآت الصناعية بحسب النشاط وراس المال المصرح </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+                <input name="select_statistic_send" value="6" class="form-control" type="hidden">
+
+
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- حقل نشاط المنشاة ----1------------------>
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+                <!-- حقل راس المال المصرح ---2------------------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country">اختر راس المال المصرح </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+                            <select title="اختر راس المال المصرح" data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaShareCapital))
+                                    {
+                                        total.Add(item.FaShareCapital.ToString());
+
+                                        <option value="@item.FaShareCapital"> @item.FaShareCapital.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_2" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------7 توزيع المنشآت الصناعية بحسب النشاط ومصدرالتمويل -----------غير مفهوم----------->
+
+    <div class="col-xxl d-none" id="statistic_7">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  توزيع المنشآت الصناعية بحسب النشاط ومصدرالتمويل </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+                <input name="select_statistic_send" value="7" class="form-control" type="hidden">
+
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- حقل نشاط المنشاة ----1------------------>
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+                <!-- حقل مصدرالتمويل ---------------------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> مصدرالتمويل </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+                        <input name="search_1" id="search_1" class="form-control" type="text" placeholder="غيرمعرف">
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------8 توزيع المنشآت الصناعية بحسب النشاط والمساحة ---------------------->
+
+    <div class="col-xxl d-none" id="statistic_8">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  توزيع المنشآت الصناعية بحسب النشاط والمساحة </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+
+                <input name="select_statistic_send" value="8" class="form-control" type="hidden">
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- حقل نشاط المنشاة ----1------------------>
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+                <!-- حقل المساحة  -----------2----------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> المساحة </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+                            <select title="اختر  المساحة" data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaTotalArea.ToString()))
+                                    {
+                                        total.Add(item.FaTotalArea.ToString());
+
+                                        <option value="@item.FaTotalArea"> @item.FaTotalArea.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_2" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------9 توزيع المنشآت الصناعية بحسب الزمن المخطط لعملية الانتاج في المنشآة علئ مستوئ الانشطة الاقتصادية ---------------------->
+
+    <div class="col-xxl d-none" id="statistic_9">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  توزيع المنشآت الصناعية بحسب الزمن المخطط لعملية الانتاج في المنشآة علئ مستوئ الانشطة الاقتصادية </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+                <input name="select_statistic_send" value="9" class="form-control" type="hidden">
+
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label class="col-form-label col-md-3  text-sm-end fs-5"
+                           for="alignment-country"> حجم المنشآة</label>
+                    <div class="col-sm-4">
+                        <div class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <select data-live-search="true" name="fac_size" class="select3 form-select select3-hidden-accessible" v
+                                    data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                                </select>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- حقل الزمن المخطط لعملية الانتاج --1-------------------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> الزمن المخطط لعملية الانتاج</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+                        <input name="search_1" value="9" class="form-control" type="hidden">
+
+                        @if (facilities is not null)
+                        {
+
+                            List<string> total = new List<string>();
+                            <select title="اختر الزمن المخطط لعملية الانتاج" data-live-search="true" name="FaStart" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaStartProduction.ToString()))
+                                    {
+                                        total.Add(item.FaStartProduction.ToString());
+
+                                        <option value="@item.FaStartProduction"> @item.FaStartProduction.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+                    </div>
+                </div>
+
+
+
+                <!-- حقل نشاط المنشاة -----2----------------->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_2" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------10 توزيع المنشآت الصناعية بحسب النشاط الاقتصادي وسبب اختيار موقع المنشآة ---------------------->
+
+    <div class="col-xxl d-none" id="statistic_10">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  توزيع المنشآت الصناعية بحسب النشاط الاقتصادي وسبب اختيار موقع المنشآة </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+                <input name="select_statistic_send" value="10" class="form-control" type="hidden">
+
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- حقل نشاط المنشاة ----1------------------>
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- حقل حجم سبب اختيار موقع المنشآة --2-------------------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> سبب اختيار موقع المنشآة </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+                        @if (facilities is not null)
+                        {
+                            List<string> total_reason = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in reasons)
+                                {
+                                    if (!total_reason.Contains(item.SrReason))
+                                    {
+                                        total_reason.Add(item.SrReason.ToString());
+
+                                        <option value="@item.SrReason"> @item.SrReason.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_2" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------11 عدد المنشآت الصناعية بحسب النشاط والسجل  الصناعي والتجاري ---------غير مفهوم------------->
+
+    <div class="col-xxl d-none" id="statistic_11">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  عدد المنشآت الصناعية بحسب النشاط والسجل  الصناعي والتجاري </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+                <input name="select_statistic_send" value="11" class="form-control" type="hidden">
+
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- حقل نشاط المنشاة ----1------------------>
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+                <!-- حقل السجل  الصناعي والتجاري  ---2------------------->
+
+                <div class="row mb-3 my-4">
+                    <label class="col-form-label col-md-3  text-sm-end fs-5"
+                           for="alignment-country"> السجل  الصناعي والتجاري </label>
+                    <div class="col-sm-4">
+                        <input name="search_1" id="search_1" class="form-control" type="text" placeholder="غيرمعرف">
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!---------------- توزيع العمال الدائمين في المنشآت الصناعية حسب النشاط الاقتصادي والمحافظات ------12-----مكرر----------->
+
+    <div class="col-xxl d-none" id="statistic_12">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt=""> توزيع العمال الدائمين في المنشآت الصناعية حسب النشاط الاقتصادي والمحافظات </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+
+                <input name="select_statistic_send" value="12" class="form-control" type="hidden">
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- حقل نشاط المنشاة ----1------------------>
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة :</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total_Main_activity = new List<string>();
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total_Main_activity.Contains(item.FaMainActivity))
+                                    {
+                                        total_Main_activity.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+
+
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+
+                <!-- حقل المحافظة  ---------------------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> المحافظة </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+                        <div class="position-relative">
+                            @if (facilities is not null)
+                            {
+                                List<string> total = new List<string>();
+
+                                <select title="اختر المحافظة " data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total.Contains(item.FaGovernorate))
+                                        {
+                                            total.Add(item.FaGovernorate.ToString());
+
+                                            <option value="@item.FaGovernorate"> @item.FaGovernorate.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <select data-live-search="true" name="search_2" class="select3 form-select select3-hidden-accessible" v
+                                    data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                                </select>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------13 توزيع المنشآت الصناعية بحسب الكيان القانوني والمحافظة ---------------------->
+
+    <div class="col-xxl d-none" id="statistic_13">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  توزيع المنشآت الصناعية بحسب الكيان القانوني والمحافظة </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+
+                <input name="select_statistic_send" value="13" class="form-control" type="hidden">
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <!-- حقل الكيان القانوني  --1-------------------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> نشاط المنشآة</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaLegalEntity))
+                                    {
+                                        total.Add(item.FaLegalEntity.ToString());
+
+                                        <option value="@item.FaLegalEntity"> @item.FaLegalEntity.ToString() </option>
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+
+
+                <!-- حقل المحافظة  ------2---------------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> المحافظة </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+                        <div class="position-relative">
+                            @if (facilities is not null)
+                            {
+                                List<string> total = new List<string>();
+
+                                <select title="اختر المحافظة " data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total.Contains(item.FaGovernorate))
+                                        {
+                                            total.Add(item.FaGovernorate.ToString());
+
+                                            <option value="@item.FaGovernorate"> @item.FaGovernorate.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <select data-live-search="true" name="search_2" class="select3 form-select select3-hidden-accessible" v
+                                    data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                                </select>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+    <!----------------14 الانتاج والمبيعات خلال العام للمنشآت الصناعية بحسب السلعة ---------------------->
+
+    <div class="col-xxl d-none" id="statistic_14">
+        <div class="card mb-4 ms-3 me-3">
+            <h5 style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: rgb(82, 134, 203); color: azure;" class="card-header"><img class="me-3" src="~/img/report25.png" alt="">  الانتاج والمبيعات خلال العام للمنشآت الصناعية بحسب السلعة </h5>
+            <form method="post" class="card-body">
+                <hr class="mx-n4 my-1">
+
+
+                <input name="select_statistic_send" value="14" class="form-control" type="hidden">
+
+
+                <!--قائمة حجم المنشآت منسدلة-->
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end "
+                           for="alignment-country"> حجم المنشأة :</label>
+                    <div class="col-sm-4">
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total_fa_size = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fac_size" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total_fa_size.Contains(item.FaSize))
+                                        {
+                                            total_fa_size.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input name="fac_size" class="form-control" type="text">
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <!-- حقل الانتاج والمبيعات خلال العام  -----1----------------->
+
+
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> الانتاج والمبيعات خلال العام </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+                        <div class="position-relative">
+
+                            @if (ProCapacity is not null)
+                            {
+                                List<string> total = new List<string>();
+
+
+                                <select title="اختر الانتاج والمبيعات خلال العام" data-live-search="true" name="search_1" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                    @foreach (var item in ProCapacity)
+                                    {
+                                        if (!total.Contains(item.PcYearQuantity))
+                                        {
+                                            total.Add(item.PcYearQuantity.ToString());
+
+                                            <option value="@item.PcYearQuantity"> @item.PcYearQuantity.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <select data-live-search="true" name="search_1" class="select3 form-select select3-hidden-accessible" v
+                                    data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                                </select>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- حقل السلعة  -----------2----------->
+
+                <div class="row mb-3 my-4">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="col-form-label col-md-3  text-sm-end"
+                           for="alignment-country"> السلعة </label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="col-sm-4">
+
+                        @if (ProCapacity is not null)
+                        {
+                            List<string> total = new List<string>();
+
+
+                            <select title="اختر  السلعة" data-live-search="true" name="search_2" class="selectpicker w-100 "
+                                data-style="btn-default" tabindex="null">
+                                @foreach (var item in ProCapacity)
+                                {
+                                    if (!total.Contains(item.PcProductName))
+                                    {
+                                        total.Add(item.PcProductName.ToString());
+
+                                        <option value="@item.PcProductName"> @item.PcProductName.ToString() </option>
+                                    }
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select data-live-search="true" name="search_2" class="select3 form-select select3-hidden-accessible" v
+                                data-allow-clear="true" tabindex="-1" aria-hidden="true" title="لاتوجد بيانات">
+                            </select>
+                        }
+                    </div>
+                </div>
+
+
+
+                <!-- ازرار الاستعلام والتهيئة ---------------------->
+
+
+                <div class="pt-4">
+                    <div class="row justify-content-end">
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                            <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!--------Table----------->
+    @*//table *@
+    @if (Model is not null)
+    {
+
+        List<string> total = new List<string>();
+
+        <div class="col-xxl ">
+            <div class="card mb-4 ms-3 me-3">
+
+                <div id="Staistic_Table">
+
+                    <div class=" p-4  ">
+
+
+                        <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;  background-color:#e9f2fa;" class=" p-3  w-100 d-flex justify-content-center align-items-center">
+                            @TempData["statistic_by"]
+                        </h5>
+                        <hr>
+                        <div class="table-responsive m">
+
+                            <table class="datatables-ajax table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم المنشأة</th>
+                                        <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> اسم المنشأة</th>
+                                        <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> مالك المنشأة</th>
+                                        <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">النشاط الأقتصادي</th>
+                                        <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">حجم المنشأة</th>
+                                        <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> الكيان القانوني </th>
+                                        <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">  المحافظة </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;" class="table-border-bottom-0">
+                                    @foreach (var item in Model.facility)
+                                    {
+                                        if (!total.Contains(item.FaMainActivity))
+                                        {
+                                            total.Add(item.FaMainActivity.ToString());
+
+
+                                            <tr>
+                                                <td><span class="text-center">@item.FaNumber </span></td>
+                                                <td>@item.FaNumber </td>
+                                                <td>@item.FaOwnerName </td>
+                                                <td>@item.FaMainActivity </td>
+                                                <td>@item.FaLegalEntity </td>
+                                                <td>@item.FaSize</td>
+                                                <td>@item.FaGovernorate</td>
+
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <hr>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+    }
+
+
+
+
+
+
+    <!--------selcet statistic----------->
+
+    <script>
+
+        const el = document.getElementById('select_statistic');
+
+        el.addEventListener('change', function handleChange(event) {
+            if (event.target.value === '1') {
+
+                for (let i = 1; i <= 14; i++) {
+                    document.getElementById('statistic_' + i).className = 'd-none';
+
+                }
+
+                document.getElementById('statistic_' + el.value).className = 'd-visible';
+
+            } else if (event.target.value === '2') {
+                for (let i = 1; i <= 14; i++) {
+                    document.getElementById('statistic_' + i).className = 'd-none';
+
+                }
+
+                document.getElementById('statistic_' + el.value).className = 'd-visible';
+
+            }
+            else if (event.target.value === '3') {
+                for (let i = 1; i <= 14; i++) {
+                    document.getElementById('statistic_' + i).className = 'd-none';
+
+                }
+                document.getElementById('statistic_' + el.value).className = 'd-visible';
+
+            }
+            else if (event.target.value === '4') {
+                for (let i = 1; i <= 14; i++) {
+                    document.getElementById('statistic_' + i).className = 'd-none';
+
+                }
+                document.getElementById('statistic_' + el.value).className = 'd-visible';
+
+            }
+            else if (event.target.value === '5') {
+                for (let i = 1; i <= 14; i++) {
+                    document.getElementById('statistic_' + i).className = 'd-none';
+
+                }
+                document.getElementById('statistic_' + el.value).className = 'd-visible';
+
+            }
+
+
+
+        });
+    </script>
+
+
+
+</div>

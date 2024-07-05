@@ -1,0 +1,81 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model RowMaterial;
+@inject IRepository<RowMaterial> rowMaterials;
+
+@{
+    var RmId = ViewData["MaId"];
+    var rowMaterialData = rowMaterials.GetAllFaData(ma => ma.FaId.Equals(ViewData["FaId"]) && ma.IsDeleted == false).ToList();
+}
+
+
+<div class="col-xxl " data-select2-id="30" id="statistic_2">
+    <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+        <h5 style="background-color: rgb(82, 134, 203); color: azure;" class="card-header">تعديل المادة الخام رقم @RmId</h5>
+
+        <form method="post" class=" mb-4 mt-3 ms-3 me-3">
+            <div class="d-flex justify-content-between">
+
+                <div class="row g-3">
+
+                    <input asp-for="RmId" hidden />
+                    <input asp-for="FaId" hidden />
+
+                        <div class="col-md-4">
+                            <label asp-for="RmName" class="form-label fs-5">اسم المادة الخام</label>
+                            <input asp-for="RmName" class="form-control" placeholder="اسم المادة الخام" />
+                            <span asp-validation-for="RmName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="RmMeasruingUnit" class="form-label fs-5">وحدة القياس</label>
+                            <input asp-for="RmMeasruingUnit" class="form-control" placeholder="وحدة القياس" />
+                            <span asp-validation-for="RmMeasruingUnit" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="RmPercentInPro" class="form-label fs-5">ن.م في المنتج</label>
+                            <input asp-for="RmPercentInPro" class="form-control" placeholder="النسبة المئوية في المنتج" />
+                            <span asp-validation-for="RmPercentInPro" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="RmAmountUsed" class="form-label fs-5">الكمية المستخدمة سنوياً</label>
+                            <input asp-for="RmAmountUsed" class="form-control" placeholder="الكمية المستخدمة سنوياً" />
+                            <span asp-validation-for="RmAmountUsed" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="RmSource" class="form-label fs-5">المصدر</label>
+                                <select asp-for="RmSource" class="select2 form-select form-select-lg fs-5">
+                                    <option value=Null disabled selected hidden>حدد مصدر المادة الخام</option>
+                                    <option value="مستورد">مستورد</option>
+                                    <option value="محلي">محلي</option>
+                                </select>
+                                <span asp-validation-for="RmSource" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <input asp-for="FaId" value="1" hidden />
+
+                        <div class="row-md-6">
+                            <label asp-for="RmNotes" class="form-label fs-5">ملاحظات</label>
+                            <textarea asp-for="RmNotes" class="form-control" rows="1" placeholder="أكتب أي ملاحظات أخرى"></textarea>
+                        </div>
+
+                        <div class="col justify-content-center">
+                            <button type="submit" class="btn btn-primary me-1 me-sm-2"
+                                    asp-action="EditRowMaterials" asp-controller="FieldVisitForms">
+                                تعديل
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+        </form>
+    </div>
+</div>

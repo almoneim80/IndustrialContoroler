@@ -1,0 +1,426 @@
+﻿@using IndustrialContoroler.VewModels
+@model List<Facility>
+@inject IndustrialContorolerDatabaseContext db;
+@{
+    var facilities = db.Facilities.Where(re => re.IsDeleted == false).ToList();
+} @if (TempData.ContainsKey("Error"))                      @* Error Massage for Request page*@
+            {
+                <div class="alert alert-danger ">@TempData["Error"]</div>
+            }
+
+
+
+    <!----------------  بحث واستعلام-السجل الصناعي ---------------------->
+
+
+    <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+
+    <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 "><img class="me-3" src="~/img/report25.png" alt=""> بحث واستعلام-السجل الصناعي </h3>
+
+        <hr class=" my-1">
+
+        <div class="content-wrapper">
+        </div>
+
+        <form method="post" class="card-body">
+
+            <div class="row">
+
+                <div class="col">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="form-label " for="multicol-username">اسم المنشأة</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+
+                            <select title="اختر أسم المنشأة" data-live-search="true" name="fa_Name" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaName))
+                                    {
+                                        total.Add(item.FaName.ToString());
+
+                                        <option value="@item.FaName"> @item.FaName.ToString() </option>
+                                    }
+                                }
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="col">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="form-label " for="multicol-username">رقم المنشأة</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+
+                            <select title="اختر رقم المنشأة" data-live-search="true" name="fa_Number" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaNumber.ToString()))
+                                    {
+                                        total.Add(item.FaNumber.ToString());
+
+                                        <option value="@item.FaNumber"> @item.FaNumber.ToString() </option>
+                                    }
+                                }
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+
+                <div class="col">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="form-label " for="multicol-username">مالك المنشأة</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+
+                            <select title="اختر مالك المنشأة" data-live-search="true" name="fa_OwnerName" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaOwnerName))
+                                    {
+                                        total.Add(item.FaOwnerName.ToString());
+
+                                        <option value="@item.FaOwnerName"> @item.FaOwnerName.ToString() </option>
+                                    }
+                                }
+                            </select>
+                        }
+
+
+                    </div>
+                </div>
+
+
+                <div class="col">
+                    <label style="font-family: 'Cairo', sans-serif; font-size:16px;" class="form-label " for="multicol-username">نشاط المنشأة</label>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+
+                            <select title="اختر نشاط المنشأة" data-live-search="true" name="fa_MainActivity" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaMainActivity))
+                                    {
+                                        total.Add(item.FaMainActivity.ToString());
+
+                                        <option value="@item.FaMainActivity"> @item.FaMainActivity.ToString() </option>
+                                    }
+                                }
+                            </select>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="mb-3">
+                        <label style="font-family: 'Cairo', sans-serif; font-size:16px;" for="exampleFormControlSelect1" class="form-label ">حجم المنشأة</label>
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total = new List<string>();
+
+
+                                <select title="اختر حجم المنشأة" data-live-search="true" name="fa_Size" class="selectpicker w-100 "
+                                        data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total.Contains(item.FaSize))
+                                        {
+                                            total.Add(item.FaSize.ToString());
+
+                                            <option value="@item.FaSize"> @item.FaSize.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="row">
+
+                <div class="col">
+                    <div class="mb-3">
+                        <label style="font-family: 'Cairo', sans-serif; font-size:16px;" for="exampleFormControlSelect1" class="form-label ">نوع نشاط المنشأة</label>
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total = new List<string>();
+
+
+                                <select title="اختر نوع نشاط المنشأة" data-live-search="true" name="fa_ActivityType" class="selectpicker w-100 "
+                                        data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total.Contains(item.FaActivityType))
+                                        {
+                                            total.Add(item.FaActivityType.ToString());
+
+                                            <option value="@item.FaActivityType"> @item.FaActivityType.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="col">
+
+                    <div class="mb-3">
+                        <label style="font-family: 'Cairo', sans-serif; font-size:16px;" for="exampleFormControlSelect1" class="form-label ">صفة الملكية</label>
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+                            <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                                @if (facilities is not null)
+                                {
+                                    List<string> total = new List<string>();
+
+
+                                    <select title="اختر صفة الملكية" data-live-search="true" name="fa_Ownership" class="selectpicker w-100 "
+                                            data-style="btn-default" tabindex="null">
+                                        @foreach (var item in facilities)
+                                        {
+                                            if (!total.Contains(item.FaOwnership))
+                                            {
+                                                total.Add(item.FaOwnership.ToString());
+
+                                                <option value="@item.FaOwnership"> @item.FaOwnership.ToString() </option>
+                                            }
+                                        }
+                                    </select>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col">
+                    <div class="mb-3">
+                        <label style="font-family: 'Cairo', sans-serif; font-size:16px;" for="exampleFormControlSelect1" class="form-label ">الكيان القانوني</label>
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total = new List<string>();
+
+
+                                <select title="اختر الكيان القانوني" data-live-search="true" name="fa_LegalEntity" class="selectpicker w-100 "
+                                        data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total.Contains(item.FaLegalEntity))
+                                        {
+                                            total.Add(item.FaLegalEntity.ToString());
+
+                                            <option value="@item.FaLegalEntity"> @item.FaLegalEntity.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col">
+                    <div class="mb-3">
+                        <label style="font-family: 'Cairo', sans-serif; font-size:16px;" for="exampleFormControlSelect1" class="form-label ">وضع المنشأة</label>
+                        <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+
+                            @if (facilities is not null)
+                            {
+                                List<string> total = new List<string>();
+
+
+                                <select title="اختر وضع المنشأة" data-live-search="true" name="fa_Mode" class="selectpicker w-100 "
+                                        data-style="btn-default" tabindex="null">
+                                    @foreach (var item in facilities)
+                                    {
+                                        if (!total.Contains(item.FaMode))
+                                        {
+                                            total.Add(item.FaMode.ToString());
+
+                                            <option value="@item.FaMode"> @item.FaMode.ToString() </option>
+                                        }
+                                    }
+                                </select>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="col">
+
+                    <div style="font-family: 'Almarai', sans-serif; font-size:14px;" class="position-relative">
+                        <label style="font-family: 'Cairo', sans-serif; font-size:16px;" for="select2Basic" class="form-label ">المحافظة</label>
+                        @if (facilities is not null)
+                        {
+                            List<string> total = new List<string>();
+
+
+                            <select title="اختر المحافظة" data-live-search="true" name="fa_Governorate" class="selectpicker w-100 "
+                                    data-style="btn-default" tabindex="null">
+                                @foreach (var item in facilities)
+                                {
+                                    if (!total.Contains(item.FaGovernorate))
+                                    {
+                                        total.Add(item.FaGovernorate.ToString());
+
+                                        <option value="@item.FaGovernorate"> @item.FaGovernorate.ToString() </option>
+                                    }
+                                }
+                            </select>
+                        }
+
+                    </div>
+
+
+
+
+
+                </div>
+
+
+
+            </div>
+
+            <div class="pt-4">
+                <div class="row justify-content-end">
+                    <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col-sm-7">
+                        <button type="submit" class="btn btn-primary me-1 me-sm-2"> استعلام</button>
+                        <button type="reset" class="btn btn-label-secondary">تهيئة</button>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <hr class="mx-n4 " />-->
+        </form>
+
+
+    </div>
+
+
+
+
+
+ 
+
+
+
+
+<!--------Table----------->
+@*//table *@
+@if (Model is not null)
+{
+
+
+
+
+
+    <div class="col-xxl ">
+        <div class="card mb-4 ms-3 me-3">
+
+            <div id="Staistic_Table" style=" color: black ;background-color: white">
+
+
+                
+
+
+                <h5 class="fs-4 p-3 fw-bold  w-100 d-flex justify-content-center align-items-center" style="font-family: 'Cairo', sans-serif; font-size:16px;  background-color:#e9f2fa;">
+                    جدول عرض احصائيات-المسح صناعي
+
+                </h5>
+
+                <div class=" p-4  ">
+
+                    <table class="table caption-top  text-center">
+                        <thead style="font-family: 'Almarai', sans-serif; font-size:16px;  background-color: #e9f2fa; color: black">
+                            <tr>
+                            
+
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم صاحب المنشأة</th>
+                                <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">نشاط المنشأة</th>
+                              
+
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'Cairo', sans-serif; font-size:14px; color: black">
+
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td><span class="text-center">@item.FaName </span></td>
+                                    <td>@item.FaNumber</td>
+                                    <td>@item.FaOwnerName</td>
+                                    <td>@item.FaMainActivity</td>
+                                    
+                                </tr>
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+               
+
+            </div>
+
+        </div>
+    </div>
+
+}
+
+
+
+
+

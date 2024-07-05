@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="accept" xml:space="preserve">
+    <value>تمت العملية</value>
+  </data>
+  <data name="AddNewAttachment" xml:space="preserve">
+    <value>تم اضافة مرفق جديد بنجاح</value>
+  </data>
+  <data name="AddNewFacility" xml:space="preserve">
+    <value>تم أضافة منشأة جديدة بنجاح</value>
+  </data>
+  <data name="AddRequest" xml:space="preserve">
+    <value>تمت العملية</value>
+  </data>
+  <data name="AddRequestDone" xml:space="preserve">
+    <value>تم اضافة الطلب بنجاح يرجى احالته للمدير العام</value>
+  </data>
+  <data name="cannotDeleteYourSelf" xml:space="preserve">
+    <value>لا تسطيع حذف نفسك</value>
+  </data>
+  <data name="DeleteAttachmentDone" xml:space="preserve">
+    <value>تم حذف المرفق بنجاح</value>
+  </data>
+  <data name="ErroNOExcepted" xml:space="preserve">
+    <value>خطأ اثناء الانشاء</value>
+  </data>
+  <data name="ErroNOExcepteddelete" xml:space="preserve">
+    <value>خطأ اثناء الحذف</value>
+  </data>
+  <data name="ErrorVald" xml:space="preserve">
+    <value>خطأ غير متوفع</value>
+  </data>
+  <data name="lbacceptDone" xml:space="preserve">
+    <value> تمت الموافقة على الطلب سيتم إحالة إستمارة الزيارة الميدانية الى  للسجل الصناعي </value>
+  </data>
+  <data name="lbActionName" xml:space="preserve">
+    <value>اسم العملية</value>
+  </data>
+  <data name="lbActiveUser" xml:space="preserve">
+    <value>تفعيل المستخدم</value>
+  </data>
+  <data name="lbAddNewCategory" xml:space="preserve">
+    <value>اضف مجموعة فئات جديدة</value>
+  </data>
+  <data name="lbAddNewRole" xml:space="preserve">
+    <value>اضف مجموعة جديدة</value>
+  </data>
+  <data name="lbAddNewUsers" xml:space="preserve">
+    <value>اضف مستخدم جديد</value>
+  </data>
+  <data name="lbbtnChangePassword" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="lbbtnDelete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="lbbtnEdit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="lbbtnPermissions" xml:space="preserve">
+    <value>الصلاحيات</value>
+  </data>
+  <data name="lbbtnSave" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="lbbtnSaveNewCategory" xml:space="preserve">
+    <value>اضف فئة جديدة</value>
+  </data>
+  <data name="lbbtnSaveNewRole" xml:space="preserve">
+    <value>اضف مجموعة جديدة</value>
+  </data>
+  <data name="lbbtnSaveNewUser" xml:space="preserve">
+    <value>اضافة مستخدم جديد</value>
+  </data>
+  <data name="lbbtnSavepermission" xml:space="preserve">
+    <value>تمت العملية بنجاح</value>
+  </data>
+  <data name="lbbtnSaveRequst" xml:space="preserve">
+    <value>تم إضافة المرفق بنجاح</value>
+  </data>
+  <data name="lbcancelButtonText" xml:space="preserve">
+    <value>الغاء</value>
+  </data>
+  <data name="lbCategories" xml:space="preserve">
+    <value>مجموعة الفئات</value>
+  </data>
+  <data name="lbComparePassword" xml:space="preserve">
+    <value>اعد كلمة المرور</value>
+  </data>
+  <data name="lbconfirmButtonText" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+  <data name="lbDate" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="lbDescription" xml:space="preserve">
+    <value>وصف الفئة</value>
+  </data>
+  <data name="lbEdit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="lbEmailUser" xml:space="preserve">
+    <value>البريد الالكترونى</value>
+  </data>
+  <data name="lbEvents" xml:space="preserve">
+    <value>الاحداث</value>
+  </data>
+  <data name="lbHomePage" xml:space="preserve">
+    <value>الصفحة الرئيسية</value>
+  </data>
+  <data name="lbImageUser" xml:space="preserve">
+    <value>صورة المستخدم</value>
+  </data>
+  <data name="lbLogCategories" xml:space="preserve">
+    <value>عمليات الفئات</value>
+  </data>
+  <data name="lbManageBook" xml:space="preserve">
+    <value>ادارة الكتب</value>
+  </data>
+  <data name="lbManagePermission" xml:space="preserve">
+    <value>إدارة الصلاحيات</value>
+  </data>
+  <data name="lbMsgDeletedOkCategory" xml:space="preserve">
+    <value>تم حذف مجموع الفئات</value>
+  </data>
+  <data name="lbMsgDeletedOkfiled" xml:space="preserve">
+    <value>تم حذف الاستمارة بنجاح</value>
+  </data>
+  <data name="lbMsgDeletedOkRegister" xml:space="preserve">
+    <value>تم حذف المستخدم بنجاح.</value>
+  </data>
+  <data name="lbMsgDeletedOkRequest" xml:space="preserve">
+    <value>تم حذف الطلب بنجاح</value>
+  </data>
+  <data name="lbMsgDeletedOkRole" xml:space="preserve">
+    <value>تم حذف مجموعة المستخدم.</value>
+  </data>
+  <data name="lbMsgDenied" xml:space="preserve">
+    <value>ليس لديك صلاحية لهذه الصفحة</value>
+  </data>
+  <data name="lbMsgDuplicateNameCategory" xml:space="preserve">
+    <value>لاتستطيع الحفظ لان اسم الفئة موجود</value>
+  </data>
+  <data name="lbMsgErrorLogin" xml:space="preserve">
+    <value>أسم المستخدم او كلمة المرور غير صحيح</value>
+  </data>
+  <data name="lbMsgNotSavedCategory" xml:space="preserve">
+    <value>لم يتم حفظ الفئة</value>
+  </data>
+  <data name="lbMsgNotSavedChangePassword" xml:space="preserve">
+    <value>لم يتم تغير كلمة المرور</value>
+  </data>
+  <data name="lbMsgSaveCategory" xml:space="preserve">
+    <value>تم حفظ فئة جديدة</value>
+  </data>
+  <data name="lbMsgSavedChangePassword" xml:space="preserve">
+    <value>تم تغير كلمة المرور بنجاح</value>
+  </data>
+  <data name="lbMsgUpdateCategory" xml:space="preserve">
+    <value>تم تعديل الفئة بنجاح</value>
+  </data>
+  <data name="lbNameCategory" xml:space="preserve">
+    <value>اسم الفئة</value>
+  </data>
+  <data name="lbNameRole" xml:space="preserve">
+    <value>اسم المجموعة</value>
+  </data>
+  <data name="lbNameUser" xml:space="preserve">
+    <value>اسم المستخدم</value>
+  </data>
+  <data name="lbNotDeleteRole" xml:space="preserve">
+    <value>لم يتم الحذف</value>
+  </data>
+  <data name="lbNotdeleteRoleMs" xml:space="preserve">
+    <value>مجموعة المستخدمين المراد حذفها اساسية في النظام</value>
+  </data>
+  <data name="lbNotEditteRole" xml:space="preserve">
+    <value>لم يتم التعديل</value>
+  </data>
+  <data name="lbNotEditteRoleMs" xml:space="preserve">
+    <value>!!الأسم الذي تم التعديل الية موجود في النظام مسبقاً</value>
+  </data>
+  <data name="lbNotSaved" xml:space="preserve">
+    <value>لم يتم الحفظ</value>
+  </data>
+  <data name="lbNotSavedMsgRole" xml:space="preserve">
+    <value>لم يتم حفظ مجموعة المستخدم</value>
+  </data>
+  <data name="lbNotSavedMsgRolealreadyExists" xml:space="preserve">
+    <value>اسم مجموعة الصلاحيات موجود مسبقاً</value>
+  </data>
+  <data name="lbNotSavedMsgUser" xml:space="preserve">
+    <value>لم يتم حفظ المستخدم</value>
+  </data>
+  <data name="lbNotSavedMsgUserRole" xml:space="preserve">
+    <value>لم يتم حفظ مجموعة المستخدم</value>
+  </data>
+  <data name="lbNotUpdate" xml:space="preserve">
+    <value>لم يتم التعديل</value>
+  </data>
+  <data name="lbNotUpdateMsgRole" xml:space="preserve">
+    <value>لم يتم تعديل مجموعة المستخدم</value>
+  </data>
+  <data name="lbNotUpdateMsgUser" xml:space="preserve">
+    <value>لم يتم تعديل المستخدم</value>
+  </data>
+  <data name="lbNotUpdateMsgUserRole" xml:space="preserve">
+    <value>لم يتم تعديل مجموعة المستخدم</value>
+  </data>
+  <data name="lbOk" xml:space="preserve">
+    <value>حسناً</value>
+  </data>
+  <data name="lbPassword" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+  <data name="lbreferenceDone" xml:space="preserve">
+    <value>تمت إحالة الأستمارة الى المختص الفني للتعديل عليها</value>
+  </data>
+  <data name="lbreferenceFieldtoGeneDone" xml:space="preserve">
+    <value>تم إحالة استمارة الزيارة الميدانية الى مدير عام الرقابة بنجاح</value>
+  </data>
+  <data name="lbreferenceReDone" xml:space="preserve">
+    <value>تم إحالة الطلب الى المختص الفني بنجاح</value>
+  </data>
+  <data name="lbreferenceReToAdmminDone" xml:space="preserve">
+    <value>تم إحالة الطلب الى مدير عام الرقابة الصناعية بنجاح</value>
+  </data>
+  <data name="lbrefernce" xml:space="preserve">
+    <value>تمت الأحالة</value>
+  </data>
+  <data name="lbRegisters" xml:space="preserve">
+    <value>المستخدمين</value>
+  </data>
+  <data name="lbRoles" xml:space="preserve">
+    <value>مجموعة المستخدمين</value>
+  </data>
+  <data name="lbRoleUser" xml:space="preserve">
+    <value>مجموعة المستخدمين</value>
+  </data>
+  <data name="lbSave" xml:space="preserve">
+    <value>تم الحفظ</value>
+  </data>
+  <data name="lbSaveMsgRole" xml:space="preserve">
+    <value>تم حفظ مجموعة المستخدم بنجاح</value>
+  </data>
+  <data name="lbSaveMsgUser" xml:space="preserve">
+    <value>تم حفظ مستخدم جديد بنجاح</value>
+  </data>
+  <data name="lbSelectUserRole" xml:space="preserve">
+    <value>اختر مجموعة المستخدم</value>
+  </data>
+  <data name="lbsendMessage" xml:space="preserve">
+    <value>تم الأرسال</value>
+  </data>
+  <data name="lbsendMessageDon" xml:space="preserve">
+    <value>تم أرسال أشعارك الى المستحدم الذي حددته</value>
+  </data>
+  <data name="lbTextMsgDelete" xml:space="preserve">
+    <value>لن تتمكن من التراجع عن هذا !!</value>
+  </data>
+  <data name="lbthenameisDuplicate" xml:space="preserve">
+    <value>اسم المستخدم موجود من قبل </value>
+  </data>
+  <data name="lbTitleDeletedOk" xml:space="preserve">
+    <value>تم الحذف!</value>
+  </data>
+  <data name="lbTitleEdit" xml:space="preserve">
+    <value>تعديل مجموعة المستخدم</value>
+  </data>
+  <data name="lbTitleEditCategory" xml:space="preserve">
+    <value>تعديل مجموعة الفئات</value>
+  </data>
+  <data name="lbTitleEditUser" xml:space="preserve">
+    <value>تعديل بيانات مستخدم</value>
+  </data>
+  <data name="lbTitleMsgDelete" xml:space="preserve">
+    <value>هل انت متأكد ؟</value>
+  </data>
+  <data name="lbtnSaveUser" xml:space="preserve">
+    <value>تم اضافه مستخدم بنجاح</value>
+  </data>
+  <data name="lbUpdate" xml:space="preserve">
+    <value>تم التعديل</value>
+  </data>
+  <data name="lbUpdateMsgRole" xml:space="preserve">
+    <value>تم تعديل مجموعة المستخدم بنجاح</value>
+  </data>
+  <data name="lbUpdateMsgUser" xml:space="preserve">
+    <value>تم تعديل المستخدم بنجاح</value>
+  </data>
+  <data name="lbUser" xml:space="preserve">
+    <value>المستخدمين الحالين</value>
+  </data>
+  <data name="lbUserName" xml:space="preserve">
+    <value>المستخدم</value>
+  </data>
+  <data name="notaccepfileNoImage" xml:space="preserve">
+    <value>لا يمكن قبول ملف غير صورة</value>
+  </data>
+  <data name="rejectRequest" xml:space="preserve">
+    <value>تم الرفض</value>
+  </data>
+  <data name="rejectRequestDon" xml:space="preserve">
+    <value> لن يتم إحالة إستمارة الزيارة الميدانية الى الادارة العامة للسجل </value>
+  </data>
+  <data name="RequestEdit" xml:space="preserve">
+    <value>تمت العملية</value>
+  </data>
+  <data name="RequestEditDon" xml:space="preserve">
+    <value>تم تعديل الطلب بنجاح</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>تمت العملية</value>
+  </data>
+</root>

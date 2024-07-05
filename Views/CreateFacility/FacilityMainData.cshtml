@@ -1,0 +1,577 @@
+﻿<!--this page for insert main Data of Facility -->
+@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models;
+@using IndustrialContoroler.IRepository.RequestRepository;
+@inject IRequestRepository<Request> ReFormNo;
+@inject IndustrialContorolerDatabaseContext _context;
+@model Facility;
+
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+@if (TempData.ContainsKey("Warning"))
+{
+    <div class="alert alert-warning alert-dismissible d-flex align-items-center ms-3 me-3" role="alert">
+        <i class="bx bx-xs bx-alarm-exclamation me-2"></i>
+        @TempData["Warning"]<a asp-action="RemoveTempTable" asp-controller="CreateFacility" style="color:forestgreen">نعم</a>
+        <button style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+@if (TempData.ContainsKey("success"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("ExFileNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["ExFileNull"]</div>
+}
+
+@{
+    var FormNo = _context.Requests.Where(re => re.IsDeleted.Equals(false) && re.ReRequestState.Equals(2)).ToList();
+}
+
+<form method="post">
+    <div class="row ms-2 me-2">
+        <div class="col">
+            <div class="accordion" id="collapsibleSection">
+                <!------------------------البيانات الرئيسية----------------------------->
+                <div class="card accordion-item">
+                    <h2 class="accordion-header" id="headingDeliveryAddress">
+                        <button style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" type="button"
+                                class="accordion-button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseDeliveryAddress"
+                                aria-expanded="true"
+                                aria-controls="collapseDeliveryAddress">
+                            البيانات الرئيسية
+                        </button>
+                    </h2>
+
+                    <div style="font-family: 'Almarai', sans-serif; font-size:18px;" id="collapseDeliveryAddress"
+                         class="accordion-collapse collapse show p-2"
+                         data-bs-parent="#collapsibleSection">
+
+                        <div class="accordion-body">
+
+                            <div class="row g-3">
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaName" style="font-family: 'Almarai', sans-serif; font-size:18px;">اسم المنشأة</label>
+                                    <input asp-for="FaName" class="form-control" placeholder="اسم المنشأة" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaName" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaNumber" style="font-family: 'Almarai', sans-serif; font-size:18px;">رقم المنشأة</label>
+                                    <input asp-for="FaNumber" class="form-control" placeholder="رقم المنشأة" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaNumber" class="text-danger"></span>
+                                </div>
+
+
+                                <div class="col-md-4" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+                                    <label asp-for="ReFormNo" style="font-family: 'Almarai', sans-serif; font-size:18px;">رقم إستمارة الطلب</label>
+                                    <select asp-for="ReFormNo" class="select2 form-select form-select-lg" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+                                        <option value=Null selected disabled hidden>حدد رقم إستمارة الطلب</option>
+                                        @foreach (var item in FormNo)
+                                        {
+                                            var FormNoIsExist = _context.Facilities.Where(fa => fa.ReFormNo == item.ReFormNo).Select(x => x.ReFormNo).FirstOrDefault();
+                                            if (FormNoIsExist == null)
+                                            {
+                                                <option value="@item.ReFormNo">@item.ReFormNo</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="ReFormNo" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="FaSize" style="font-family: 'Almarai', sans-serif; font-size:18px;">حجم المنشأة</label>
+                                        <select asp-for="FaSize" class="select2 form-select form-select-lg fs-5">
+                                            <option value=Null selected disabled hidden>حدد حجم المنشأة</option>
+                                            <option value="كبيرة جداً">كبيرة جداً</option>
+                                            <option value="كبيرة">كبيرة</option>
+                                            <option value="متوسطة">متوسطة</option>
+                                            <option value="صغيرة">صغيرة</option>
+                                            <option value="صغيرة جداً">صغيرة جداً</option>
+                                        </select>
+                                        <span asp-validation-for="FaSize" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="FaActivityType" class="form-label fs-5">نوع النشاط</label>
+                                        <select asp-for="FaActivityType" class="select2 form-select form-select-lg fs-5">
+                                            <option value=Null selected disabled hidden>حدد نوع النشاط</option>
+                                            <option value="حرفي">حرفي</option>
+                                            <option value="صناعي">صناعي</option>
+                                            <option value="تقليدي">تقليدي</option>
+                                        </select>
+                                        <span asp-validation-for="FaActivityType" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaMainActivity" class="form-label fs-5">النشاط الرئيسي</label>
+                                    <input asp-for="FaMainActivity" class="form-control" placeholder="النشاط الرئيسي" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaMainActivity" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaShareCapital" class="form-label fs-5">رأس المال</label>
+                                    <input asp-for="FaShareCapital" class="form-control" placeholder="رأس المال" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaShareCapital" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaStartProduction" class="form-label fs-5">تاريخ بدء الانتاج</label>
+                                    <input asp-for="FaStartProduction" class="form-control" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaStartProduction" class="text-danger"></span>
+                                    @if (TempData.ContainsKey("FaStartProductionError"))
+                                    {
+
+                                        <span class="text-danger">@TempData["FaStartProductionError"]</span>
+                                    }
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaTotalArea" class="form-label fs-5">المساحة الكلية للمنشأه</label>
+                                    <input asp-for="FaTotalArea" class="form-control" placeholder="المساحة الكلية للمنشأة بالمتر المربع" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaTotalArea" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="FaOwnership" class="form-label fs-5">ملكية العقار</label>
+                                        <select asp-for="FaOwnership" class="select2 form-select form-select-lg fs-5">
+                                            <option value=Null disabled selected hidden>حدد نوع الملكية</option>
+                                            <option value="خاص">خاص</option>
+                                            <option value="إيجار">إيجار</option>
+                                        </select>
+                                        <span asp-validation-for="FaOwnership" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaWorkPeriods" class="form-label fs-5">عدد ورديات العمل</label>
+                                    <input asp-for="FaWorkPeriods" class="form-control" placeholder="عدد ورديات العمل" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaWorkPeriods" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="FaLegalEntity" class="form-label fs-5">الكيان القانوني</label>
+                                        <input asp-for="FaLegalEntity" class="form-control" placeholder="الكيان القانوني" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                        <span asp-validation-for="FaLegalEntity" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="FaMode" class="form-label fs-5">وضع المنشأة</label>
+                                        <select asp-for="FaMode" class="select2 form-select form-select-lg fs-5">
+                                            <option value=Null disabled selected hidden>حدد وضع المنشأة</option>
+                                            <option value="منشأة مفردة ليس لها فروع">منشأة مفردة ليس لها فروع</option>
+                                            <option value="مركز رئيسي له فروع">مركز رئيسي له فروع</option>
+                                            <option value="فرع يمسك حسابات مستقلة">فرع يمسك حسابات مستقلة</option>
+                                            <option value="فرع لا يمسك حسابات مستقلة">فرع لا يمسك حسابات مستقلة</option>
+                                        </select>
+                                        <span asp-validation-for="FaMode" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="col mb-3">
+                                    <label asp-for="FaManagerName" class="form-label fs-5">اسم مدير المنشأة</label>
+                                    <input asp-for="FaManagerName" class="form-control" placeholder="اسم المدير" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+                                    <span asp-validation-for="FaManagerName" class="text-danger"></span>
+                                </div>
+
+
+                                <div class="col mb-3">
+                                    <label asp-for="FaOwnerName" class="form-label fs-5">اسم مالك المنشأة</label>
+                                    <input asp-for="FaOwnerName" class="form-control" placeholder="اسم المالك" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+                                    <span asp-validation-for="FaOwnerName" class="text-danger"></span>
+                                </div>
+
+
+
+                                <table class="table" id="TableA">
+                                    <thead>
+                                        <tr class="col mb-3 mt-3">
+                                            <label class="form-label fs-5 ms-1">الأنشطة الثانوية للمنشأة</label>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (var i = 0; i < Model.secondaryActs.Count; i++)
+                                        {
+                                            <tr class="col mb-3">
+                                                <td>
+                                                    @Html.EditorFor(x => x.secondaryActs[i].SaName, new {htmlAttributes = new {@class= "form-control"}})
+                                                </td>
+                                                <td>
+                                                    <button id="btnaddA-@i" type="button" class="btn btn-label-primary visible" onclick="addsecondaryActs(this)"> <span class="tf-icons bx bx-plus"></span>&nbsp;</button>
+                                                    <button id="btnremoveA-@i" type="button" class="btn btn-label-danger     invisible" onclick="DeletesecondaryActs(this)"><span class="tf-icons bx bx-trash-alt"></span>&nbsp;</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <input type="hidden" id="hdnLastIndxA" value="0" />
+                                @if (TempData.ContainsKey("ActNull"))
+                                {
+                                    <span class="text-danger">@TempData["ActNull"]</span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!------------------------الموقع وبيانات التواصل----------------------------->
+                <div class="card accordion-item">
+                    <h2 class="accordion-header" id="headingDeliveryOptions">
+                        <button style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" type="button"
+                                class="accordion-button collapsed"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseDeliveryOptions"
+                                aria-expanded="false"
+                                aria-controls="collapseDeliveryOptions">
+                            بيانات الموقع
+                        </button>
+                    </h2>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:20px;" id="collapseDeliveryOptions"
+                         class="accordion-collapse collapse p-2"
+                         aria-labelledby="headingDeliveryOptions"
+                         data-bs-parent="#collapsibleSection">
+                        <div class="accordion-body">
+
+                            <div class="row g-3">
+
+                                <div class="col-md-3">
+                                    <label asp-for="FaGovernorate" class="form-label fs-5">المحافظة</label>
+                                    <select asp-for="FaGovernorate" class="select2 form-select form-select-lg fs-5">
+                                        <option value=Null disabled selected hidden>حدد المحافظة</option>
+                                        <option value="امانة العاصمة">امانة العاصمة</option>
+                                        <option value="صنعاء">صنعاء</option>
+                                        <option value="عدن">عدن</option>
+                                        <option value="عمران">عمران</option>
+                                        <option value="البيضاء">البيضاء</option>
+                                        <option value="الحديدة">الحديدة</option>
+                                        <option value="الجوف">الجوف</option>
+                                        <option value="المحويت">المحويت</option>
+                                        <option value="ذمار">ذمار</option>
+                                        <option value="حجة">حجة</option>
+                                        <option value="إب">إب</option>
+                                        <option value="مأرب">مأرب</option>
+                                        <option value="ريمة">ريمة</option>
+                                        <option value="صعدة">صعدة</option>
+                                        <option value="تعز">تعز</option>
+                                        <option value="أبين">أبين</option>
+                                        <option value="الضالع">الضالع</option>
+                                        <option value="المهرة">المهرة</option>
+                                        <option value="حضرموت">حضرموت</option>
+                                        <option value="أرخبيل سقطرى">أرخبيل سقطرى</option>
+                                        <option value="لحج">لحج</option>
+                                        <option value="شبوة">شبوة</option>
+                                    </select>
+                                    <span asp-validation-for="FaGovernorate" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label asp-for="FaDirectorate" class="form-label fs-5">المديرية</label>
+                                    <input asp-for="FaDirectorate" class="form-control" placeholder="المديرية" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaDirectorate" class="text-danger"></span>
+
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label asp-for="FaRegionName" class="form-label fs-5">اسم المنطقة</label>
+                                    <input asp-for="FaRegionName" class="form-control" placeholder="اسم المنطقة" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaRegionName" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label asp-for="FaAddress" class="form-label fs-5">عنوان المنشأة</label>
+                                    <input asp-for="FaAddress" class="form-control" placeholder="عنوان المنشأة" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaAddress" class="text-danger"></span>
+                                </div>
+
+                                <table class="table" id="TableR">
+                                    <thead>
+                                        <tr class="col mb-3 mt-3">
+                                            <label class="form-label fs-5 ms-1">أسباب أختيار موقع المنشأة</label>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (var i = 0; i < Model.Reasons.Count; i++)
+                                        {
+                                            <tr class="col mb-3">
+                                                <td>
+                                                    @Html.EditorFor(x => x.Reasons[i].SrReason, new {htmlAttributes = new {@class= "form-control"}})
+                                                </td>
+                                                <td>
+                                                    <button id="btnaddR-@i" type="button" class="btn btn-label-primary visible" onclick="addReasons(this)    "> <span class="tf-icons bx bx-plus"></span>&nbsp;</button>
+                                                    <button id="btnremoveR-@i" type="button" class="btn btn-label-danger   invisible" onclick="DeleteReasons(this)"> <span class="tf-icons bx bx-trash-alt"></span>&nbsp;</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <input type="hidden" id="hdnLastIndxR" value="0" />
+                                @if (TempData.ContainsKey("ReasonNull"))
+                                {
+                                    <span class="text-danger">@TempData["ReasonNull"]</span>
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!------------------------بيانات عامه----------------------------->
+                <div class="card accordion-item">
+                    <h2 class="accordion-header" id="headingPaymentMethod">
+                        <button style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" type="button"
+                                class="accordion-button collapsed"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapsePaymentMethod"
+                                aria-expanded="false"
+                                aria-controls="collapsePaymentMethod">
+                            بيانات التواصل
+                        </button>
+                    </h2>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:20px;" id="collapsePaymentMethod"
+                         class="accordion-collapse collapse p-2"
+                         aria-labelledby="headingPaymentMethod"
+                         data-bs-parent="#collapsibleSection">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaPhoneNumber" class="form-label fs-5">رقم الهاتف</label>
+                                    <input asp-for="FaPhoneNumber" class="form-control" placeholder="رقم الهاتف" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaPhoneNumber" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaMobileNumber" class="form-label fs-5">رقم السيار</label>
+                                    <input asp-for="FaMobileNumber" class="form-control" placeholder="رقم السيار" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaMobileNumber" class="text-danger"></span>
+                                    @if (TempData.ContainsKey("FaMobileNumberError"))
+                                    {
+
+                                        <span class="text-danger">@TempData["FaMobileNumberError"]</span>
+                                    }
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="FaFaxNumber" class="form-label fs-5">رقم الفاكس</label>
+                                    <input asp-for="FaFaxNumber" class="form-control" placeholder="رقم الفاكس" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaFaxNumber" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="FaEmail" class="form-label fs-5">البريد الألكتروني</label>
+                                    <input asp-for="FaEmail" class="form-control" placeholder="البريد الألكتروني" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaEmail" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="FaWebSite" class="form-label fs-5">الموقع الألكتروني</label>
+                                    <input asp-for="FaWebSite" class="form-control" placeholder="رابط الموقع الالكتروني مثل https://example.com" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaWebSite" class="text-danger"></span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-----------------------موقع المنشأة على الخريطة----------------------------->
+                <div class="card accordion-item">
+                    <h2 class="accordion-header" id="headingPaymentMethod">
+                        <button style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" type="button"
+                                class="accordion-button collapsed"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapsePaymentMethod"
+                                aria-expanded="false"
+                                aria-controls="collapsePaymentMethod">
+                            موقع المنشأة على الخريطة
+                        </button>
+                    </h2>
+                    <div style="font-family: 'Almarai', sans-serif; font-size:20px;" id="collapsePaymentMethod"
+                         class="accordion-collapse collapse p-2"
+                         aria-labelledby="headingPaymentMethod"
+                         data-bs-parent="#collapsibleSection">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label asp-for="FaLongitude" class="form-label fs-5" for="multicol-username"> خط الطول </label>
+                                    <input asp-for="FaLongitude" class="form-control" id="latitude" placeholder="خط الطول" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaLongitude" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label asp-for="FaLatitude" class="form-label fs-5" for="multicol-username"> خط العرض</label>
+                                    <input asp-for="FaLatitude" class="form-control" id="longitude" placeholder="خط العرض" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    <span asp-validation-for="FaLatitude" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class=" justify-content-center align-items-center ">
+                                <h5 class="fs-4 p-3 fw-bold  w-100 d-flex justify-content-center align-items-center">
+                                    حدد الموقع الدقيق للمنشأة على الخريطة ثم انقر علية ليتم حفظة
+                                </h5>
+                                <!--div of maps-->
+                                <div id="map" class="card m-3 mb-3" style="width:100% ; height:500px">  </div>
+                            </div>
+
+                            <div style="font-family: 'Almarai', sans-serif; font-size:20px;" class="d-flex justify-content-center align-items-center col-12 m-2">
+                                <button asp-action="FacilityMainData" asp-controller="CreateFacility" type="submit" class="btn btn-primary me-1 me-sm-2 fs-5">أضافة</button>
+                                <button asp-action="FacilityMainNext" asp-controller="CreateFacility" type="submit" class="btn btn-primary btn-next fs-5" onclick="GetFaNumber('BuFaNumber');">
+                                    <span class="d-none d-sm-inline-block me-sm-1">التالي</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+<script>
+
+
+    function DeleteReasons(btn) {
+        $(btn).closest('tr').remove();
+    }
+
+    function DeletesecondaryActs(btn) {
+        $(btn).closest('tr').remove();
+    }
+
+
+    function addReasons(btn) {
+        var table = document.getElementById('TableR');
+        var rows = table.getElementsByTagName('tr');
+        var rowOuterHtml = rows[rows.length - 1].outerHTML;
+
+        var lastrowIdx = document.getElementById("hdnLastIndxR").value;
+        var nextrowIdx = eval(lastrowIdx) + 1;
+
+        document.getElementById("hdnLastIndxR").value = nextrowIdx;
+
+        rowOuterHtml = rowOuterHtml.replaceAll('_' + lastrowIdx + '_', '_' + nextrowIdx + '_');
+        rowOuterHtml = rowOuterHtml.replaceAll('[' + lastrowIdx + ']', '[' + nextrowIdx + ']');
+        rowOuterHtml = rowOuterHtml.replaceAll('-' + lastrowIdx, '-' + nextrowIdx);
+
+
+        var newRow = table.insertRow();
+        newRow.innerHTML = rowOuterHtml;
+
+
+
+        var btnAddId = btn.id;
+        var btnDeleteId = btnAddId.replaceAll('btnaddR', 'btnremoveR');
+
+        var delbtn = document.getElementById(btnDeleteId);
+        delbtn.classList.add("visible");
+        delbtn.classList.remove("invisible");
+
+
+        var addbtn = document.getElementById(btnAddId);
+        addbtn.classList.remove("visible");
+        addbtn.classList.add("invisible");
+    }
+
+    function addsecondaryActs(btn) {
+        var table = document.getElementById('TableA');
+        var rows = table.getElementsByTagName('tr');
+        var rowOuterHtml = rows[rows.length - 1].outerHTML;
+
+        var lastrowIdx = document.getElementById("hdnLastIndxA").value;
+        var nextrowIdx = eval(lastrowIdx) + 1;
+
+        document.getElementById("hdnLastIndxA").value = nextrowIdx;
+
+        rowOuterHtml = rowOuterHtml.replaceAll('_' + lastrowIdx + '_', '_' + nextrowIdx + '_');
+        rowOuterHtml = rowOuterHtml.replaceAll('[' + lastrowIdx + ']', '[' + nextrowIdx + ']');
+        rowOuterHtml = rowOuterHtml.replaceAll('-' + lastrowIdx, '-' + nextrowIdx);
+
+
+        var newRow = table.insertRow();
+        newRow.innerHTML = rowOuterHtml;
+
+
+
+        var btnAddId = btn.id;
+        var btnDeleteId = btnAddId.replaceAll('btnaddA', 'btnremoveA');
+
+        var delbtn = document.getElementById(btnDeleteId);
+        delbtn.classList.add("visible");
+        delbtn.classList.remove("invisible");
+
+
+        var addbtn = document.getElementById(btnAddId);
+        addbtn.classList.remove("visible");
+        addbtn.classList.add("invisible");
+    }
+</script>
+
+<!--JS Leaflet  Googel Map-->
+<script src="~/leaflet/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+
+
+<script>
+    let mapOptions = {
+        center: [51.958, 9.141],
+        zoom: 10
+    }
+    let map = new L.map('map', mapOptions);
+    let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+    map.addLayer(layer);
+    L.control
+        .locate({
+            position: "topright",
+            strings: {
+                title: "Show me where I am, yo!"
+            }
+        })
+        .addTo(map);
+
+    let marker = null;
+    map.on('click', (event) => {
+
+        if (marker !== null) {
+            map.removeLayer(marker);
+        }
+
+        marker = L.marker([event.latlng.lat, event.latlng.lng]).addTo(map);
+
+        document.getElementById('latitude').value = event.latlng.lat;
+        document.getElementById('longitude').value = event.latlng.lng;
+    })
+</script>
+
+

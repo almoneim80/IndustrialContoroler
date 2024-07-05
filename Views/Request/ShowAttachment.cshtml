@@ -1,0 +1,112 @@
+﻿@using IndustrialContoroler.Models.requestsViewModels;
+@using IndustrialContoroler.Models.Repositories;
+@inject IndustrialContorolerDatabaseContext db;
+@inject IRepository<AttachmentType> attatchmentsType;
+@model RequestAttVM;
+
+
+
+@if (TempData.ContainsKey("success"))
+{
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@{
+    int counter = 1;
+    var GetAllAttType = db.AttachmentTypes.ToList();
+    //var GetAllAtt = db.Attachments.Where(at => at.ReId.Equals(ViewData["ReId"]) && at.IsDeleted == false).ToList();
+    var GetAllAttachmentsData = db.Attachments.Where(at => at.ReId.Equals(ViewData["ReId"]) && at.IsDeleted == false).ToList();
+}
+
+<!--
+
+style="font-family: 'Almarai', sans-serif; font-size:20px;"
+
+style="font-family: 'Cairo', sans-serif; font-size:18px;"
+
+style="font-family: 'Almarai', sans-serif; font-size:18px;"
+
+
+-->
+
+
+<div class="card m-3 mb-5">
+    <div class="table-responsive m">
+        @*request data table*@
+        <table class="datatables-ajax table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم المرفق</th>
+                    <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> نوع المرفق  </th>
+                    <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                @foreach (var item in GetAllAttachmentsData)
+                {
+
+
+                    <tr>
+                        <td><span class="text-center"> @counter </span></td>
+                        <td>
+                            @db.AttachmentTypes.Where(at => at.AttId == item.AttId && at.IsDeleted == false).Select(x => x.AttAttachmentName).FirstOrDefault()<span class="text-center">
+                            </span>
+                        </td>
+                        <td>
+                            <div>
+
+                                <div class="d-none" id="Staistic_Table">
+                                    <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 90%);transition: background-color 300ms; width:100% ; height:100%;" src="@Url.Content("~/RequestAtts/"+@item.AtUrl)">
+                                </div>
+
+
+                                <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+
+                                <div class="dropdown-menu">
+                                    <a href="@Url.Content("~/RequestAtts/"+@item.AtUrl)" target="_blank" class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                        <i class="bx bx-show-alt me-1"></i> عرض
+                                    </a>
+
+                                    <a onclick="printDiv('Staistic_Table')" class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;">
+                                        <i class="bx bx-printer me-1"></i> طباعة
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    counter = counter + 1;
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+
+
+
+<!--------print Table----------->
+<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var layoutheade = document.getElementById("layoutheade").innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = layoutheade;
+        document.body.innerHTML = printContents;
+
+
+
+        //Print the page content
+        window.print()
+        //Set the print button to 'visible' again
+        //[Delete this line if you want it to stay hidden after printing]
+
+        document.body.innerHTML = originalContents;
+
+    }
+
+</script>

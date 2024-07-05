@@ -1,0 +1,165 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@using IndustrialContoroler.Models.FacilityViewModels;
+@model RelevantDocVM;
+@inject IndustrialContorolerDatabaseContext db;
+
+@{
+    //int FaNumber = 0;
+    int counter = 1;
+    int RDId = 0;
+    var FaId = ViewData["FaId"];
+    var RDData = db.RelevantDocs.Where(rd => rd.FaId.Equals(FaId) && rd.IsDeleted == false).ToList();
+}
+
+
+<div class="table-responsive m*-2">
+
+    <a class="btn btn-primary gradient-buttons col-md-2 ms-3" data-bs-toggle="modal" data-bs-target="#modalCenter">
+        <i class="fas fa-plus mx-1 my-auto"></i> إضافة وثيقة
+    </a>
+
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle">بيانات الوثائق</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label asp-for="RdDocName" class="form-label fs-5">اسم الوثيقة</label>
+                                        <input asp-for="RdDocName" class="form-control" placeholder="اسم الوثيقة" />
+                                        <span asp-validation-for="RdDocName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="RdStakeholderName" class="form-label fs-5">اسم الجهة</label>
+                                        <input asp-for="RdStakeholderName" class="form-control" placeholder="اسم الجهة" />
+                                        <span asp-validation-for="RdStakeholderName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="ReFile" class="form-label fs-5">أضافة ملف الوثيقة</label>
+                                        <input asp-for="ReFile" class="form-control" type="file" />
+                                        <span asp-validation-for="ReFile" class="text-danger"></span>
+                                    </div>
+
+
+                                    <div class="row-md-6">
+                                        <label asp-for="ReDescription" class="form-label fs-5">الوصف</label>
+                                        <textarea asp-for="ReDescription" class="form-control" rows="1" placeholder="أكتب وصف الوثيقة او اي معلومات أخرى عنها."></textarea>
+                                    </div>
+
+
+                                    <input asp-for="FaId" value="@FaId" class="form-control" hidden />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="AddRelevantDoc" asp-controller="FieldVisitForms" class="btn btn-primary">أضافة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div class="card m-3 mb-5">
+        <div class="content-wrapper table-responsive " style="font-size: small; font-weight: 300;">
+
+            <table class="table datatables-ajax table dataTable no-footer table-bordered" id="oneexample">
+                <thead class="border-top">
+                    <tr role="row">
+                        <th class="sorting sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="رقم الوثيقة: activate to sort column descending" style="width: 200.8px;">رقم الوثيقة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" اسم الوثيقة: activate to sort column ascending" style="width: 400.1px;">اسم الوثيقة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="الجهة ذات الصلة: activate to sort column ascending" style="width: 400.1px;">الجهة ذات الصلة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="الوصف: activate to sort column ascending" style="width: 400.1px;">الوصف</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" الاجراءات: activate to sort column ascending" style="width: 400.1px;">الاجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-border-bottom-0">
+
+                    @if (RDData is not null)
+                    {
+
+                        @foreach (var item in RDData)
+                        {
+                            RDId = item.RdId;
+                            <tr>
+                                <td>@counter</td>
+                                <td class="fs-5">@item.RdDocName</td>
+                                <td class="fs-5">@item.RdStakeholderName</td>
+                                <td class="fs-5">@item.ReDescription</td>
+                                <td>
+                                    <div>
+                                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                            <a class="dropdown-item" asp-route-Id="@item.RdId" asp-controller="FieldVisitForms" asp-action="EditRelevantDoc"><i class="bx bx-edit-alt me-1"></i> تعديل  </a>
+
+                                            <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.RdId">
+                                                <i class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.RdId"></i> حذف
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+
+
+
+                            counter = counter + 1;
+                            <div class="modal fade" id="confirmDeletion-@item.RdId" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                    <div class="modal-content p-3 p-md-5">
+                                        <div class="modal-body">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="text-center mb-4"><h3 class="mb-4">حذف الوثيقة</h3></div>
+                                            <h4 class="text-center"> هل أنت متأكد انك تريد الحذف ؟</h4>
+                                            <div id="enableOTPForm" class="row g-3 mt-5">
+                                                <div class="col-12" align="center">
+                                                    <button type="reset" class="col-4 btn btn-label-success mx-3" data-bs-dismiss="modal" aria-label="Close">لا</button>
+                                                    <a asp-action="DeleteRelevantDoc" asp-controller="FieldVisitForms" asp-route-id="@item.RdId" class="col-4 btn btn-danger me-1 me-sm-3 mx-5 ">نعم</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+

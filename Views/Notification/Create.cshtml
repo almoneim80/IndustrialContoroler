@@ -1,0 +1,181 @@
+﻿@using IndustrialContoroler.ViewModel
+
+@model NotificationVM
+
+@inject IndustrialContorolerDatabaseContext _context
+
+@inject IHttpContextAccessor _sessions
+@inject UserManager<AppUsers> _userManager
+@{
+    var noti = _context.Notis.Where(x => x.IsDeleted.Equals(false)).OrderByDescending(x => x.Date).ToList();
+    ViewData["Roles"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Roles.Where(x => x.Name != @Helper.SysAdminsitrator && x.Name != @Helper.Progreammer), "Name", "Name");
+    var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+    var userid = user.Id;
+}
+
+
+
+
+<div class="row invoice-add p-3">
+    <!-- Invoice Add-->
+    <div class="col-12 col-lg-9 mb-4 mb-lg-0">
+        <div class="card invoice-preview-card">
+            <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10">إشعار</h3>
+            <div class="card-body">
+
+
+
+
+
+                <div class="row p-0 p-sm-3">
+                    <form asp-action="Create" asp-controller="Notification" id="notification-form" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label style="font-family: 'Cairo', sans-serif; font-size:16px;" asp-for="RoleId" class="form-label ">إشعار الى </label>
+                                <select class="select2 form-select form-select" asp-for="RoleId" onchange="getUsers()">
+                                    <option value=Null disabled selected hidden style="font-family: 'Almarai', sans-serif; font-size:18px;">حدد الموظف</option>
+                                    @foreach (var role in ViewData["Roles"] as SelectList)
+                                    {
+                                        <option value="@role.Value">@role.Text</option>
+                                    }
+                                </select>
+                                <span style="font-family: 'Almarai', sans-serif; font-size:14px;" class="alert-danger" asp-validation-for="RoleId"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label style="font-family: 'Cairo', sans-serif; font-size:16px;" asp-for="ToUserId" class="form-label ">اسم المستخدم  </label>
+                                <select style="font-family: 'Almarai', sans-serif; font-size:14px;" class="form-select " asp-for="ToUserId" id="userSelect"> </select>
+                                <span style="font-family: 'Almarai', sans-serif; font-size:14px;" class="alert-danger" asp-validation-for="ToUserId"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label style="font-family: 'Cairo', sans-serif; font-size:16px;" asp-for="Title" class="form-label "> عنوان الأشعار  </label><br />
+                                <input style="font-family: 'Almarai', sans-serif; font-size:14px;" asp-for="Title" class="form-control" />
+
+                                <span style="font-family: 'Almarai', sans-serif; font-size:14px;" class="alert-danger" asp-validation-for="Title"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label style="font-family: 'Cairo', sans-serif; font-size:16px;" asp-for="Description" class="form-label ">نص الاشعار</label>
+                                <textarea style="font-family: 'Almarai', sans-serif; font-size:14px;" class="form-control" asp-for="Description" rows="1" placeholder="أكتب الاشعار هنا"></textarea>
+                                <span style="font-family: 'Almarai', sans-serif; font-size:14px;" class="alert-danger" asp-validation-for="Description"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="row py-sm-3"> </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Invoice Add-->
+    <!-- Invoice Actions -->
+    <div class="invoice-actions col-12 col-lg-3">
+        <div class="card mb-4">
+            <div style="font-family: 'Almarai', sans-serif; font-size:18px;" class="card-body">
+                <button class="btn btn-primary d-grid w-100 mb-3"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#sendInvoiceOffcanvas"
+                        type="button" id="Save-button">
+                    <span>  <i class="bx bx-paper-plane bx-xs me-3"></i>إرسال الاشعار</span>
+
+
+                </button>
+
+
+                <a asp-action="Index" asp-controller="Notification" class="btn btn-secondary d-grid w-100 mt-3">
+                    <span class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-arrow-back bx-xs me-3"></i>رجوع</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- /Invoice Actions -->
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+    {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+            <script>
+
+                Swal.fire({
+                    title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+                    text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+                    confirmButtonText: '@ResourceWeb.lbOk',
+                    icon: 'success'
+                });
+            </script>
+
+        }
+        else
+        {
+            <script>
+
+                Swal.fire({
+                    title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+                    text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+                    confirmButtonText: '@ResourceWeb.lbOk',
+                    icon: 'error'
+                });
+            </script>
+        }
+        _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+    }
+
+    <script src="~/Modules/notificatiom.js"></script>
+
+
+    <script>
+        function getUsers() {
+            var roleId = $('#RoleId').val();
+            $.ajax({
+                type: 'GET',
+                url: '/Notification/GetUsersInRole',
+                data: { roleName: roleId },
+                success: function(data) {
+                    var users = data.map(function(user) {
+                        return '<option value="' + user.id + '">' + user.fullName + '</option>';
+                    }).join('');
+                    $('#userSelect').html('<option value="">-- اختار المستخدم --</option>' + users);
+                },
+                error: function() {
+                    alert("حدث خطأ أثناء استرجاع المستخدمين.");
+                }
+            });
+        }
+    </script>
+
+    <script>
+
+        $(function() {
+
+            $('#Save-button').click(function() {
+                $('#notification-form').submit();
+            });
+        });
+
+
+    </script>
+
+    <script>
+
+        let lbTitleEdit = '@Html.Raw(ResourceWeb.lbTitleEdit)';
+        let lbEdit = '@Html.Raw(ResourceWeb.lbEdit)';
+        let lbAddNewRole = '@Html.Raw(ResourceWeb.lbAddNewRole)';
+        let lbbtnSave = '@Html.Raw(ResourceWeb.lbbtnSave)';
+
+        let lbTitleMsgDelete = '@Html.Raw(ResourceWeb.lbTitleMsgDelete)';
+        let lbTextMsgDelete = '@Html.Raw(ResourceWeb.lbTextMsgDelete)';
+        let lbconfirmButtonText = '@Html.Raw(ResourceWeb.lbconfirmButtonText)';
+        let lbcancelButtonText = '@Html.Raw(ResourceWeb.lbcancelButtonText)';
+
+        let lbTitleDeletedOk = '@Html.Raw(ResourceWeb.lbTitleDeletedOk)';
+        let lbMsgDeletedOkRole = '@Html.Raw(ResourceWeb.lbMsgDeletedOkRole)';
+        let lbSuccess = '@Html.Raw(Helper.Success)';
+
+    </script>
+
+}

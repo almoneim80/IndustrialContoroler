@@ -1,0 +1,75 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model AgentsPoint;
+@inject IRepository<AgentsPoint> agentsPoint;
+
+@{
+    var ApId = ViewData["ApId"];
+    var ApData = agentsPoint.GetAllFaData(ap => ap.FaId.Equals(ViewData["FaId"]) && ap.IsDeleted == false).ToList();
+}
+
+
+<div class="col-xxl " data-select2-id="30" id="statistic_2">
+    <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+        <h5 style="background-color: rgb(82, 134, 203); color: azure;" class="card-header">تعديل الوكيل / نقطة البيع رقم @ApId</h5>
+
+        <form method="post" class=" mb-4 mt-3 ms-3 me-3">
+            <div class="d-flex justify-content-between">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label asp-for="ApName" class="form-label fs-5">الاسم</label>
+                        <input asp-for="ApName" class="form-control" placeholder="الاسم" />
+                        <span asp-validation-for="ApName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ApTradeName" class="form-label fs-5">الاسم التجاري</label>
+                        <input asp-for="ApTradeName" class="form-control" placeholder="الاسم التجاري" />
+                        <span asp-validation-for="ApTradeName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ApPhoneNumber" class="form-label fs-5">رقم الهاتف</label>
+                        <input asp-for="ApPhoneNumber" class="form-control" placeholder="رقم الهاتف" />
+                        <span asp-validation-for="ApPhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ApAddress" class="form-label fs-5">العنوان</label>
+                        <input asp-for="ApAddress" class="form-control" placeholder="العنوان" />
+                        <span asp-validation-for="ApAddress" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <label asp-for="ApType" class="form-label fs-5">النوع</label>
+                        <select asp-for="ApType" class="select2 form-select form-select-lg fs-5">
+                            <option value=Null selected hidden disabled>حدد النوع</option>
+                            <option value="وكيل">وكيل</option>
+                            <option value="نقطة بيع">نقطة بيع</option>
+                        </select>
+                        <span asp-validation-for="ApType" class="text-danger"></span>
+                    </div>
+
+                    <div class="row-md-6">
+                        <label asp-for="ApNotes" class="form-label fs-5">ملاحظات</label>
+                        <textarea asp-for="ApNotes" class="form-control" rows="1" placeholder="أكتب أي ملاحظات أخرى"></textarea>
+                    </div>
+
+                    <input asp-for="FaId" class="form-control" hidden />
+                    <input asp-for="ApId" class="form-control" hidden />
+
+                    <div class="col justify-content-center">
+                        <button type="submit" class="btn btn-primary me-1 me-sm-2"
+                                asp-action="EditagentsPoint" asp-controller="FieldVisitForms">
+                            تعديل
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

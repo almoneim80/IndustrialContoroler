@@ -1,0 +1,234 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model Transportation;
+@inject IRepository<Transportation> transportations;
+
+@{
+    //int FaNumber = 0;
+    int counter = 1;
+    int TrId = 0;
+    var FaId = ViewData["FaId"];
+    var TrData = transportations.GetAllFaData(tr => tr.FaId.Equals(ViewData["FaId"]) && tr.IsDeleted == false).ToList();
+}
+
+
+<div class="table-responsive m*-2">
+
+    <a class="btn btn-primary gradient-buttons col-md-2 ms-3" data-bs-toggle="modal" data-bs-target="#modalCenter">
+        <i class="fas fa-plus mx-1 my-auto"></i> إضافة وسيلة نقل
+    </a>
+
+
+    <form method="post">
+        <div class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle">بيانات وسائل النقل</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+
+                                    <div class="col-md-4">
+                                        <label asp-for="TrType" class="form-label fs-5">نوع وسيلة النقل</label>
+                                        <input asp-for="TrType" class="form-control" placeholder="نوع وسيلة النقل" />
+                                        <span asp-validation-for="TrType" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="TrPlateNumber" class="form-label fs-5">رقم اللوحة</label>
+                                        <input asp-for="TrPlateNumber" class="form-control" placeholder="رقم اللوحة" />
+                                        <span asp-validation-for="TrPlateNumber" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label asp-for="TrLoad" class="form-label fs-5" for="multicol-username">الحمولة</label>
+                                        <input asp-for="TrLoad" class="form-control" placeholder="الحمولة" />
+                                        <span asp-validation-for="TrLoad" class="text-danger"></span>
+                                    </div>
+
+
+                                    <input asp-for="FaId" value="1" hidden />
+
+
+                                    <div class="row-md-6">
+                                        <label class="form-label fs-5">ملاحظات</label>
+                                        <textarea class="form-control" rows="1" placeholder="أكتب أي ملاحظات أخرى"></textarea>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="AddTransportation" asp-controller="FieldVisitForms" class="btn btn-primary">أضافة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div class="card m-3 mb-5">
+        <div class="content-wrapper table-responsive " style="font-size: small; font-weight: 300;">
+
+            <table class="table datatables-ajax table dataTable no-footer table-bordered" id="oneexample">
+                <thead class="border-top">
+                    <tr role="row">
+                        <th class="sorting sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="رقم وسيلة النقل: activate to sort column descending" style="width: 200.8px;">رقم وسيلة النقل</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="نوع الوسيلة: activate to sort column ascending" style="width: 400.1px;">نوع الوسيلة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="رقم اللوحة : activate to sort column ascending" style="width: 400.1px;">رقم اللوحة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="الحمولة: activate to sort column ascending" style="width: 400.1px;">الحمولة</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" ملاحظات : activate to sort column ascending" style="width: 400.1px;">ملاحظات</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" الاجراءات: activate to sort column ascending" style="width: 400.1px;">الاجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-border-bottom-0">
+
+                    @if (TrData is not null)
+                    {
+
+                        @foreach (var item in TrData)
+                        {
+                            TrId = item.TrId;
+                            <tr>
+                                <td>@counter</td>
+                                <td class="fs-5">@item.TrType</td>
+                                <td class="fs-5">@item.TrPlateNumber</td>
+                                <td class="fs-5">@item.TrLoad</td>
+                                <td class="fs-5">@item.TrNotes</td>
+                                <td>
+                                    <div>
+                                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                            <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#EditTransportation-@item.TrId">
+                                                <i class="bx bx-edit-alt me-1"></i> تعديل
+                                            </a>
+
+                                            <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.TrId">
+                                                <i class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.TrId"></i> حذف
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+
+
+                            <div class="modal fade" id="EditTransportation-@item.TrId" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                    <form method="post">
+                                        <!-- Modal -->
+
+
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalCenterTitle">تعديل وسيلة النقل رقم @counter</h5>
+                                                <button type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row g-3">
+
+                                                    <div class="col-md-4">
+                                                        <label asp-for="TrType" class="form-label fs-5">نوع وسيلة النقل</label>
+                                                        <input asp-for="TrType" class="form-control" placeholder="نوع وسيلة النقل" value="@item.TrType" />
+                                                        <span asp-validation-for="TrType" class="text-danger"></span>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <label asp-for="TrPlateNumber" class="form-label fs-5">رقم اللوحة</label>
+                                                        <input asp-for="TrPlateNumber" class="form-control" placeholder="رقم اللوحة" value="@item.TrPlateNumber" />
+                                                        <span asp-validation-for="TrPlateNumber" class="text-danger"></span>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <label asp-for="TrLoad" class="form-label fs-5" for="multicol-username">الحمولة</label>
+                                                        <input asp-for="TrLoad" class="form-control" placeholder="الحمولة" value="@item.TrLoad" />
+                                                        <span asp-validation-for="TrLoad" class="text-danger"></span>
+                                                    </div>
+
+                                                    <div class="row-md-6">
+                                                        <label class="form-label fs-5">ملاحظات</label>
+                                                        <textarea class="form-control" rows="1" placeholder="أكتب أي ملاحظات أخرى">@item.TrNotes</textarea>
+                                                    </div>
+
+                                                    <input asp-for="TrId" value="@item.TrId" hidden />
+                                                    <input asp-for="FaId" value="@item.FaId" hidden />
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                                    الغاء
+                                                </button>
+                                                <button type="submit" asp-action="EditTransportation" asp-controller="FieldVisitForms" class="btn btn-primary">تعديل</button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+                            <div class="modal fade" id="confirmDeletion-@item.TrId" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                    <div class="modal-content p-3 p-md-5">
+                                        <div class="modal-body">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="text-center mb-4"><h3 class="mb-4">حذف وسيلة النقل</h3></div>
+                                            <h4 class="text-center"> هل أنت متأكد انك تريد الحذف ؟</h4>
+                                            <div id="enableOTPForm" class="row g-3 mt-5">
+                                                <div class="col-12" align="center">
+                                                    <button type="reset" class="col-4 btn btn-label-success mx-3" data-bs-dismiss="modal" aria-label="Close">لا</button>
+                                                    <a asp-action="DeleteTransportation" asp-controller="FieldVisitForms" asp-route-id="@item.TrId" class="col-4 btn btn-danger me-1 me-sm-3 mx-5 ">نعم</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            counter = counter + 1;
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+

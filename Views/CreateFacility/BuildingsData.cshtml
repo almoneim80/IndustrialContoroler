@@ -1,0 +1,268 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using Microsoft.AspNetCore;
+@using IndustrialContoroler.Models.Repositories;
+@model Building;
+@inject IRepository<Temporary> buildings;
+
+    @if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+@if (TempData.ContainsKey("success"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("ExFileNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["ExFileNull"]</div>
+}
+@if (TempData.ContainsKey("InsertNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["InsertNull"]</div>
+}
+
+@{
+    //get all buildings from Temporary table to show them in table.
+    var GetAllBuildings = buildings.GetAll().Where(Bu => Bu.TblDesc == "building").ToList();
+    //for number of buildings in table.
+    int counter = 1;
+}
+
+
+
+<form method="post" class="card mb-4 ms-3 me-3" enctype="multipart/form-data" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+    <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10"> بيانات المباني </h3>
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between mt-1">
+            <div class="float-start">
+            </div>
+            <div class="float-end">
+                <button type="button"
+                        class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCenter" style="font-family: 'Almarai', sans-serif; font-size:18px;">رفع ملف اكسل</a></li>
+                    <li><a class="dropdown-item" href="~/ExcelTempletsFiles/Building.xlsx" download style="font-family: 'Almarai', sans-serif; font-size:18px;">تنزيل ملف البيانات</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle" style="font-family: 'Almarai', sans-serif; font-size:20px;">بيانات المباني</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="nameWithTitle" class="form-label" style="font-family: 'Almarai', sans-serif; font-size:18px;">ملف الاكسل</label>
+                                        <input class="form-control" type="file" name="FormFile" style="font-family: 'Almarai', sans-serif; font-size:18px;"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="ImportExcelFileBU" asp-controller="CreateFacility" class="btn btn-primary" style="font-family: 'Almarai', sans-serif; font-size:18px;">تأكيد</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="BuOwnership" class="form-label fs-5">ملكية المبنى</label>
+                <select asp-for="BuOwnership" class="select2 form-select form-select-lg" id="BuOwnership">
+                    <option value=Null disabled selected hidden style="font-family: 'Almarai', sans-serif; font-size:18px;">حدد ملكية المبنى</option>
+                    <option value="خاص">خاص</option>
+                    <option value="إيجار">إيجار</option>
+                </select>
+                <span asp-validation-for="BuOwnership" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuOwnershipError"))
+                {
+
+                    <span class="text-danger">@TempData["BuOwnershipError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="BuDescription" class="form-label fs-5">وصف المبنى</label>
+                <input asp-for="BuDescription" class="form-control" placeholder="وصف المبنى" id="BuDescription"/>
+                <span asp-validation-for="BuDescription" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuDescriptionError"))
+                {
+
+                    <span class="text-danger">@TempData["BuDescriptionError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="BuLocation" class="form-label fs-5">موقع المبنى</label>
+                <input asp-for="BuLocation" class="form-control" placeholder="موقع المبنى" id="BuLocation" />
+                <span asp-validation-for="BuLocation" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuLocationError"))
+                {
+
+                    <span class="text-danger">@TempData["BuLocationError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="BuType" class="form-label fs-5">نوعية البناء</label>
+                <input asp-for="BuType" class="form-control" placeholder="نوعية البناء" id="BuType" />
+                <span asp-validation-for="BuType" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuTypeError"))
+                {
+
+                    <span class="text-danger">@TempData["BuTypeError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="BuLength" class="form-label fs-5">طول المبنى</label>
+                <input asp-for="BuLength" class="form-control" placeholder="طول المبنى بالمتر " id="BuLength" />
+                <span asp-validation-for="BuLength" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuLengthError"))
+                {
+
+                    <span class="text-danger">@TempData["BuLengthError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="BuWidth" class="form-label fs-5">عرض المبنى</label>
+                <input asp-for="BuWidth" class="form-control" placeholder="عرض المبنى بالمتر " id="BuWidth" />
+                <span asp-validation-for="BuWidth" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuWidthError"))
+                {
+
+                    <span class="text-danger">@TempData["BuWidthError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="BuHigh" class="form-label fs-5">ارتفاع المبنى</label>
+                <input asp-for="BuHigh" class="form-control" placeholder="ارتفاع المبنى بالمتر " id="BuHigh" />
+                <span asp-validation-for="BuHigh" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuHighError"))
+                {
+
+                    <span class="text-danger">@TempData["BuHighError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="BuArea" class="form-label fs-5">مساحة المبنى</label>
+                <input asp-for="BuArea" class="form-control" placeholder="مساحة المبنى" id="BuArea" />
+                <span asp-validation-for="BuArea" class="text-danger"></span>
+                @if (TempData.ContainsKey("BuAreaError"))
+                {
+
+                    <span class="text-danger">@TempData["BuAreaError"]</span>
+                }
+            </div>
+
+            <input asp-for="FaId" class="form-control" value="1" hidden />
+
+            <div class="raw-md-4">
+                <label asp-for="BuNotes" class="form-label fs-5">ملاحظات</label>
+                <textarea asp-for="BuNotes" class="form-control" rows="3" placeholder="أكتب أي ملاحظات أخرى" id="BuNotes"></textarea>
+            </div>
+
+            <div class="pt-4">
+                <div class="row justify-content-end">
+                    <div class="col-sm-7">
+                        <button type="submit" class="btn btn-primary me-1 me-sm-2"
+                                asp-action="BuildingsData" asp-controller="CreateFacility">
+                            أضافة
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="table-responsive text-nowrap mt-5 " style="width:100%;">
+                <table class="table" id="BuTable">
+                    <thead>
+                        <tr>
+                            <td>رقم المبنى</td>
+                            <td>ملكية المبنى</td>
+                            <td>وصف المبنى</td>
+                            <td>موقع المبنى</td>
+                            <td>نوعية البناء</td>
+                            <td>طول المبنى</td>
+                            <td>عرض المبنى</td>
+                            <td>ارتفاع المبنى</td>
+                            <td>مساحة المبنى</td>
+                            <td> ملاحظات </td>
+                            <td>إجراءات</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (GetAllBuildings is not null)
+                        {
+                            @foreach (var item in GetAllBuildings)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>@item.Cel1</td>
+                                    <td>@item.Cel2</td>
+                                    <td>@item.Cel3</td>
+                                    <td>@item.Cel4</td>
+                                    <td>@item.Cel5</td>
+                                    <td>@item.Cel6</td>
+                                    <td>@item.Cel7</td>
+                                    <td>@item.Cel8</td>
+                                    <td>@item.Cel9</td>
+                                    <td>
+                                        <a asp-action="DeleteBuildings" asp-controller="CreateFacility" asp-route-Id="@item.Id"
+                                   class="btn btn-outline-danger p1-3 pr-3 py-1">
+                                            <i class="bx bx-trash ms-1 ms-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                counter = counter + 1;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr class="mx-n4 my-4" />
+
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col justify-content-center">
+            <a href="@Url.Action("FacilityMainData","CreateFacility")" type="button" class="btn btn-label-secondary">السابق</a>
+            <button type="submit" class="btn btn-primary me-1 me-sm-2"
+                    asp-action="BuildingsNext" asp-controller="CreateFacility">
+                التالي
+            </button>
+
+        </div>
+
+
+    </div>
+
+</form>

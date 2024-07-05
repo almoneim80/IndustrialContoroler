@@ -1,0 +1,272 @@
+﻿@using IndustrialContoroler.ViewModel
+
+@inject UserManager<AppUsers> _userManager
+@inject SignInManager<AppUsers> _signInManager
+@model   profileVM
+@inject RoleManager<IdentityRole> _roleManager
+@inject IndustrialContorolerDatabaseContext _context
+@inject IHttpContextAccessor _sessions
+
+
+<div class="card mb-4 ms-3 me-3">
+    <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 "><img class="me-3" src="~/img/report25.png" alt="">  بيانات المستخدم </h3>
+
+
+
+    <section class="section profile">
+        <div class="row">
+            <div class="col-xl-4 ">
+
+                <div class="card h-100 ">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+                        <img src="@Helper.PathImageuser/@ViewData["imageName"]" alt="Profile" class="rounded-circle"
+                             height="200"
+                             width="200">
+                        <h2 class="p-2" style="font-family: 'Almarai', sans-serif; font-size:20px;">@ViewData["FullName"]</h2>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-8">
+
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <!-- Bordered Tabs -->
+                        <ul style="font-family: 'Almarai', sans-serif; font-size:18px;" class="nav nav-tabs nav-tabs-bordered">
+
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">التفاصيل</button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" asp-route-Id="@Model.NewPro.Id">تعديل البروفايل</button>
+                            </li>
+
+
+                            @*<li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" onclick="ChangePassword('@ViewBag.userID')" >تعديل كلمة المرور </button>
+                                </li>*@
+
+                        </ul>
+                        <div class="tab-content pt-2">
+
+                            <div style="font-family: 'Cairo', sans-serif; font-size:16px;" class="tab-pane fade show active profile-overview" id="profile-overview">
+
+
+                                <div class="card-body">
+                                    <ul class="list-unstyled mt-3 mb-4">
+                                        <li class="d-flex align-items-center mb-3">
+                                            <i class="bx bx-user"></i><span class="fw-semibold mx-2">الأسم الكامل:</span>
+                                            <span>@ViewData["FullName"]</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-3">
+                                            <i class="bx bx-star"></i><span class="fw-semibold mx-2">اسم المستخدم:</span> <span>
+                                                @ViewData["UserName"]
+                                            </span>
+                                        </li>
+
+                                        <li class="d-flex align-items-center mb-3">
+                                            <i class="bx bx-phone"></i><span class="fw-semibold mx-2">رقم التلفون:</span>
+                                            <span>@ViewData["PhoneNumber"]</span>
+                                        </li>
+
+                                        <li class="d-flex align-items-center mb-3">
+                                            <i class="bx bx-envelope"></i><span class="fw-semibold mx-2">الايميل:</span>
+                                            <span> @ViewData["Email"]</span>
+                                        </li>
+
+
+
+                                    </ul>
+
+
+                                </div>
+
+
+                            </div>
+
+                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+
+                                <!-- Profile Edit Form -->
+
+                                <div class="card mb-4">
+
+                                    <div class="card-body">
+                                        <form style="font-family: 'Cairo', sans-serif; font-size:16px;" asp-action="ProFile" asp-controller="Account" method="post" enctype="multipart/form-data">
+
+                                            <div class="p-2 gap-4 d-flex align-items-start align-items-sm-center">
+                                                <img src="@Helper.PathImageuser/@Model.NewPro.ImageUser"
+                                                     alt="user-avatar"
+                                                     class="d-block rounded"
+                                                     height="100"
+                                                     width="100" />
+                                                <div class="button-wrapper">
+                                                    <label asp-for="NewPro.ImageUser" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                                        <span class="d-none d-sm-block" asp-validation-for="NewPro.ImageUser">أضف صورة جديدة</span>
+                                                        <i class="bx bx-upload d-sm-none d-block"></i>
+                                                        <input type="file"
+                                                               asp-for="NewPro.ImageUser"
+                                                               class="account-file-input"
+                                                               hidden />
+                                                    </label>
+                                                    <button type="button" class="btn btn-label-secondary account-image-reset mb-4">
+                                                        <i class="bx bx-reset d-sm-none d-block"></i>
+                                                        <span class="d-none d-sm-block">الغاء</span>
+                                                    </button>
+
+                                                    <p class="mb-0">يسمح بالأمتدادات التالية JPG, GIF او PNG. اعلى حجم 800K</p>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row ">
+                                                <div class="col-md-6 mb-3">
+                                                    <input type="text" hidden class="form-control" asp-for="NewPro.Id" />
+                                                    <input type="text" hidden class="form-control" asp-for="NewPro.ImageUser" />
+                                                    <label asp-for="NewPro.FullName" class="form-label">الأسم الكامل </label>
+                                                    <input class="form-control"
+                                                           type="text"
+                                                           asp-for="NewPro.FullName"
+                                                           autofocus />
+                                                    <span class="alert-danger" asp-validation-for="NewPro.FullName"></span>
+                                                </div>
+
+                                                @* <div class="col-md-6 mb-3">
+                                                    <label class="form-label" asp-for="NewPro.UserName">اسم المستخدم</label>
+                                                    <input class="form-control" asp-for="NewPro.UserName" type="text" />
+                                                    <span class="alert-danger" asp-validation-for="NewPro.UserName"></span>
+
+                                                    </div>*@
+
+
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label" asp-for="NewPro.Email">البريد الإلكتروني</label>
+                                                    <input class="form-control"
+                                                           type="text"
+                                                           asp-for="NewPro.Email" />
+                                                    <span class="alert-danger" asp-validation-for="NewPro.Email"></span>
+
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label" asp-for="NewPro.PhoneNumber">رقم التلفون</label>
+                                                    <div class="input-group input-group-merge">
+                                                        <span class="input-group-text">Ye (+967)</span>
+                                                        <input type="tel" maxlength="9"
+                                                               asp-for="NewPro.PhoneNumber"
+                                                               class="form-control" />
+                                                        <span class="alert-danger" asp-validation-for="NewPro.PhoneNumber"></span>
+
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+                                            <div class="mt-2">
+                                                <input type="submit" class="btn btn-primary me-2" value="@ResourceWeb.lbbtnSave" />
+                                                <button type="reset" class="btn btn-label-secondary">الغاء</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- /Account -->
+                                </div>
+
+
+
+                            </div>
+
+
+
+                            @*<div class="tab-pane fade pt-3" id="profile-change-password">
+
+
+                                <form style="font-family: 'Cairo', sans-serif; font-size:16px;" asp-action="ChangePasswordprofile" asp-controller="Account" method="post">
+
+                                    <div class="row mb-3">
+                                        <label asp-for="ChangePasswordPf.OldPassword" class="col-md-4 col-lg-3 col-form-label"> كلمة المرور الحالية</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input type="password" class="form-control" asp-for="ChangePasswordPf.OldPassword">
+                                        </div>
+                                        <span asp-validation-for="ChangePasswordPf.ComparePassword" class="text-danger"></span>
+
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label asp-for="ChangePasswordPf.NewPassword" class="col-md-4 col-lg-3 col-form-label">كلمة المرور الجديديه </label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input type="password" asp-for="ChangePasswordPf.NewPassword" class="form-control">
+                                        </div>
+                                        <span asp-validation-for="ChangePasswordPf.NewPassword" class="text-danger"></span>
+
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label asp-for="ChangePasswordPf.ComparePassword" class="col-md-4 col-lg-3 col-form-label">تاكيد كلمة المرور</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input type="password" asp-for="ChangePasswordPf.ComparePassword" class="form-control">
+                                        </div>
+                                        <span asp-validation-for="ChangePasswordPf.ComparePassword" class="text-danger"></span>
+
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">حفظ الباسورد</button>
+                                    </div>
+                                </form><!-- End Change Password Form -->
+
+
+                            </div>*@
+
+                        </div><!-- End Bordered Tabs -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+
+
+</div>
+
+
+
+@section Scripts{
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+    {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+        text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+        confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'success'
+    });
+</script>
+
+        }
+        else
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+        text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+        confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'error'
+    });
+</script>
+        }
+        _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+    }
+
+<script src="~/Modules/profile.js"></script>
+  }

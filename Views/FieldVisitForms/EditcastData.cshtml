@@ -1,0 +1,77 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model CastDatum;
+@inject IRepository<CastDatum> CastData;
+@inject IndustrialContorolerDatabaseContext db;
+
+@{
+   var faId = ViewData["FaId"];
+    var faNumber = db.Facilities.Where(fa => fa.FaId.Equals(faId) && fa.IsDeleted == false).Select(x => x.FaNumber).FirstOrDefault();
+    var castData = db.CastData.Where(x => x.FaId.Equals(ViewData["FaId"]) && x.IsDeleted.Equals(false)).ToList();
+}
+
+
+<div class="col-xxl " data-select2-id="30" id="statistic_2">
+    <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+        <h5 style="background-color: rgb(82, 134, 203); color: azure;" class="card-header">تعديل بيانات المدلي الخاص بالمنشأة رقم @faNumber</h5>
+
+        <form method="post" class=" mb-4 mt-3 ms-3 me-3">
+            <div class="d-flex justify-content-between">
+              @foreach (var item in castData)
+                {
+                      <div class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="CdName" class="form-label fs-5">اسم المدلي</label>
+                        <input asp-for="CdName" class="form-control" placeholder="اسم المدلي" value="@item.CdName"/>
+                        <span asp-validation-for="CdName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="CdJob" class="form-label fs-5">الوظيفة</label>
+                        <input asp-for="CdJob" class="form-control" placeholder="الوظيفة" value="@item.CdJob"/>
+                        <span asp-validation-for="CdJob" class="text-danger"></span>
+                    </div>
+
+                    <div class="col -md-4">
+                        <label asp-for="CdPhoneNumber" class="form-label fs-5">رقم الهاتف</label>
+                        <input asp-for="CdPhoneNumber" class="form-control" placeholder="رقم الهاتف" value="@item.CdPhoneNumber" />
+                        <span asp-validation-for="CdPhoneNumber" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <label asp-for="CdIdCardNumber" class="form-label fs-5">رقم البطاقة الشخصية</label>
+                        <input asp-for="CdIdCardNumber" class="form-control" placeholder="رقم البطاقة الشخصية" value="@item.CdIdCardNumber"/>
+                        <span asp-validation-for="CdIdCardNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="CdCardPlaceIssu" class="form-label fs-5">مكان  إصدار البطاقة</label>
+                        <input asp-for="CdCardPlaceIssu" class="form-control" placeholder="مكان إصدار البطاقة" value="@item.CdCardPlaceIssu"/>
+                        <span asp-validation-for="CdCardPlaceIssu" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <label asp-for="CdCardIssuDate" class="form-label fs-5">تاريخ البطاقة</label>
+                        <input asp-for="CdCardIssuDate" class="form-control" placeholder="تاريخ البطاقة" value="@item.CdCardIssuDate"/>
+                        <span asp-validation-for="CdCardIssuDate" class="text-danger"></span>
+                    </div>
+
+
+                    <input asp-for="FaId" class="form-control" hidden value="@item.FaId"/>
+                    <input asp-for="CdId" class="form-control" hidden value="@item.CdId"/>
+
+                    <div class="col justify-content-center">
+                        <button type="submit" class="btn btn-primary me-1 me-sm-2"
+                                asp-action="EditcastData" asp-controller="FieldVisitForms">
+                            تعديل
+                        </button>
+                    </div>
+
+                </div>
+                }
+            </div>
+        </form>
+    </div>
+</div>

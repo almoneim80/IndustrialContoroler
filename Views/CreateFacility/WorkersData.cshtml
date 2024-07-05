@@ -1,0 +1,515 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model Worker;
+@inject IRepository<Temporary> workers;
+
+
+    @if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+@if (TempData.ContainsKey("success"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("ExFileNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["ExFileNull"]</div>
+}
+@if (TempData.ContainsKey("InsertNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["InsertNull"]</div>
+}
+
+@{
+    //get all buildings from Temporary table to show them in table.
+    var GetAllWorkers = workers.GetAll().Where(Bu => Bu.TblDesc == "worker").ToList();
+    //for number of buildings in table.
+    int counter = 1;
+}
+
+<form method="post" class="card mb-4 ms-3 me-3" enctype="multipart/form-data" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+    <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 ">بيانات العمالة </h3>
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between mt-1">
+            <div class="float-start">
+            </div>
+            <div class="float-end">
+                <button type="button"
+                        class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCenter" style="font-family: 'Almarai', sans-serif; font-size:18px;">رفع ملف اكسل</a></li>
+                        <li><a class="dropdown-item" href="~/ExcelTempletsFiles/Worker.xlsx" download style="font-family: 'Almarai', sans-serif; font-size:18px;">تنزيل ملف البيانات</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle">بيانات العمالة</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="nameWithTitle" class="form-label">ملف الاكسل</label>
+                                        <input class="form-control" type="file" name="FormFile" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="ImportExcelFileWO" asp-controller="CreateFacility" class="btn btn-primary">تأكيد</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+      
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="WoType" class="form-label fs-5">نوعية العمالة</label>
+                <input asp-for="WoType" class="form-control" placeholder="نوعية العاملين" />
+                <span asp-validation-for="WoType" class="text-danger"></span>
+                @if (TempData.ContainsKey("WoTypeError"))
+                {
+
+                    <span class="text-danger">@TempData["WoTypeError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="WoTotal" class="form-label fs-5">العدد الاجمالي</label>
+                <input asp-for="WoTotal" class="form-control" placeholder="العدد الاجمالي للعمالة" />
+                <span asp-validation-for="WoTotal" class="text-danger"></span>
+                @if (TempData.ContainsKey("WoTotalError"))
+                {
+
+                    <span class="text-danger">@TempData["WoTotalError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="WoMaleNumber" class="form-label fs-5">عدد الذكور</label>
+                <input asp-for="WoMaleNumber" class="form-control" placeholder="عدد الذكور" />
+                <span asp-validation-for="WoMaleNumber" class="text-danger"></span>
+                @if (TempData.ContainsKey("WoMaleNumberError"))
+                {
+
+                    <span class="text-danger">@TempData["WoMaleNumberError"]</span>
+                }
+            </div>
+
+
+            <div class="col-md-4">
+                <label asp-for="WoFemaleNumber" class="form-label fs-5">عدد الاناث</label>
+                <input asp-for="WoFemaleNumber" class="form-control" placeholder="عدد الاناث" />
+                <span asp-validation-for="WoFemaleNumber" class="text-danger"></span>
+                @if (TempData.ContainsKey("WoFemaleNumberError"))
+                {
+
+                    <span class="text-danger">@TempData["WoFemaleNumberError"]</span>
+                }
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label asp-for="WoEduQualifying" class="form-label fs-5">المؤهل التعليمي</label>
+                    <select asp-for="WoEduQualifying" class="select2 form-select form-select-lg fs-5">
+                        <option value=Null disabled selected hidden>حدد المؤهل التعليمي</option>
+                        <option value="ثانوية عامه">ثانوية عامه</option>
+                        <option value="بكالوريوس">بكالوريوس</option>
+                        <option value="ماجستير">ماجستير</option>
+                        <option value="دكتوراه">دكتوراه</option>
+                        <option value="لايوجد">لايوجد</option>
+                    </select>
+                    <span asp-validation-for="WoEduQualifying" class="text-danger"></span>
+                    @if (TempData.ContainsKey("WoEduQualifyingError"))
+                    {
+
+                        <span class="text-danger">@TempData["WoEduQualifyingError"]</span>
+                    }
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <label asp-for="WoSpecialization" class="form-label fs-5">التخصص</label>
+                <input asp-for="WoSpecialization" class="form-control" placeholder="التخصص" />
+                <span asp-validation-for="WoSpecialization" class="text-danger"></span>
+                @if (TempData.ContainsKey("WoSpecializationError"))
+                    {
+
+                        <span class="text-danger">@TempData["WoSpecializationError"]</span>
+                    }
+            </div>
+
+
+            <div class="col-md-4">
+                <label asp-for="WoNationality" class="form-label fs-5">جنسية العمالة</label>
+                <select asp-for="WoNationality" class="select2 form-select form-select-lg fs-5">
+                    <option value=Null disabled selected hidden>حدد جنيسة العمالة</option>
+                    <option value="اليمن">اليمن</option>
+                    <option value="الجزائر">الجزائر</option>
+                    <option value="الجزائر">البحرين</option>
+                    <option value="مصر">مصر</option>
+                    <option value="العراق">العراق</option>
+                    <option value="الأردن">الأردن</option>
+                    <option value="الأردن">الكويت</option>
+                    <option value="لبنان">لبنان</option>
+                    <option value="ليبيا">ليبيا</option>
+                    <option value="المغرب">المغرب</option>
+                    <option value="عُمان">عُمان</option>
+                    <option value="فلسطين">فلسطين</option>
+                    <option value="الإمارات العربية المتحدة">الإمارات العربية المتحدة</option>
+                    <option value="تونس">تونس</option>
+                    <option value="سوريا">سوريا</option>
+                    <option value="السودان">السودان</option>
+                    <option value="جنوب السودان">جنوب السودان</option>
+                    <option value="المملكة العربية السعودية">المملكة العربية السعودية</option>
+                    <option value="قطر">قطر</option>
+                    <option value="الصومال">الصومال</option>
+                    <option value="جيبوتي">جيبوتي</option>
+                    <option value="جزر أولان">جزر أولان</option>
+                    <option value="ألبانيا">ألبانيا</option>
+                    <option value="ساموا الأمريكية">ساموا الأمريكية</option>
+                    <option value="أندورا">أندورا</option>
+                    <option value="أنغولا">أنغولا </option>
+                    <option value="أنغويلا">أنغويلا </option>
+                    <option value="أنتاركتيكا">أنتاركتيكا </option>
+                    <option value="AG">أنتيغوا وبربودا</option>
+                    <option value="AR">الأرجنتين</option>
+                    <option value="AM">أرمينيا</option>
+                    <option value="AW">اوروبا</option>
+                    <option value="AU">أستراليا</option>
+                    <option value="AT">النمسا</option>
+                    <option value="AZ">أذربيجان</option>
+                    <option value="BS">الباهاما</option>
+                    <option value="BD">بنجلاديش</option>
+                    <option value="BB">بربادوس</option>
+                    <option value="BY">روسيا البيضاء</option>
+                    <option value="BE">بلجيكا</option>
+                    <option value="BZ">بليز </option>
+                    <option value="BJ">بنين</option>
+                    <option value="BM">برمودا</option>
+                    <option value="BT">بوتان</option>
+                    <option value="BO">بوليفيا </option>
+                    <option value="BQ">هولندا الكاريبية</option>
+                    <option value="BA">البوسنة والهرسك</option>
+                    <option value="BW">بتسوانا</option>
+                    <option value="BV">جزيرة بوفيه</option>
+                    <option value="BR">البرازيل</option>
+                    <option value="IO">الإقليم البريطاني في المحيط الهندي</option>
+                    <option value="BN">بروناي</option>
+                    <option value="BG">بلغاريا</option>
+                    <option value="BF">بوركينا فاسو</option>
+                    <option value="BI">بوروندي</option>
+                    <option value="KH">كمبوديا</option>
+                    <option value="CM">الكاميرون</option>
+                    <option value="CA">كندا</option>
+                    <option value="CV">الرأس الأخضر</option>
+                    <option value="KY">جزر الكايمن</option>
+                    <option value="CF">جمهورية أفريقيا الوسطى</option>
+                    <option value="TD">تشاد</option>
+                    <option value="CL">شيلي</option>
+                    <option value="CN">الصين</option>
+                    <option value="CX">جزيرة الكريسماس</option>
+                    <option value="CC">جزر كوكوس</option>
+                    <option value="CO">كولومبيا</option>
+                    <option value="KM">جزر القمر</option>
+                    <option value="CG">الكونغو - برازافيل</option>
+                    <option value="CD">الكونغو - كينشاسا</option>
+                    <option value="CK">جزر كوك</option>
+                    <option value="CR">كوستاريكا</option>
+                    <option value="CI">ساحل العاج</option>
+                    <option value="HR">كرواتيا</option>
+                    <option value="CU">كوبا</option>
+                    <option value="CW">كوراساو</option>
+                    <option value="CY">قبرص</option>
+                    <option value="CZ">جمهورية التشيك</option>
+                    <option value="DK">الدنمارك</option>
+                    <option value="DM">دومينيكا</option>
+                    <option value="DO">جمهورية الدومينيك</option>
+                    <option value="EC">الإكوادور</option>
+                    <option value="SV">السلفادور</option>
+                    <option value="GQ">غينيا الإستوائية</option>
+                    <option value="ER">أريتريا</option>
+                    <option value="EE">أستونيا</option>
+                    <option value="ET">إثيوبيا</option>
+                    <option value="FK">جزر فوكلاند</option>
+                    <option value="FO">جزر فارو</option>
+                    <option value="FJ">فيجي</option>
+                    <option value="FI">فنلندا</option>
+                    <option value="FR">فرنسا</option>
+                    <option value="GF">غويانا الفرنسية</option>
+                    <option value="PF">بولينيزيا الفرنسية</option>
+                    <option value="TF">المقاطعات الجنوبية الفرنسية</option>
+                    <option value="GA">الغابون</option>
+                    <option value="GM">غامبيا</option>
+                    <option value="GE">جورجيا</option>
+                    <option value="DE">ألمانيا</option>
+                    <option value="GH">غانا</option>
+                    <option value="GI">جبل طارق</option>
+                    <option value="GR">اليونان</option>
+                    <option value="GL">غرينلاند</option>
+                    <option value="GD">غرينادا</option>
+                    <option value="GP">جوادلوب</option>
+                    <option value="GU">غوام</option>
+                    <option value="GT">غواتيمالا</option>
+                    <option value="GG">غيرنزي</option>
+                    <option value="GN">غينيا</option>
+                    <option value="GW">غينيا بيساو</option>
+                    <option value="GY">غيانا </option>
+                    <option value="HT">هايتي</option>
+                    <option value="HM">جزيرة هيرد وجزر ماكدونالد</option>
+                    <option value="VA">الفاتيكان</option>
+                    <option value="HN">هندوراس</option>
+                    <option value="HK">هونغ كونغ</option>
+                    <option value="HU">هنغاريا</option>
+                    <option value="IS">أيسلندا</option>
+                    <option value="IN">الهند</option>
+                    <option value="ID">أندونيسيا</option>
+                    <option value="IR">ایران</option>
+                    <option value="IE">أيرلندا</option>
+                    <option value="IM">جزيرة مان</option>
+                    <option value="IT">إيطاليا</option>
+                    <option value="JM">جامايكا</option>
+                    <option value="JP">اليابان</option>
+                    <option value="JE">جيرسي</option>
+                    <option value="KZ">كازاخستان</option>
+                    <option value="KE">كينيا </option>
+                    <option value="KI">كيريباتي </option>
+                    <option value="KP">كوريا الشمالية</option>
+                    <option value="KR">كوريا الجنوبية </option>
+                    <option value="KG">قرغيزستان</option>
+                    <option value="LA">لاوس</option>
+                    <option value="LV">لاتفيا</option>
+                    <option value="LS">ليسوتو</option>
+                    <option value="LR">ليبيريا</option>
+                    <option value="LI">ليختنشتاين</option>
+                    <option value="LT">ليتوانيا</option>
+                    <option value="LU">لوكسمبورغ</option>
+                    <option value="MO">مكاو</option>
+                    <option value="MK">مقدونيا</option>
+                    <option value="MG">مدغشقر</option>
+                    <option value="MW">ملاوي</option>
+                    <option value="MY">ماليزيا</option>
+                    <option value="MV">جزر المالديف</option>
+                    <option value="ML">مالي </option>
+                    <option value="MT">مالطا</option>
+                    <option value="MH">جزر المارشال</option>
+                    <option value="MQ">مارتينيك</option>
+                    <option value="MR">موريتانيا</option>
+                    <option value="MU">موريشيوس</option>
+                    <option value="YT">مايوت</option>
+                    <option value="MX">المكسيك</option>
+                    <option value="FM">ميكرونيزيا </option>
+                    <option value="MD">مولدافيا</option>
+                    <option value="MC">موناكو</option>
+                    <option value="MN">منغوليا</option>
+                    <option value="ME">الجبل الأسود</option>
+                    <option value="MS">مونتسرات </option>
+                    <option value="MZ">موزمبيق</option>
+                    <option value="MM">ميانمار -بورما</option>
+                    <option value="NA">ناميبيا </option>
+                    <option value="NR">ناورو</option>
+                    <option value="NP">نيبال </option>
+                    <option value="NL">هولندا</option>
+                    <option value="NC">كاليدونيا الجديدة</option>
+                    <option value="NZ">نيوزيلاندا</option>
+                    <option value="NI">نيكاراغوا</option>
+                    <option value="NE">النيجر </option>
+                    <option value="NG">نيجيريا</option>
+                    <option value="NU">نيوي</option>
+                    <option value="NF">جزيرة نورفوك</option>
+                    <option value="MP">جزر ماريانا الشمالية </option>
+                    <option value="NO">النرويج</option>
+                    <option value="PK">باكستان</option>
+                    <option value="PW">بالاو</option>
+                    <option value="PA">بنما</option>
+                    <option value="PG">بابوا غينيا الجديدة</option>
+                    <option value="PY">باراغواي </option>
+                    <option value="PE">بيرو  </option>
+                    <option value="PH">الفيلبين  </option>
+                    <option value="PN">جزر بيتكيرن </option>
+                    <option value="PL">بولندا  </option>
+                    <option value="PT">البرتغال  </option>
+                    <option value="PR">بورتوريكو </option>
+                    <option value="RE">روينيون  </option>
+                    <option value="RO">رومانيا  </option>
+                    <option value="RU">روسيا  </option>
+                    <option value="RW">رواندا  </option>
+                    <option value="BL">سان بارتليمي  </option>
+                    <option value="SH">سانت هيلنا </option>
+                    <option value="KN">سانت كيتس ونيفيس  </option>
+                    <option value="LC">سانت لوسيا  </option>
+                    <option value="MF">سانت مارتن  </option>
+                    <option value="PM">سانت بيير وميكولون  </option>
+                    <option value="VC">سانت فنسنت وغرنادين </option>
+                    <option value="WS">ساموا </option>
+                    <option value="SM">سان مارينو </option>
+                    <option value="ST">ساو تومي وبرينسيبي </option>
+                    <option value="SN">السنغال  </option>
+                    <option value="RS">صربيا </option>
+                    <option value="SC">سيشل </option>
+                    <option value="SL">سيراليون </option>
+                    <option value="SG">سنغافورة  </option>
+                    <option value="SX">سينت مارتن  (</option>
+                    <option value="SK">سلوفاكيا  </option>
+                    <option value="SI">سلوفينيا </option>
+                    <option value="SB">جزر سليمان </option>
+                    <option value="ZA">جنوب أفريقيا</option>
+                    <option value="GS">جورجيا الجنوبية وجزر ساندويتش الجنوبية</option>
+                    <option value="ES">إسبانيا </option>
+                    <option value="LK">سريلانكا</option>
+                    <option value="SR">سورينام</option>
+                    <option value="SJ">سفالبارد وجان مايان</option>
+                    <option value="SZ">سوازيلاند </option>
+                    <option value="SE">السويد</option>
+                    <option value="CH">سويسرا</option>
+                    <option value="TW">تايوان</option>
+                    <option value="TJ">طاجكستان</option>
+                    <option value="TZ">تانزانيا </option>
+                    <option value="TH">تايلند</option>
+                    <option value="TL">تيمور الشرقية</option>
+                    <option value="TG">توجو</option>
+                    <option value="TK">توكيلو</option>
+                    <option value="TO">تونغا</option>
+                    <option value="TT">ترينيداد وتوباغو</option>
+                    <option value="TR">تركيا </option>
+                    <option value="TM">تركمانستان </option>
+                    <option value="TC">جزر الترك وجايكوس</option>
+                    <option value="TV">توفالو</option>
+                    <option value="UG">أوغندا</option>
+                    <option value="UA">أوكرانيا</option>
+                    <option value="GB">المملكة المتحدة </option>
+                    <option value="US">الولايات المتحدة </option>
+                    <option value="UM">جزر الولايات المتحدة البعيدة الصغيرة</option>
+                    <option value="UY">أورغواي</option>
+                    <option value="UZ">أوزبكستان </option>
+                    <option value="VU">فانواتو </option>
+                    <option value="VE">فنزويلا </option>
+                    <option value="VN">فيتنام</option>
+                    <option value="VG">جزر فرجين البريطانية</option>
+                    <option value="VI">جزر فرجين الأمريكية</option>
+                    <option value="WF">جزر والس وفوتونا</option>
+                    <option value="EH">الصحراء الغربية</option>
+                    <option value="ZM">زامبيا</option>
+                    <option value="ZW">زيمبابوي</option>
+                </select>
+                <span asp-validation-for="WoNationality" class="text-danger"></span>
+                @if (TempData.ContainsKey("WoNationalityError"))
+                    {
+
+                        <span class="text-danger">@TempData["WoNationalityError"]</span>
+                    }
+            </div>
+
+
+            <input asp-for="FaId" value="1" hidden />
+
+
+            <div class="col-md-8">
+                <label asp-for="WoNotes" class="form-label fs-5">ملاحظات</label>
+                <textarea asp-for="WoNotes" class="form-control" rows="1" placeholder="أكتب أي ملاحظات أخرى"></textarea>
+            </div>
+
+            <div class="pt-4">
+                <div class="row justify-content-end">
+                    <div class="col-sm-7">
+                        <button type="submit" class="btn btn-primary me-1 me-sm-2" asp-action="WorkersData" asp-controller="CreateFacility">أضافة</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="table-responsive text-nowrap mt-5 " style="width:100%;">
+                <table class="table" id="WoTable">
+                    <thead>
+                        <tr>
+                            <td>رقم العمالة</td>
+                            <td>نوع العمالة</td>
+                            <td>العدد الاجمالي</td>
+                            <td>الجنسية</td>
+                            <td>عدد الذكور</td>
+                            <td>عدد الاناث</td>
+                            <td>المؤهل التعليمي</td>
+                            <td>التخصص</td>
+                            <td> ملاحظات </td>
+                            <td>إجراءات</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (GetAllWorkers is not null)
+                        {
+                            @foreach (var item in GetAllWorkers)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>@item.Cel1</td>
+                                    <td>@item.Cel3</td>
+                                    <td>@item.Cel2</td>
+                                    <td>@item.Cel4</td>
+                                    <td>@item.Cel5</td>
+                                    <td>@item.Cel6</td>
+                                    <td>@item.Cel7</td>
+                                    <td>@item.Cel8</td>
+                                    <td>
+                                        <a asp-action="DeleteWorkers" asp-controller="CreateFacility" asp-route-Id="@item.Id"
+                                   class="btn btn-outline-danger p1-3 pr-3 py-1">
+                                            <i class="bx bx-trash ms-1 ms-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                counter = counter + 1;
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+
+
+        <hr class="mx-n4 my-4" />
+
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col justify-content-center">
+            <a href="@Url.Action("BuildingsData","CreateFacility")" type="button" class="btn btn-label-secondary">السابق</a>
+            <button type="submit" class="btn btn-primary me-1 me-sm-2" asp-action="WorkersNext" asp-controller="CreateFacility">التالي</button>
+        </div>
+
+
+    </div>
+
+</form>
+

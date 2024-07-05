@@ -1,0 +1,220 @@
+﻿@inject IndustrialContorolerDatabaseContext db
+@inject IHttpContextAccessor _sessions
+@{
+    var Requests = db.Requests.Where(c => c.ReDate >= DateTime.Now.AddMonths(-3) && c.IsDeleted == false); // اختيار شهر العرض
+    var DoneRequests = db.Facilities.Where(c => c.IsDeleted == false);
+}
+
+<script src="~/js/canvasjs.min.js"></script>
+<script src="~/js~/js/jquery-1.11.1.min.js"></script>
+
+<script>
+    window.onload = function() {
+        var them;
+        var back
+        if ($('html').hasClass('dark-style')) {
+            them = "dark1";
+            back = "#283144"
+        }
+        var chart1 = new CanvasJS.Chart("chartGoverment", {
+            animationEnabled: true,
+            theme: them, // "light1", "light2", "dark1", "dark2"
+            backgroundColor: back,
+            title: {
+                text: ""
+            },
+            data: [{
+                type: "doughnut",
+                startAngle: 60,
+                indexLabelFontSize: 16,
+                indexLabel: " {label} - {y}",
+                toolTipContent: "<b> {label}: </b> {y}",
+                dataPoints: @Html.Raw(ViewBag.VewGoverment)
+                        }]
+        });
+        showDefaultText(chart1, " لا توجد بيانات ");
+        chart1.render();
+        ////////////////////////////////////////////////////////
+
+        var chart2 = new CanvasJS.Chart("chartreq", {
+            animationEnabled: true,
+            exportEnabled: false,
+
+            theme: them, // "light1", "light2", "dark1", "dark2"
+            backgroundColor: back,
+            data: [{
+                type: "column",
+                indexLabel: "{y}",
+                indexLabelFontSize: 15,
+                dataPoints: @Html.Raw(ViewBag.VewRequst)
+                            }]
+        });
+
+        showDefaultText(chart2, " لا توجد بيانات ");
+        chart2.render();
+
+
+        ////////////////////////////////////////////////////////
+
+        var chart3 = new CanvasJS.Chart("chartMode", {
+            animationEnabled: true,
+            theme: them, // "light1", "light2", "dark1", "dark2"
+            backgroundColor: back, title: {
+                text: ""
+            },
+            axisY: {
+                scaleBreaks: {
+                    autoCalculate: true,
+                    type: "wavy",
+                    lineColor: "black"
+                },
+                gridThickness: 0,
+            },
+            data: [{
+                type: "column",
+                indexLabel: "{y} منشئات",
+                dataPoints: @Html.Raw(ViewBag.VewMode)
+                    }]
+        });
+        showDefaultText(chart3, "لا توجد بيانات ");
+        chart3.render();
+    }
+
+
+
+    function showDefaultText(chart, text) {
+
+        var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
+
+        if (!chart.options.subtitles)
+            (chart.options.subtitles = []);
+
+        if (isEmpty)
+            chart.options.subtitles.push({
+                text: text,
+                verticalAlign: 'center',
+            });
+        else
+            (chart.options.subtitles = []);
+    }
+</script>
+
+
+
+<div id="gover" class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="row m-0">
+            <!------------------------------- عدد المنشأت الصناعية حسب المحافظات  ---------------------------->
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
+                <div class="card h-80 py-2">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 style="font-family: 'Almarai', sans-serif; font-size:20px;" class="card-title mb-0 text-center">عدد المنشأت الصناعية حسب المحافظات</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="chartGoverment" style="height: 390px; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+            <!------------------------------- /عدد المنشأت ---------------------------->
+            <!--------------------------------- الطلبات الواردة --------------------------------->
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 ">
+                <div class="card h-80">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 style="font-family: 'Almarai', sans-serif; font-size:20px;" class="card-title mb-0 text-center">الطلبات الواردة</h5>
+                    </div>
+                    <div class="card-body">
+                            <div style="font-family: 'Almarai', sans-serif; font-size:15px;" class="d-flex flex-wrap justify-content-around align-items-center mb-4">
+                                <div class="user-analytics text-center me-2">
+                                    <i class="bx bx-file me-1"></i>
+                                    <span>عدد الطلبات المنجزة </span>
+                                    <div class="d-flex align-items-center mt-2">
+                                        <div class="chart-report" data-color="success" data-series="100"></div>
+
+                                        <h3 class="mb-0">
+                                            @DoneRequests.Count()
+                                        </h3>
+                                    </div>
+                                </div>
+
+                                <div class="user-analytics text-center me-2">
+                                    <i class="bx bx-file me-1"></i>
+                                    <span>عدد الطلبات الغير منجزة </span>
+                                    <div class="d-flex align-items-center mt-2">
+                                        <div class="chart-report" data-color="warning" data-series="100"></div>
+
+                                        <h3 class="mb-0">
+                                             @Requests.Count(x => x.ReRequestState == 1 || x.ReRequestState == 2)
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="user-analytics text-center me-2">
+                                    <span> خلال المدة الزمنية</span>
+                                    <div class="d-flex align-items-center mt-2">
+                                        <div class="chart-report" data-color="warning" data-series="100"></div>
+                                        <h3 class="mb-0">3 اشهر</h3>
+                                    </div>
+                                </div>
+
+                            </div>
+                            @* رسم بياني الطلبات *@
+                            <div id="chartreq" style="height: 330px; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+            <!---------------------------------/عدد الطلبات --------------------------------->
+        </div>
+
+
+
+
+        <!---------------------------------- Weekly Order Summary ---------------------------------->
+        <div class="col-12 col-xl-12 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 style="font-family: 'Almarai', sans-serif; font-size:20px;" class="card-title mb-0 text-center">وضع المنشئات التي لها</h5>
+                </div>
+                <div class="row row-bordered m-0">
+                    <!--  تاريخ سير العمليات -->
+                    <div id="chartMode" style="height: 370px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+        <!---------------------------------- /Weekly Order Summary ---------------------------------->
+    </div>
+    <!-- Content wrapper -->
+</div>
+
+
+                    @section Scripts{
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+    {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+        text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+        confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'success'
+    });
+</script>
+
+        }
+        else
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+        text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+        confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'error'
+    });
+</script>
+        }
+        _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+    }
+
+<script src="~/Modules/profile.js"></script>
+  }

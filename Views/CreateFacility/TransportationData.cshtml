@@ -1,0 +1,195 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.FacilityViewModels;
+@using IndustrialContoroler.Models.Repositories;
+@model Transportation;
+@inject IRepository<Temporary> transportation;
+
+
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["Error"]</div>
+}
+
+
+@if (TempData.ContainsKey("success"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-primary ms-3 me-3" role="alert">@TempData["success"]</div>
+}
+
+@if (TempData.ContainsKey("ExFileNull"))
+{
+    //if no data inserted for buildings show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["ExFileNull"]</div>
+}
+@if (TempData.ContainsKey("InsertNull"))
+{
+    //if no data inserted for transportations show this error massege.
+    <div class="alert alert-danger ms-3 me-3" role="alert">@TempData["InsertNull"]</div>
+}
+
+@{
+    //get all transportations from Temporary table to show them in table.
+    var GetAllTransportation = transportation.GetAll().Where(Tr => Tr.TblDesc == "transportation").ToList();
+    //for number of buildings in table.
+    int counter = 1;
+}
+
+<form method="post" class="card mb-4 ms-3 me-3" enctype="multipart/form-data" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+    <h3 style="font-family: 'Almarai', sans-serif; font-size:20px;  background-color: rgb(82, 134, 203); color: azure;" class=" card-header py-3 mb-10 "> بيانات وسائل النقل </h3>
+    <div class="card-body" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+        <div class="d-flex justify-content-between mt-1">
+            <div class="float-start">
+            </div>
+            <div class="float-end">
+                <button type="button"
+                        class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCenter" style="font-family: 'Almarai', sans-serif; font-size:18px;">رفع ملف اكسل</a></li>
+                    <li><a class="dropdown-item" href="~/ExcelTempletsFiles/Transportation.xlsx" download style="font-family: 'Almarai', sans-serif; font-size:18px;">تنزيل ملف البيانات</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle" style="font-family: 'Almarai', sans-serif; font-size:18px;">بيانات وسائل النقل</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="nameWithTitle" class="form-label" style="font-family: 'Almarai', sans-serif; font-size:18px;">ملف الاكسل</label>
+                                        <input class="form-control" type="file" name="FormFile" style="font-family: 'Almarai', sans-serif; font-size:18px;" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal" style="font-family: 'Almarai', sans-serif; font-size:18px;">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="ImportExcelFileTR" asp-controller="CreateFacility" class="btn btn-primary" style="font-family: 'Almarai', sans-serif; font-size:18px;">تأكيد</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <label asp-for="TrType" class="form-label fs-5">نوع وسيلة النقل</label>
+                <input asp-for="TrType" class="form-control" placeholder="نوع وسيلة النقل" />
+                <span asp-validation-for="TrType" class="text-danger"></span>
+                @if (TempData.ContainsKey("TrTypeError"))
+                {
+
+                    <span class="text-danger">@TempData["TrTypeError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="TrPlateNumber" class="form-label fs-5">رقم اللوحة</label>
+                <input asp-for="TrPlateNumber" class="form-control" placeholder="رقم اللوحة" />
+                <span asp-validation-for="TrPlateNumber" class="text-danger"></span>
+                @if (TempData.ContainsKey("TrPlateNumberError"))
+                {
+
+                    <span class="text-danger">@TempData["TrPlateNumberError"]</span>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="TrLoad" class="form-label fs-5" for="multicol-username">الحمولة</label>
+                <input asp-for="TrLoad" class="form-control" placeholder="الحمولة" />
+                <span asp-validation-for="TrLoad" class="text-danger"></span>
+                @if (TempData.ContainsKey("TrLoadError"))
+                {
+
+                    <span class="text-danger">@TempData["TrLoadError"]</span>
+                }
+            </div>
+
+
+            <input asp-for="FaId" value="1" hidden />
+
+
+            <div class="row-md-6">
+                <label asp-for="TrNotes" class="form-label fs-5">ملاحظات</label>
+                <textarea asp-for="TrNotes" class="form-control" rows="1" placeholder="أكتب أي ملاحظات أخرى"></textarea>
+            </div>
+
+            <div class="pt-4">
+                <div class="row justify-content-end">
+                    <div class="col-sm-7">
+                        <button asp-action="TransportationData" asp-controller="CreateFacility" type="submit" class="btn btn-primary me-1 me-sm-2">أضافة</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="table-responsive text-nowrap mt-5 " style="width:100%;">
+                <table class="table" id="MaTable">
+                    <thead>
+                        <tr>
+                            <td>رقم وسيلة النقل</td>
+                            <td>نوع وسيلة النقل</td>
+                            <td>رقم اللوحة</td>
+                            <td>الحمولة</td>
+                            <td> ملاحظات </td>
+                            <td>إجراءات</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (GetAllTransportation is not null)
+                        {
+                            @foreach (var item in GetAllTransportation)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>@item.Cel1</td>
+                                    <td>@item.Cel2</td>
+                                    <td>@item.Cel3</td>
+                                    <td>@item.Cel4</td>
+                                    <td>
+                                        <a asp-action="DeleteTransportationl" asp-controller="CreateFacility" asp-route-Id="@item.Id"
+                                   class="btn btn-outline-danger p1-3 pr-3 py-1">
+                                            <i class="bx bx-trash ms-1 ms-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                counter = counter + 1;
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+
+
+        <hr class="mx-n4 my-4" />
+
+        <div style="font-family: 'Almarai', sans-serif; font-size:16px;" class="col justify-content-center">
+            <a href="@Url.Action("HelpMaterialData","CreateFacility")" type="button" class="btn btn-label-secondary">السابق</a>
+            <button asp-action="TransportationNext" asp-controller="CreateFacility" type="submit" class="btn btn-primary me-1 me-sm-2">التالي</button>
+        </div>
+
+
+    </div>
+</form>

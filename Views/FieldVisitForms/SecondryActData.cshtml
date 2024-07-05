@@ -1,0 +1,184 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@using IndustrialContoroler.Models.Repositories;
+@model SecondaryAct;
+@inject IRepository<SecondaryAct> secondrayActsData;
+
+@{
+    //int FaNumber = 0;
+    int counter = 1;
+    int SeId = 0;
+    var FaId = ViewData["FaId"];
+    var SeData = secondrayActsData.GetAllFaData(se => se.FaId.Equals(ViewData["FaId"]) && se.IsDeleted == false).ToList();
+
+}
+
+
+<div class="table-responsive m*-2">
+
+    <bu class="btn btn-primary gradient-buttons col-md-2 ms-3" data-bs-toggle="modal" data-bs-target="#modalCenter">
+        <i class="fas fa-plus mx-1 my-auto"></i> إضافة نشاط
+    </bu>
+
+
+    <form method="post">
+        <div class="col-md-6 col-lg-4">
+            <div class="mt-3">
+                <!-- Modal -->
+                <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCenterTitle">إضافة نشاط ثانوي</h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+
+                                    <div class="row-md-6">
+                                        <label asp-for="SaName" class="form-label fs-5">اسم النشاط الثانوي</label>
+                                        <input asp-for="SaName" class="form-control" placeholder="النشاط الثانوي" />
+                                        <span asp-validation-for="SaName" class="text-danger"></span>
+                                    </div>
+
+                                    @*   <input asp-for="SaId" value="@SeId" hidden/>*@
+                                    <input asp-for="FaId" value="@FaId" hidden />
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                    الغاء
+                                </button>
+                                <button type="submit" asp-action="AddSecondryAct" asp-controller="FieldVisitForms" class="btn btn-primary">أضافة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+    <div class="card m-3 mb-5">
+        <div class="content-wrapper table-responsive " style="font-size: small; font-weight: 300;">
+
+            <table class="table datatables-ajax table dataTable no-footer table-bordered" id="oneexample">
+                <thead class="border-top">
+                    <tr role="row">
+                        <th class="sorting sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="رقم النشاط: activate to sort column descending" style="width: 200.8px;">رقم النشاط</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" النشاط: activate to sort column ascending" style="width: 400.1px;">النشاط</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=" الاجراءات: activate to sort column ascending" style="width: 400.1px;">الاجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-border-bottom-0">
+
+                    @if (SeData is not null)
+                    {
+
+                        @foreach (var item in SeData)
+                        {
+                            SeId = item.SaId;
+                            <tr>
+                                <td>@counter</td>
+                                <td class="fs-5">@item.SaName</td>
+                                <td>
+                                    <div>
+                                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(37px, 25px);">
+                                            <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#EditSecondryAct-@item.SaId">
+                                                <i class="bx bx-edit-alt me-1"></i> تعديل
+                                            </a>
+
+                                            <a class="dropdown-item" role="button" aria-pressed="true" style="font-size: 14px;" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.SaId">
+                                                <i class="bx bx-trash me-1" data-bs-toggle="modal" data-bs-target="#confirmDeletion-@item.SaId"></i> حذف
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            counter = counter + 1;
+                            <div class="modal fade" id="confirmDeletion-@item.SaId" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                    <div class="modal-content p-3 p-md-5">
+                                        <div class="modal-body">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="text-center mb-4"><h3 class="mb-4">حذف النشاط الثانوي رقم @counter</h3></div>
+                                            <h4 class="text-center"> هل أنت متأكد انك تريد الحذف ؟</h4>
+                                            <div id="enableOTPForm" class="row g-3 mt-5">
+                                                <div class="col-12" align="center">
+                                                    <button type="reset" class="col-4 btn btn-label-success mx-3" data-bs-dismiss="modal" aria-label="Close">لا</button>
+                                                    <a asp-action="DeleteSecondryAct" asp-controller="FieldVisitForms" asp-route-id="@item.SaId" class="col-4 btn btn-danger me-1 me-sm-3 mx-5 ">نعم</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="modal fade" id="EditSecondryAct-@item.SaId" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                                    <form method="post">
+                                        <!-- Modal -->
+
+
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalCenterTitle">تعديل النشاط الثانوي رقم @counter</h5>
+                                                <button type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row g-3">
+
+                                                    <div class="row-md-6">
+                                                        <label asp-for="SaName" class="form-label fs-5">تعديل النشاط الثانوي رقم @counter</label>
+                                                        <input asp-for="SaName" class="form-control" placeholder="النشاط الثانوي" value="@item.SaName" />
+                                                        <span asp-validation-for="SaName" class="text-danger"></span>
+                                                    </div>
+
+                                                    <input asp-for="SaId" value="@item.SaId" hidden />
+                                                    <input asp-for="FaId" value="@item.FaId" hidden />
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                                                    الغاء
+                                                </button>
+                                                <button type="submit" asp-action="EditSecondryAct" asp-controller="FieldVisitForms" class="btn btn-primary">تعديل</button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+

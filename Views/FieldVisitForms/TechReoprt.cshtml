@@ -1,0 +1,744 @@
+﻿@using IndustrialContoroler.ViewModel
+@using Microsoft.EntityFrameworkCore
+@inject IndustrialContorolerDatabaseContext db;
+
+@{
+    int count = 1;
+    var facility = db.Facilities.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var siteReason = db.SiteReasons.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var secondaryAct = db.SecondaryActs.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var building = db.Buildings.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var worker = db.Workers.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var machine = db.Machines.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var rowMaterial = db.RowMaterials.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var helpMaterial = db.HelpMaterials.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var transportation = db.Transportations.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var agentsPoints = db.AgentsPoints.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var proCapacity = db.ProCapacities.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var castDatum = db.CastData.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var safetySecurity = db.SafetySecurities.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+    var visitsTraffics = db.VisitsTraffics.Where(x => x.IsDeleted == false && x.FaId.Equals(ViewData["FaId"])).ToList();
+
+}
+
+
+        <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+
+    <!--bign header-->
+    <div id="Staistic_Table">
+
+        <header>
+            <div class="col-xxl " data-select2-id="30">
+                <div class="card mb-4 ms-3 me-3" data-select2-id="29">
+                    <div>
+
+                        <div class="border border-0-0">
+
+                            <div style="font-family: 'Almarai', sans-serif; font-size:16px; color: black;" class=" row text-center  d-flex justify-content-center align-items-center m-2">
+                                <div class="col  ">
+                                    <p class="u-align-center u-text u-text-2 ">
+                                        الجمهوريه اليمنية<br>وزارة
+                                        الصناعه والتجارة<br>قطاع الصناعه<br>الادارة العامه للرقابه الصناعية
+                                    </p>
+                                </div>
+
+                                <div class="col ">
+
+                                    <img src="~/Images/IndustrialLogoReBk.png" class="rounded mx-auto d-block img-fluid img-thumbnail img-fluid " style="width: 125px; height: 125px;">
+
+                                </div>
+
+                                <div class="col   " style="color: black;">
+                                    <p class="">
+                                        تاريخ الطباعة : @DateTime.Now.ToString("MM/dd/yyyy")
+                                        <br>
+                                        وقت الطباعة : @DateTime.Now.ToString("hh:mm tt")
+
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+
+            <div style="font-family: 'Almarai', sans-serif; font-size:18px; background-color: #e9f2fa;" class=" p-2 fw-bold  w-100 d-flex justify-content-center align-items-center text-center">
+                <div class="col  d-block ">
+                    @foreach (var item in visitsTraffics)
+                    {
+                        <p>
+                               رقم استمارة الطلب : @item.ReFormNo 
+                               <br>
+                            تاريخ الزيارة الميدانية : @item.VtVisitDate
+                        </p>
+                    }
+                </div>
+                <div class="col d-block ">
+                    @foreach (var item in visitsTraffics)
+                    {
+                        <p class="">
+                            الغرض من التقرير : @item.VtVisitPurpose
+                        </p>
+                    }
+                </div>
+            </div>
+        </header>
+        
+        <!--بيانات المنشأة الجدول الاول -->
+        <div class=" p-1  ">
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">بيانات للمنشأة </h5>
+            @if (db.Facilities is not null && db.Facilities.Any())
+
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم المنشأة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم المشأه</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم مالك المشأه </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم المدير </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">النشاط الرئيسي </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">حجم المنشأة </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">نوع النشاط </th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+
+                        @foreach (var item in facility)
+                        {
+                            <tr>
+                                <th><span class="text-center">@item.FaNumber</span></th>
+                                <td><span class="text-center">@item.FaName</span></td>
+                                <td><span class="text-center">@item.FaOwnerName</span></td>
+                                <td><span class="text-center">@item.FaManagerName</span></td>
+                                <td><span class="text-center">@item.FaMainActivity</span></td>
+                                <td><span class="text-center">@item.FaSize</span></td>
+                                <td><span class="text-center">@item.FaActivityType</span></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+            
+            <br>
+        </div>
+        <!--بيانات المنشأة الجدول الثاني -->
+        <div class=" p-1  ">
+            @if (db.Facilities is not null && db.Facilities.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">صفة الملكية </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">الكيان القانوني </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رأس مال المستثمر </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">المساحة الكلية للمنشأه </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">تاريخ بدأ الانتاج </th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in facility)
+                        {
+                            <tr>
+                                <td><span class="text-center">@item.FaOwnership</span></td>
+                                <td><span class="text-center">@item.FaLegalEntity</span></td>
+                                <td><span class="text-center">@item.FaShareCapital</span></td>
+                                <td><span class="text-center">@item.FaTotalArea</span></td>
+                                <td><span class="text-center">@item.FaStartProduction</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!-- بيانات التواصل -->
+        <div class=" p-1  ">
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">بيانات التواصل</h5>
+            @if (db.Facilities is not null && db.Facilities.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم الهاتف</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم السيار</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> رقم الفاكس</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> البريد الالكتروني</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  الموقع الالكتروني</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in facility)
+                        {
+                            <tr>
+                                <th><span class="text-center">@item.FaMobileNumber</span></th>
+                                <td><span class="text-center">@item.FaPhoneNumber</span></td>
+                                <td><span class="text-center">@item.FaFaxNumber</span></td>
+                                <td><span class="text-center">@item.FaEmail</span></td>
+                                <td><span class="text-center">@item.FaWebSite</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--بيانات موقع المنشأة الجدول الثالث -->
+        <div class=" p-1  ">
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">موقع المنشأه</h5>
+            @if (db.Facilities is not null && db.Facilities.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">عنوان المنشأه</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">المحافظة </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">المديرية </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم المنطقة</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in facility)
+                        {
+                            <tr>
+                                <th><span class="text-center">@item.FaAddress</span></th>
+                                <td><span class="text-center">@item.FaGovernorate</span></td>
+                                <td><span class="text-center">@item.FaDirectorate</span></td>
+                                <td><span class="text-center">@item.FaRegionName</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--اسباب اختيار موقع -->
+        <div class=" p-1  ">
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">اسباب اختيار موقع المنشأة</h5>
+            @if (db.SiteReasons is not null && db.SiteReasons.Any())
+
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم السبب   </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">السبب </th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in siteReason)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.SrReason</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <!-- النشاط / الانشطة الثانويه للمنشأه -->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">النشاط / الانشطة الثانويه للمنشأه </h5>
+            @if (db.SecondaryActs is not null && db.SecondaryActs.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم النشاط </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم النشاط</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+
+                        @foreach (var item in secondaryAct)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.SaName</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--  مكونات المباني  -->
+        <div class="p-1">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">مكونات المباني</h5>
+            @if (db.Buildings is not null && db.Buildings.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">ملكية المبنى	 </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> وصف المبنى	 </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> نوعية البناء</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> موقع المبنى </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> الطول </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> العرض </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> الارتفاع </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> المساحة </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in building)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.BuOwnership</span></td>
+                                <td><span class="text-center">@item.BuDescription</span></td>
+                                <td><span class="text-center">@item.BuType</span></td>
+                                <td><span class="text-center">@item.BuLocation</span></td>
+                                <td><span class="text-center">@item.BuLength</span></td>
+                                <td><span class="text-center">@item.BuWidth</span></td>
+                                <td><span class="text-center">@item.BuHigh</span></td>
+                                <td><span class="text-center">@item.BuArea</span></td>
+                                <td><span class="text-center">@item.BuNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--بيانات العاملين  -->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">بيانات العاملين</h5>
+            @if (db.Workers is not null && db.Workers.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> تصنيف العاملين</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  اجمالي العاملين</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  عدد الذكور</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> عدد الاناث	 </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> الجنسيه </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> المؤهل العلمي	 </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> التخصص </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in worker)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.WoType</span></td>
+                                <td><span class="text-center">@item.WoTotal</span></td>
+                                <td><span class="text-center">@item.WoMaleNumber</span></td>
+                                <td><span class="text-center">@item.WoFemaleNumber</span></td>
+                                <td><span class="text-center">@item.WoNationality</span></td>
+                                <td><span class="text-center">@item.WoEduQualifying</span></td>
+                                <td><span class="text-center">@item.WoSpecialization</span></td>
+                                <td><span class="text-center">@item.WoNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--الآلات والمعدات المستخدمة  -->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">الآلات والمعدات المستخدمة</h5>
+            @if (db.Machines is not null && db.Machines.Any())
+
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> إسم الألة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  العدد</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  الاستخدامات</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  بلد التصنيع</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> وحدة القياس</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> القدرة الفعلية</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> المصدر </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> عنوان المصدر</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in machine)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.MaName</span></td>
+                                <td><span class="text-center">@item.MaNumber</span></td>
+                                <td><span class="text-center">@item.MaUses</span></td>
+                                <td><span class="text-center">@item.MaCountryManufacture</span></td>
+                                <td><span class="text-center">@item.MaMeasruingUnit</span></td>
+                                <td><span class="text-center">@item.MaAbility</span></td>
+                                <td><span class="text-center">@item.MaSource</span></td>
+                                <td><span class="text-center">@item.MaSourceAddress</span></td>
+                                <td><span class="text-center">@item.MaNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!-- المواد الخام  -->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">المواد الخام</h5>
+            @if (db.RowMaterials is not null && db.RowMaterials.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> إسم المادة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  وحدة القياس</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  الكمية المستخدمة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  ن.م.ف.م</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">  المصدر	 </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in rowMaterial)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.RmName</span></td>
+                                <td><span class="text-center">@item.RmMeasruingUnit</span></td>
+                                <td><span class="text-center">@item.RmAmountUsed</span></td>
+                                <td><span class="text-center">@item.RmPercentInPro</span></td>
+                                <td><span class="text-center">@item.RmSource</span></td>
+                                <td><span class="text-center">@item.RmNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--المواد المساعدة  -->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">المواد المساعدة</h5>
+            @if (db.HelpMaterials is not null && db.HelpMaterials.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> إسم المادة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">وحدة القياس</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">الكمية المستخدمة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">ن.م.ف.م</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">المصدر</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in helpMaterial)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.HmName</span></td>
+                                <td><span class="text-center">@item.HmMeasruingUnit</span></td>
+                                <td><span class="text-center">@item.HmAmountUsed</span></td>
+                                <td><span class="text-center">@item.HmPercentInPro</span></td>
+                                <td><span class="text-center">@item.HmSource</span></td>
+                                <td><span class="text-center">@item.HmNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--وسائل النقل  -->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">وسائل النقل</h5>
+            @if (db.Transportations is not null && db.Transportations.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> نوع وسيله النقل	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">الحمولة </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم لوحة الوسيلة	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in transportation)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.TrType</span></td>
+                                <td><span class="text-center">@item.TrLoad</span></td>
+                                <td><span class="text-center">@item.TrPlateNumber</span></td>
+                                <td><span class="text-center">@item.TrNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--الوكلاء ونقاط البيع  -->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">الوكلاء ونقاط البيع </h5>
+            @if (db.AgentsPoints is not null && db.AgentsPoints.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">الاسم </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> الأسم التجاري	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> رقم الهاتف	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> العنوان</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">النوع </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in agentsPoints)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.ApName</span></td>
+                                <td><span class="text-center">@item.ApTradeName</span></td>
+                                <td><span class="text-center">@item.ApPhoneNumber</span></td>
+                                <td><span class="text-center">@item.ApAddress</span></td>
+                                <td><span class="text-center">@item.ApType</span></td>
+                                <td><span class="text-center">@item.ApNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--الطاقه الانتاجية-->
+        <div class="p-1">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">الطاقه الانتاجية </h5>
+
+            @if (db.ProCapacities is not null && db.ProCapacities.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">NO</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم المنتج </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">اسم المنتج</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> وحدة القياس	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">الكمية لسنوية</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in proCapacity)
+                        {
+                            <tr>
+                                <th><span class="text-center">@count</span></th>
+                                <td><span class="text-center">@item.PcProductId</span></td>
+                                <td><span class="text-center">@item.PcProductName</span></td>
+                                <td><span class="text-center">@item.PcMeasruingUnit</span></td>
+                                <td><span class="text-center">@item.PcYearQuantity</span></td>
+                                <td><span class="text-center">@item.PcNotes</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--وسائل الامن والسلامة-->
+        <div class=" p-1  ">
+            @{
+                count = 1;
+            }
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel">وسائل الامن والسلامة </h5>
+            @if (db.SafetySecurities is not null && db.SafetySecurities.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">منظومه اطفاء الحرائق </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> التهوية</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> حقيبة الأسعافات الاولية	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> السلامة المهنية	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">الأنارة </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">مخارج الطوارئ</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> اللوحة الارشادية للأمن والسلامة	</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in safetySecurity)
+                        {
+                            <tr>
+                                <td><span class="text-center">@item.SsFireSystem</span></td>
+                                <td><span class="text-center">@item.SsVentilation</span></td>
+                                <td><span class="text-center">@item.SsFirstAidKit</span></td>
+                                <td><span class="text-center">@item.SsOccSafety</span></td>
+                                <td><span class="text-center">@item.SsLighting</span></td>
+                                <td><span class="text-center">@item.SsEmergencyExit</span></td>
+                                <td><span class="text-center">@item.SsSafetyDashboard</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <!--بيانات المدلي-->
+        <div class=" p-1  ">
+            <h5 style="font-family: 'Cairo', sans-serif; font-size:16px;" class="offcanvas-title   w-100 p-3 fw-bold " id="exampleModalLabel"> بيانات المدلي </h5>
+            @if (db.CastData is not null && db.CastData.Any())
+            {
+                <table class="table caption-top table-bordered text-center">
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px; background-color: #e9f2fa; ">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> اسم المدلي	</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col"> الوظيفة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم الهاتف	 </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">رقم البطاقة	 </th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" class="fs-6  fw-bold" scope="col">مكان اصدار البطاقة</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+
+                        @foreach (var item in castDatum)
+                        {
+                            <tr>
+                                <td><span class="text-center">@item.CdName</span></td>
+                                <td><span class="text-center">@item.CdJob</span></td>
+                                <td><span class="text-center">@item.CdPhoneNumber</span></td>
+                                <td><span class="text-center">@item.CdIdCardNumber</span></td>
+                                <td><span class="text-center">@item.CdCardPlaceIssu</span></td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    </tbody>
+                </table>
+            }
+            
+        </div>
+        <footer>
+            <div class="col border-end  d-flex justify-content-center align-items-center p-3">
+                <button class="btn btn-success  " type="button" id="printpagebutton" onclick="printDiv('Staistic_Table')">
+                    <span style="font-family: 'Almarai', sans-serif; font-size:18px;" class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-printer bx-xs me-3"></i>طباعة</span>
+                </button>
+            </div>
+        </footer>
+
+
+
+    </div>
+    </div>
+    
+
+
+
+<script src="/vendor/js/menu.js"></script>
+
+<!-- endbuild -->
+<!-- Vendors JS -->
+<script src="/vendor/libs/apex-charts/apexcharts.js"></script>
+
+<!-- Main JS -->
+<script src="/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="/js/dashboards-analytics.js"></script>
+
+<!-- Core JS -->
+
+
+<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var layoutheade = document.getElementById("layoutheade").innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = layoutheade;
+        document.body.innerHTML = printContents;
+
+        var printButton = document.getElementById("printpagebutton");
+        //Set the print button visibility to 'hidden'
+        printButton.style.visibility = 'hidden';
+        //Print the page content
+        window.print()
+        //Set the print button to 'visible' again
+        //[Delete this line if you want it to stay hidden after printing]
+        printButton.style.visibility = 'visible';
+        document.body.innerHTML = originalContents;
+
+    }
+
+</script>
+
+
+<script src="/vendor/js/menu.js"></script>
+
+<!-- endbuild -->
+<!-- Vendors JS -->
+<script src="/vendor/libs/apex-charts/apexcharts.js"></script>
+
+<!-- Main JS -->
+<script src="/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="/js/dashboards-analytics.js"></script>
+
+
+
+
+<end>

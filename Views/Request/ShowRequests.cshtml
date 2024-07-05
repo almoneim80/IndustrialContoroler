@@ -1,0 +1,275 @@
+﻿@using Microsoft.AspNetCore.Mvc;
+@using IndustrialContoroler.Models.requestsViewModels;
+@inject IndustrialContorolerDatabaseContext db;
+@model RequestAttsAttsTypeVM;
+@{
+    var attCount = 0;
+}
+
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <div  class="row invoice-preview">
+
+        <div class="col-12 col-md-8 col-xl-9 mb-4 mb-md-0">
+
+            <div id="Staistic_Table" class="card invoice-preview-card">
+
+                <div class="border border-0-0">
+
+
+                    <div style="font-family: 'Almarai', sans-serif; font-size:16px; color: black;" class=" row text-center  d-flex justify-content-center align-items-center m-2">
+                        <div class="col  ">
+                            <p class="u-align-center u-text u-text-2 ">
+                                الجمهوريه اليمنية<br>وزارة
+                                الصناعه والتجارة<br>قطاع الصناعه<br>الادارة العامه للرقابه الصناعية
+                            </p>
+                        </div>
+
+                        <div class="col ">
+
+                            <img src="~/Images/IndustrialLogoReBk.png" class="rounded mx-auto d-block img-fluid img-thumbnail img-fluid " style="width: 125px; height: 125px;">
+
+                        </div>
+                        <div class="col">
+                            <p class="">
+                                رقم إستمارة الطلب : @foreach (var item in Model.request)
+                                {
+                                    @item.ReFormNo
+                                }
+                                <br>
+                                تاريخ الطلب : @foreach (var item in Model.request)
+                                {
+                                    @item.ReDate
+                                }
+
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="my-0" />
+
+
+                <div class="text-center mt-3">
+                    <h3 style="font-family: 'Cairo', sans-serif; font-size:18px;">
+                        إستمارة طلب @foreach (var item in Model.request)
+                        {
+                            @item.ReType
+                        }
+                    </h3>
+                </div>
+
+
+
+
+                <div class="card-body">
+                    <div class="row p-0 p-sm-3">
+                        <table class="table caption-top table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">مقدم الطلب</th>
+                                    <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> رقم السند</th>
+                                    <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col"> وضع مرفقات الطلب</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                                <tr>
+                                    <td>
+                                        @foreach (var item in Model.request)
+                                        {
+                                            @item.ReApplicant
+                                        }
+                                    </td>
+                                    <td>
+                                        @foreach (var item in Model.request)
+                                        {
+                                            @item.ReSuemNo
+                                        }
+                                    </td>
+                                     @foreach (var item in Model.attachment)
+                                    {
+                                        attCount = attCount + 1;
+                                    }
+
+                                    @foreach (var item in Model.request)
+                                    {
+                                        if (item.ReType == "إنشاء سجل صناعي")
+                                        {
+                                            @if (attCount >= 2)
+                                            {
+                                                <td>مكتملة</td>
+                                            }
+                                            else
+                                            {
+                                                <td>غير مكتملة</td>
+                                            }
+                                        }
+                                        else if (item.ReType == "تجديد سجل صناعي")
+                                        {
+                                            @if (attCount >= 5)
+                                            {
+                                                <td>مكتملة</td>
+                                            }
+                                            else
+                                            {
+                                                <td>غير مكتملة</td>
+                                            }
+                                        }
+                                        if (item.ReType == "تعديل سجل صناعي")
+                                        {
+                                            @if (attCount >= 4)
+                                            {
+                                                <td>مكتملة</td>
+                                            }
+                                            else
+                                            {
+                                                <td>غير مكتملة</td>
+                                            }
+                                        }
+                                    }
+
+                                    @{
+                                        attCount = 0;
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr class="my-0" />
+
+               
+
+               
+
+                <footer>
+                    <div class="col border-end  d-flex  align-items-center p-3">
+                        <span style="font-family: 'Almarai', sans-serif; font-size:16px; color: black;" class="fw-semibold"> حالة الطلب :</span>
+                         @foreach (var item in Model.request)
+                        {
+                            if (item.ReRequestState == 0)
+                            {
+                                <span style="font-family: 'Cairo', sans-serif; font-size:14px; color: black;" class="pe-3 ms-2">بأنتظار الأحالة الى الرقابة الصناعية</span>
+                            }
+                            else if (item.ReRequestState == 1)
+                            {
+                                <span style="font-family: 'Cairo', sans-serif; font-size:14px; color: black;" class="pe-3 ms-2">قيد التحقق</span>
+                            }
+                            else if (item.ReRequestState == 2)
+                            {
+                                var AcceptRequestData = db.Facilities.Where(x => x.IsDeleted.Equals(false) && x.ReFormNo.Equals(item.ReFormNo)).Select(fa => fa.FaReference).FirstOrDefault();
+                                if (AcceptRequestData == 4)
+                                {
+                                    
+                                }
+                                else if (AcceptRequestData == 3)
+                                {
+                                    <span style="font-family: 'Cairo', sans-serif; font-size:14px; color: black;" class="pe-3 ms-2">مقبول</span>
+                                }
+                                else
+                                {
+                                    <span style="font-family: 'Cairo', sans-serif; font-size:14px; color: black;" class="pe-3 ms-2">بأنتظار تسجيل منشأة</span>
+                                }
+                            }
+
+                        }
+                    </div>
+                </footer>
+
+
+
+            </div>
+
+        </div>
+
+
+        <div  class="invoice-actions col-12 col-md-4 col-xl-3">
+            <div class="card">
+                <div style="font-family: 'Almarai', sans-serif; font-size:18px;" class="card-body">
+
+                     @*@if (User.IsInRole(Helper.SuperAdmin))
+                    {
+                        @foreach (var item in Model.request)
+                        {
+                            if (item.ReRequestState == 0)
+                            {
+                                <a asp-action="ReferralRequest" asp-controller="Request" asp-route-Id="@foreach (var item2 in Model.request){
+                    @item2.ReId
+}"
+                       class="btn btn-primary d-grid w-100 mb-3">
+                                    <span class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-send bx-xs me-3"></i>إحالة الطلب</span>
+                                </a>
+                            }
+                        }
+                    }
+                    else*@ 
+                    @if (User.IsInRole(Helper.SuperAdmin))
+                    {
+                        @foreach (var item in Model.request)
+                        {
+                            if (item.ReRequestState == 1)
+                            {
+                                <a asp-action="ReferralRequestToSpecific" asp-controller="Request" asp-route-Id="@foreach (var item2 in Model.request){
+                    @item2.ReId
+}"
+                       class="btn btn-primary d-grid w-100 mb-3">
+                                    <span class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-send bx-xs me-3"></i>إحالة الطلب</span>
+                                </a>
+                            }
+                        }
+                    }
+
+
+                    <a asp-action="ShowAttachment" asp-controller="Request" asp-route-Id="@foreach (var item in Model.request){
+                    @item.ReId
+}"
+                       class="btn btn-primary d-grid w-100">
+                        <span class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-show-alt bx-xs me-2"></i>مرفقات الطلب</span>
+                    </a>
+
+
+                    <button type="button"  onclick="printDiv('Staistic_Table')" class="btn btn-primary d-grid w-100 mt-3"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#addPaymentOffcanvas">
+                        <span class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-printer bx-xs me-3"></i>طباعة الطلب</span>
+                    </button>
+
+
+                    <a asp-action="Index" asp-controller="Request" class="btn btn-secondary d-grid w-100 mt-3">
+                        <span class="d-flex justify-content-center align-items-center text-nowrap"><i class="bx bx-arrow-back bx-xs me-3"></i>رجوع</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+</div>
+
+
+
+<!--------print Table----------->
+<script>
+    function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var layoutheade = document.getElementById("layoutheade").innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = layoutheade;
+        document.body.innerHTML = printContents;
+
+       
+       
+        //Print the page content
+        window.print()
+        //Set the print button to 'visible' again
+        //[Delete this line if you want it to stay hidden after printing]
+        
+        document.body.innerHTML = originalContents;
+
+    }
+
+</script>

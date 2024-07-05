@@ -1,0 +1,443 @@
+﻿@using IndustrialContoroler.ViewModel
+@using Microsoft.AspNetCore.Identity
+@model Logsystem
+@inject UserManager<AppUsers> userManager
+@inject IndustrialContorolerDatabaseContext _context
+@inject IHttpContextAccessor _sessions
+
+
+@*<link rel="stylesheet" href="~/css/span.css" />*@
+@{
+    int counterrequest = 1;
+    int counterrefilid = 1;
+}
+<div class="card-body">
+
+
+
+    <ul class="nav nav-tabs nav-tabs-bordered" id="SuperAdminList">
+
+
+        <li class="nav-item" >
+            <button class="nav-link" id="requestWF" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-star me-1"></i> سير عمليات الطلبات</button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link" id="FieldVistWF" style="font-family: 'Cairo', sans-serif; font-size:18px;"><i class="bx bx-check-circle me-2"></i> سير عمليات التقارير الميدانية </button>
+        </li>
+
+
+    </ul>
+
+    <div id="requestWFDiv">
+        <div class="card m-3 mb-5">
+            <div class="table-responsive m">
+
+                <!--/ Header -->
+                <!-- Table -->
+                <table class="datatables-ajax table table-bordered table-hover">
+
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px;">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">#</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">عنوان الطلب</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">@ResourceWeb.lbActionName</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ العملية</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المستخدم</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الأجراءات</th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in Model.RequestTraffics.Where(x => x.IsDeleted.Equals(false)).OrderByDescending(x => x.Date))
+                        {
+
+                            <tr>
+                                <td>@counterrequest</td>
+                                <td><span class="text-center"> @item.Re.ReType</span></td>
+                                <td>
+                                    @switch (@item.Action.ToString())
+                                    {
+                                        case @Helper.Save:
+                                            <span class="text-center">عملية انشاء طلب</span>
+
+                                            break;
+                                        case @Helper.Delete:
+                                            <span class="text-center">عملية حذف </span>
+                                            break;
+                                        case @Helper.referenceReToAdmin:
+                                            <span class="text-center">عملية إحالة للرقابة </span>
+                                            break;
+                                        case @Helper.RefernceReTotech:
+                                            <span class="text-center">عملية إحالة للمختص الفني </span>
+                                            break;
+                                        default:
+
+
+                                            break;
+                                    }
+
+                                </td>
+                                <td>@item.Date</td>
+                                <td>
+
+                                    @{
+                                        if (item.Action == Helper.Save)
+                                        {
+                                            <span class="text-center">(موظف السجل )  @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName </span>
+
+                                        }
+                                        if (item.Action == Helper.Delete)
+                                        {
+                                            <span class="text-center">(موظف السجل )  @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName </span>
+
+                                        }
+                                        if (item.Action == Helper.referenceReToAdmin)
+                                        {
+                                            <span class="text-center">(موظف السجل )  @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName </span>
+
+                                        }
+                                        if (item.Action == Helper.RefernceReTotech)
+                                        {
+                                            <span class="text-center">( المدير العام )  @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName </span>
+
+                                        }
+
+                                    }
+                                </td>
+
+                                <td>
+                                    <div>
+                                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+
+                                        <div class="dropdown-menu">
+
+                                            <button type="button" class="dropdown-item" role="button" style="font-size: 14px;" onclick="DeleteLog('@item.RtId')">
+                                                <i class="bx bx-trash me-1" data-bs-toggle="modal"></i> @ResourceWeb.lbbtnDelete
+
+                                            </button>
+
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            counterrequest = counterrequest + 1;
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="FieldVistWFDiv">
+        <div class="card m-3 mb-5">
+            <div class="table-responsive m">
+
+                <!--/ Header -->
+                <!-- Table -->
+                <table class="datatables-ajax table table-bordered table-hover">
+
+                    <thead style="font-family: 'Almarai', sans-serif; font-size:16px;">
+                        <tr>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">#</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">نوع الاستمارة</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">@ResourceWeb.lbActionName</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">تاريخ العملية</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">اسم المستخدم</th>
+                            <th style="font-family: 'Almarai', sans-serif; font-size:16px;" scope="col">الأجراءات</th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="font-family: 'Cairo', sans-serif; font-size:14px;">
+                        @foreach (var item in Model.LogFieldVisitForms.Where(x => x.IsDeleted.Equals(false)).OrderByDescending(x => x.Date))
+                        {
+
+                            <tr>
+                                <td>@counterrefilid</td>
+                                @{
+                                    var regestTy = _context.Requests.Where(x => x.ReFormNo == item.facility.ReFormNo).Select(x => x.ReType).FirstOrDefault();
+                                      <td><span> @regestTy</span></td>
+
+                                }
+                                                                      <td>
+                                                                          @switch (@item.Action.ToString())
+                                    {
+                                        case @Helper.Save:
+                                            <span >عملية انشاء</span>
+
+                                            break;
+                                        case @Helper.Delete:
+                                            <span >عملية حذف</span>
+                                            break;
+                                        case @Helper.referenceFromTechToAdmin:
+                                            <span >عمليةإحالة للمدير العام</span>
+                                            break;
+                                        case @Helper.referenceToTechToEdit:
+                                            <span >عمليةإحالة للمختص للتعديل</span>
+                                            break;
+                                        case @Helper.AcceptFieldVisit:
+                                            <span > قبول الأسمارة</span>
+                                            break;
+                                        case @Helper.RejectFieldVisit:
+                                            <span > رفض الأسمارة</span>
+                                            break;
+                                        default:
+
+
+                                            break;
+                                    }
+
+                                </td>
+                                <td>@item.Date</td>
+                                <td>
+                                    @{
+                                        if (item.Action == Helper.referenceFromTechToAdmin)
+                                        {
+                                            <span class="text-center">(المختص الفني)  @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName </span>
+
+                                        }
+                                        else if (item.Action == Helper.referenceToTechToEdit)
+                                        {
+                                            <span class="text-center"> (المدير العام) @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName </span>
+
+                                        }
+                                        else if (item.Action == Helper.Save)
+                                        {
+                                            <span class="text-center"> (المختص الفني) @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName  </span>
+
+                                        }
+                                        else if (item.Action == Helper.AcceptFieldVisit)
+                                        {
+                                            <span class="text-center"> (المدير العام) @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName  </span>
+
+                                        }
+                                        else if (item.Action == Helper.RejectFieldVisit)
+                                        {
+                                            <span class="text-center"> (المدير العام) @userManager.FindByIdAsync(item.UserId.ToString()).Result?.FullName  </span>
+
+                                        }
+                                    }
+                                </td>
+
+
+
+                                <td>
+                                    <div>
+                                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+
+                                        <div class="dropdown-menu">
+
+                                            <button type="button" class="dropdown-item" role="button" style="font-size: 14px;" onclick="DeleteLogFiled('@item.LogId')">
+                                                <i class="bx bx-trash me-1" data-bs-toggle="modal"></i> @ResourceWeb.lbbtnDelete
+
+                                            </button>
+
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            counterrefilid = counterrefilid + 1;
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Footer -->
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+
+    $("#FieldVistWFDiv").hide();
+
+    document.getElementById("requestWF").style.color = "Blue";
+
+    if ($('html').hasClass('dark-style')) {
+
+        $("#requestWF").click(function () {
+            $("#requestWFDiv").show();
+           $("#FieldVistWFDiv").hide();
+
+            document.getElementById("requestWF").style.color = "Blue";
+            document.getElementById("FieldVistWF").style.color = "white";
+
+        });
+
+
+        $("#FieldVistWF").click(function () {
+            $("#requestWFDiv").hide();
+            $("#FieldVistWFDiv").show();
+
+
+            document.getElementById("requestWF").style.color = "white";
+            document.getElementById("FieldVistWF").style.color = "Blue";
+
+        });
+
+
+
+
+    }
+    else {
+    $("#requestWF").click(function () {
+        $("#requestWFDiv").show();
+        $("#FieldVistWFDiv").hide();
+
+
+        document.getElementById("requestWF").style.color = "Blue";
+        document.getElementById("FieldVistWF").style.color = "#516377";
+
+    });
+
+
+    $("#FieldVistWF").click(function () {
+        $("#requestWFDiv").hide();
+        $("#FieldVistWFDiv").show();
+
+
+        document.getElementById("requestWF").style.color = "#516377";
+        document.getElementById("FieldVistWF").style.color = "Blue";
+
+    });
+
+
+
+    }
+</script>
+
+@section Scripts{
+    @if (!string.IsNullOrEmpty(_sessions.HttpContext.Session.GetString(Helper.MsgType)))
+    {
+        if (_sessions.HttpContext.Session.GetString(Helper.MsgType) == Helper.Success)
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+        text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+        confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'success'
+    });
+</script>
+
+        }
+        else
+        {
+<script>
+
+    Swal.fire({
+        title: '@_sessions.HttpContext.Session.GetString(Helper.Title)',
+        text: '@Html.Raw(@_sessions.HttpContext.Session.GetString(Helper.Msg))',
+        confirmButtonText: '@ResourceWeb.lbOk',
+        icon: 'error'
+    });
+</script>
+        }
+       _sessions.HttpContext.Session.SetString(Helper.MsgType, "");
+    }
+
+<script src="~/Modules/Categories.js"></script>
+<script>
+            function DeleteLog(id) {
+
+        Swal.fire({
+            title: lbTitleMsgDelete,
+            text: lbTextMsgDelete,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: lbconfirmButtonText,
+            cancelButtonText: lbcancelButtonText
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/WorkFlowRequest/DeleteLog?Id=${id}`;
+                Swal.fire(
+                    lbTitleDeletedOk,
+                    lbMsgDeletedOkCategory,
+                    lbSuccess
+                )
+            }
+
+        })
+    }
+</script>
+
+<script>
+            function DeleteLogFiled(id) {
+
+        Swal.fire({
+            title: lbTitleMsgDelete,
+            text: lbTextMsgDelete,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: lbconfirmButtonText,
+            cancelButtonText: lbcancelButtonText
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/WorkFlowRequest/DeleteLogFiled?Id=${id}`;
+                Swal.fire(
+                    lbTitleDeletedOk,
+                    lbMsgDeletedOkCategory,
+                    lbSuccess
+                )
+            }
+
+        })
+    }
+</script>
+@*Show tables
+*@
+
+
+
+<script>
+
+    let lbTitleEditCategory = '@Html.Raw(ResourceWeb.lbTitleEditCategory)';
+    let lbEdit = '@Html.Raw(ResourceWeb.lbEdit)';
+    let lbAddNewCategory = '@Html.Raw(ResourceWeb.lbAddNewCategory)';
+    let lbbtnSave = '@Html.Raw(ResourceWeb.lbbtnSave)';
+
+    let lbTitleMsgDelete = '@Html.Raw(ResourceWeb.lbbtnDelete)';
+    let lbTextMsgDelete = '@Html.Raw(ResourceWeb.lbTextMsgDelete)';
+    let lbconfirmButtonText = '@Html.Raw(ResourceWeb.lbconfirmButtonText)';
+    let lbcancelButtonText = '@Html.Raw(ResourceWeb.lbcancelButtonText)';
+
+    let lbTitleDeletedOk = '@Html.Raw(ResourceWeb.lbTitleDeletedOk)';
+    let lbMsgDeletedOkCategory = '@Html.Raw(ResourceWeb.lbMsgDeletedOkCategory)';
+    let lbSuccess = '@Html.Raw(Helper.Success)';
+
+</script>
+    }
+
+
+
+
+
+
+
+
+
+
